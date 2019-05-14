@@ -1,10 +1,7 @@
 import {
-  serviceDummyWithToken,
-  serviceDummyWithoutToken
+  serviceWithToken,
+  serviceWithoutToken
 } from "./httpClient";
-
-const serviceWithToken = serviceDummyWithToken;
-const serviceWithoutToken = serviceDummyWithoutToken;
 
 /** Service With Token */
 export const apiGetWithToken = (url, params) => {
