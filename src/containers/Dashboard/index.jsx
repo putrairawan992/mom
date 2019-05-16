@@ -1,7 +1,7 @@
 import React from "react";
 import { Tabs } from "antd";
-import ListNeedResponse from "../../components/ListNeedResponse";
-import ListPurchased from "../../components/ListPurchased";
+import ListNeedResponse from "../ListNeedResponse";
+import ListPurchased from "../ListPurchased";
 
 const TabPane = Tabs.TabPane;
 const DashboardContainer = () => {
