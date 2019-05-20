@@ -12,20 +12,20 @@ const HeaderOrder = props => (
       <Col>
         <span>Filter </span>
         <Select
-          defaultValue="lucy"
+          defaultValue="laut"
           style={{ width: 120 }}
           onChange={() => props.onChange}
         >
-          <Option value="jack">Jack</Option>
-          <Option value="lucy">Lucy</Option>
-          <Option value="Yiminghe">yiminghe</Option>
+          <Option value="udara">By Air</Option>
+          <Option value="laut">By Sea</Option>
         </Select>
       </Col>
       <Col>
         <InputGroup compact>
-          <Select defaultValue="Option1">
-            <Option value="Option1">Invoice</Option>
-            <Option value="Option2">Supp. Name</Option>
+          <Select defaultValue="invoice">
+            <Option value="invoice">No. Invoice</Option>
+            <Option value="name">Supplier Name</Option>
+            <Option value="code">Supplier Code</Option>
           </Select>
           <Search
             placeholder="input search text"
@@ -33,6 +33,11 @@ const HeaderOrder = props => (
             style={{ width: 200 }}
           />
         </InputGroup>
+      </Col>
+    </Row>
+    <Row>
+      <Col>
+        <span>Total Orders : {"10"}</span>
       </Col>
     </Row>
   </Card>

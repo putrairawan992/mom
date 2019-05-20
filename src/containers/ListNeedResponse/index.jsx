@@ -18,7 +18,7 @@ const ListNeedResponse = () => {
   const handleResponse = (invoiceId) => {
     console.log(invoiceId);
     message.config({
-      top: '50%',
+      top: '1%',
       duration: 2,
       maxCount: 3,
     });
@@ -44,6 +44,7 @@ const ListNeedResponse = () => {
             <Col span={11}>
               {order.indexes.map(index => (
                 <OrderVariant
+                  span={5}
                   key={index.id}
                   variants={index.variants}
                   quantity={index.productQuantity}

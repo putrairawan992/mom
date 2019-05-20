@@ -6,9 +6,11 @@ import Home from "../pages/Home";
 const routes = [
   {
     path: PATH_URL.LOGIN,
-    component: Login
-  },{
-    path: PATH_URL.DASHBOARD,
+    component: Login,
+    layoutName: 'fullLayout'
+  },
+  {
+    path: PATH_URL.HOME,
     component: Home
   }
 ];

@@ -17,7 +17,6 @@ export default (state = initialState, action) => {
     case TYPE.LOGIN:
       return {
         ...state,
-        auth: action.payload,
         isAuthenticated: true
       };
     case TYPE.LOGIN_FAILED:
@@ -30,7 +29,6 @@ export default (state = initialState, action) => {
     case TYPE.LOGOUT:
       return {
         ...state,
-        auth: action.payload,
         isAuthenticated: true
       };
     case TYPE.LOGOUT_FAILED:
