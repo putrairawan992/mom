@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { Row, Col, Card, Button, message } from "antd";
+import { Row, Col, Card, Button, notification, Icon } from "antd";
 import "./style.sass";
 import OrderDetail from "../../components/OrderDetail";
 import { dataNeedResponse } from "../../dataSource/need_response";
@@ -10,20 +10,32 @@ import OrderVariant from "../../components/OrderVariant";
 const ListNeedResponse = () => {
   const [orders, setOrders] = useState([]);
 
+  const contentNotification = (message, description, icon, colorIcon) => {
+    notification.open({
+      message: message,
+      description: description,
+      icon: <Icon type={icon} theme="filled" style={{ color: colorIcon }} />,
+      style: {
+        width: 500,
+        marginLeft: 400 - 508
+      }
+    });
+  };
+
   useEffect(() => {
     const data = dataNeedResponse.data;
     setOrders(data);
   }, []);
 
-  const handleResponse = (invoiceId) => {
+  const handleResponse = invoiceId => {
     console.log(invoiceId);
-    message.config({
-      top: '1%',
-      duration: 2,
-      maxCount: 3,
-    });
-    message.success('New Order has moved to the next process');
-  }
+    contentNotification(
+      "New Order has moved to the next process.",
+      "Continue responding the order you have selected in Need Purchased Tabs.",
+      "check-circle",
+      "#52C41A"
+    );
+  };
 
   return (
     <React.Fragment>
@@ -35,21 +47,41 @@ const ListNeedResponse = () => {
               <OrderDetail order={order} />
             </Col>
             <Col>
-              <Button type="primary" className="button-primary" onClick={()=>handleResponse(order.invoiceId)}>
+              <Button
+                type="primary"
+                className="button-primary"
+                onClick={() => handleResponse(order.invoiceId)}
+              >
                 Response
               </Button>
             </Col>
           </Row>
           <Row type="flex" justify="space-between">
             <Col span={11}>
-              {order.indexes.map(index => (
-                <OrderVariant
-                  span={5}
-                  key={index.id}
-                  variants={index.variants}
-                  quantity={index.productQuantity}
-                />
-              ))}
+              <Row>
+                <Col span={5} />
+                <Col>
+                  <Row>
+                    <Col span={5}>
+                      <img
+                        src="https://cdn2.iconfinder.com/data/icons/vacation-landmarks/512/45-512.png"
+                        alt=""
+                        className="image-shipping"
+                      />
+                    </Col>
+                    <Col>
+                      {order.indexes.map(index => (
+                        <OrderVariant
+                          key={index.id}
+                          variants={index.variants}
+                          quantity={index.productQuantity}
+                          price={index.price}
+                        />
+                      ))}
+                    </Col>
+                  </Row>
+                </Col>
+              </Row>
             </Col>
           </Row>
         </Card>

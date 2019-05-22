@@ -1,47 +1,145 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Modal, Button, Select, Input } from "antd";
-//import "./style.sass";
+import { Modal, Button, Select, Input, Form, Row, Col } from "antd";
+import * as yup from "yup";
+import "./style.sass";
+import { Formik } from "formik";
 
 const Option = Select.Option;
-const { TextArea } = Input;
+const TextArea = Input.TextArea;
 
-const ModalCancle = ({ visible, onUndo, onCancle, loading,invoiceId }) => {
+const options = [
+  { value: "C01", name: "Out of Stock" },
+  { value: "C02", name: "Product Discontinued" },
+  { value: "C03", name: "Others" }
+];
+
+const ModalCancle = ({ visible, onSubmit, onCancle, loading, invoiceId }) => {
+  const [schema, SetSchema] = useState(
+    yup.object().shape({
+      reason: yup.string(),
+      note: yup.string()
+    })
+  );
+
+  const updateSchema = optionReason => {
+    optionReason === "C03"
+      ? SetSchema(
+          yup.object().shape({
+            reason: yup.string(),
+            note: yup.string().required("Please write the detail of cancelation")
+          })
+        )
+      : SetSchema(
+          yup.object().shape({
+            reason: yup.string(),
+            note: yup.string()
+          })
+        );
+  };
+
   return (
     <Modal
       visible={visible}
-      title="Cancle Order"
-      onOk={onUndo}
+      title={<span className="title-modal-danger">Cancle Order</span>}
+      onOk={onSubmit}
       onCancel={onCancle}
-      footer={[
-        <Button key="back" onClick={onCancle}>
-          Back
-        </Button>,
-        <Button key="submit" type="primary" loading={loading} onClick={()=>onUndo(invoiceId)}>
-          Cancle Order
-        </Button>
-      ]}
+      closable={false}
+      footer={null}
     >
-      <span>Canclelation Category</span>
-      <br />
-      <Select defaultValue="stock">
-        <Option value="stock">Out Of Stock</Option>
-        <Option value="other">Other</Option>
-      </Select>
-      <TextArea
-        placeholder="Write some notes here.."
-        autosize={{ minRows: 3, maxRows: 6 }}
-      />
+      <Formik
+        initialValues={{ reason: "C01", note: "" }}
+        onSubmit={values => {
+          onSubmit({ ...values, invoiceId });
+        }}
+        validationSchema={schema}
+      >
+        {({
+          values,
+          errors,
+          touched,
+          handleChange,
+          setFieldValue,
+          handleBlur,
+          handleSubmit
+        }) => (
+          <Form onSubmit={handleSubmit}>
+            <Row>
+              <Col>
+                <span className="label-reason">Canclelation Category</span>
+                <Select
+                  onChange={value => {
+                    updateSchema(value);
+                    setFieldValue("reason", value);
+                  }}
+                  name="reason"
+                  value={values.reason}
+                  className="select-reason-undo"
+                  size="large"
+                >
+                  {options.map((option, index) => {
+                    return (
+                      <Option key={index} value={option.value}>
+                        {option.name}
+                      </Option>
+                    );
+                  })}
+                </Select>
+              </Col>
+            </Row>
+            <Row className="row-item-undo">
+              <Col>
+                <TextArea
+                  name="note"
+                  placeholder="Write some notes here"
+                  autosize={{ minRows: 6, maxRows: 6 }}
+                  onChange={handleChange}
+                  value={values.note}
+                  maxLength={255}
+                  className={errors.note && touched.note && "input-error"}
+                />
+                <span className="max-length-note">
+                  {values.note.length} / 255
+                </span>
+                {errors.note && touched.note && (
+                  <span className={"input-feedback"}>{errors.note}</span>
+                )}
+              </Col>
+            </Row>
+            <Row
+              className={
+                errors.note && touched.note ? "row-button-error" : "row-button"
+              }
+              type="flex"
+              justify="end"
+            >
+              <Col>
+                <span className="cancle" onClick={onCancle}>
+                  Cancle
+                </span>
+                <Button
+                  htmlType="submit"
+                  type="danger"
+                  size="large"
+                  className="button-undo"
+                >
+                  Cancle Order
+                </Button>
+              </Col>
+            </Row>
+          </Form>
+        )}
+      </Formik>
     </Modal>
   );
 };
 
 ModalCancle.propTypes = {
-    visible: PropTypes.bool,
-    onUndo: PropTypes.func,
-    onCancel: PropTypes.func,
-    loading: PropTypes.bool,
-    invoiceId: PropTypes.string
-  };
+  visible: PropTypes.bool,
+  onSubmitUndo: PropTypes.func,
+  onCancel: PropTypes.func,
+  loading: PropTypes.bool,
+  invoiceId: PropTypes.string
+};
 
 export default ModalCancle;

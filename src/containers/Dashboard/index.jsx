@@ -11,10 +11,10 @@ const DashboardContainer = () => {
         <ListNeedResponse />
       </TabPane>
       <TabPane tab="Need Purchase" key="2">
-        <ListPurchased />
+        <ListNeedResponse />
       </TabPane>
       <TabPane tab="Purchased" key="3">
-        Purchased
+        <ListPurchased />
       </TabPane>
       <TabPane tab="Ready" key="4">
         Ready
