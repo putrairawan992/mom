@@ -1,8 +1,11 @@
 import React from "react";
 import { Icon, Input, Button, Form } from "antd";
+import { connect } from "react-redux";
 import { Formik } from "formik";
 import * as yup from "yup";
 import "./style.sass";
+import { login } from "../../store/actions/authentication";
+import { PATH_AUTHENTICATION } from "../../services/path/login";
 
 const schema = yup.object().shape({
   username: yup.string().required(),
@@ -17,8 +20,8 @@ const Login = (props) => {
         <Formik
           initialValues={{ username: "", password: "" }}
           onSubmit={values => {
-            console.log("val", values);
-            props.history.push('/');
+            props.login(PATH_AUTHENTICATION.LOGIN, values);
+            //props.history.push('/');
           }}
           validationSchema={schema}
         >
@@ -89,4 +92,11 @@ const Login = (props) => {
   );
 };
 
-export default Login;
+const mapStateToProps = state => ({
+  isAuthenticated: state.authentication.isAuthenticated,
+  auth: state.authentication.auth,
+  messageError: state.authentication.messageError,
+  isError : state.authentication.checkError
+})
+
+export default connect(mapStateToProps, {login})(Login);
