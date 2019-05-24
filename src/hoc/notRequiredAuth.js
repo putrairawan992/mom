@@ -23,5 +23,8 @@ export default ComposedComponent => {
       return <ComposedComponent {...this.props} />;
     }
   }
-  return NotAuthentication;
+  function mapStateToProps(state) {
+    return { isAuthenticated: state.authentication.isAuthenticated };
+  }
+  return connect(mapStateToProps)(NotAuthentication);
 };
