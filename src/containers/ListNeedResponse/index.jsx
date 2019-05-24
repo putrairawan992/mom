@@ -10,6 +10,16 @@ import OrderVariant from "../../components/OrderVariant";
 const ListNeedResponse = () => {
   const [orders, setOrders] = useState([]);
 
+  const actionSearch = (payload) => {
+    console.log(payload);
+    
+  }
+
+  const actionFilter = (payload) => {
+    console.log(payload);
+    
+  }
+
   const contentNotification = (message, description, icon, colorIcon) => {
     notification.open({
       message: message,
@@ -39,7 +49,7 @@ const ListNeedResponse = () => {
 
   return (
     <React.Fragment>
-      <HeaderOrder />
+      <HeaderOrder onChangeFilter = {actionFilter} onSearch = {actionSearch} totalRecord={80}/>
       {orders.map(order => (
         <Card key={order.invoiceId}>
           <Row type="flex" justify="space-between">

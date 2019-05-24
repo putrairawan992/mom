@@ -13,8 +13,6 @@ const schema = yup.object().shape({
 });
 
 const Login = (props) => {
-  console.log(props.isAuthenticated);
-  
   return (
     <div style={{ display: "flex" }}>
       <div style={{ width: 400, margin: "auto" }}>
@@ -22,7 +20,6 @@ const Login = (props) => {
         <Formik
           initialValues={{ username: "", password: "" }}
           onSubmit={values => {
-            console.log("val", values);
             props.login(PATH_AUTHENTICATION.LOGIN, values);
             //props.history.push('/');
           }}

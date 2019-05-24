@@ -1,31 +1,87 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Modal, Button, Input } from "antd";
-//import "./style.sass";
+import { Modal, Button, Input, Form, Row, Col } from "antd";
+import * as yup from "yup";
+import "./style.sass";
+import { Formik } from "formik";
 const { TextArea } = Input;
 
-const ModalAddNote = ({ visible, onUndo, onCancle, loading,invoiceId }) => {
+const schema = yup.object().shape({
+  reason: yup.string(),
+  note: yup.string().required("Please write some notes")
+});
+
+const ModalAddNote = ({ visible, onSubmit, onCancel, loading, invoiceId }) => {
   return (
     <Modal
       visible={visible}
-      title="[ Need Purchase] Note"
-      onOk={onUndo}
-      onCancel={onCancle}
-      footer={[
-        <Button key="back" onClick={onCancle}>
-          Cancle
-        </Button>,
-        <Button key="submit" type="primary" loading={loading} onClick={()=>onUndo(invoiceId)}>
-          Save
-        </Button>
-      ]}
+      title={<span className="title-notes">[ Need Purchase] Note</span>}
+      onOk={onSubmit}
+      onCancel={onCancel}
+      footer={null}
     >
-      <span>This Note Will be saved into activity log in this order only</span>
+      <span className="label-notes">This Note Will be saved into activity log in this order only</span>
       <br />
-      <TextArea
-        placeholder="Write some notes here.."
-        autosize={{ minRows: 3, maxRows: 6 }}
-      />
+      <Formik
+        initialValues={{ note: "" }}
+        onSubmit={values => {
+          onSubmit({ ...values, invoiceId });
+        }}
+        validationSchema={schema}
+      >
+        {({
+          values,
+          errors,
+          touched,
+          handleChange,
+          setFieldValue,
+          handleBlur,
+          handleSubmit
+        }) => (
+          <Form onSubmit={handleSubmit}>
+            <Row className="row-item-undo">
+              <Col>
+                <TextArea
+                  name="note"
+                  placeholder="Write some notes here"
+                  autosize={{ minRows: 6, maxRows: 6 }}
+                  onChange={handleChange}
+                  value={values.note}
+                  maxLength={255}
+                  className={errors.note && touched.note && "input-error"}
+                />
+                <span className="max-length-note">
+                  {values.note.length} / 255
+                </span>
+                {errors.note && touched.note && (
+                  <span className={"input-feedback"}>{errors.note}</span>
+                )}
+              </Col>
+            </Row>
+            <Row
+              className={
+                errors.note && touched.note ? "row-button-error" : "row-button"
+              }
+              type="flex"
+              justify="end"
+            >
+              <Col>
+                <span className="cancel" onClick={onCancel}>
+                  Cancel
+                </span>
+                <Button
+                  htmlType="submit"
+                  type="primary"
+                  size="large"
+                  className="button-primary"
+                >
+                  Save
+                </Button>
+              </Col>
+            </Row>
+          </Form>
+        )}
+      </Formik>
     </Modal>
   );
 };

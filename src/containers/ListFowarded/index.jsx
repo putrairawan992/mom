@@ -14,7 +14,7 @@ import OrderNote from "../../components/OrderNote";
 import ModalLogs from "../../components/ModalLogs";
 import ModalNote from "../../components/ModalNote";
 
-const ListReady = () => {
+const ListFowarded= () => {
   const [orders, setOrders] = useState([]);
   const [visibleSupplier, setVisibleSupplier] = useState(false);
   const [visibleUndo, setVisibleUndo] = useState(false);
@@ -224,4 +224,4 @@ const ListReady = () => {
   );
 };
 
-export default ListReady;
+export default ListFowarded;

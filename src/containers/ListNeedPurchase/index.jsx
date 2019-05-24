@@ -7,7 +7,7 @@ import OrderVariant from "../../components/OrderVariant";
 import OrderAction from "../../components/OrderAction";
 import ModalSupplier from "../../components/ModalSupplier";
 import ModalUndo from "../../components/ModalUndo";
-import ModalCancle from "../../components/ModalCancle";
+import ModalCancel from "../../components/ModalCancel";
 import ModalAddNote from "../../components/ModalAddNote";
 import { needPurchased } from "../../dataSource/need_purchased";
 import OrderNote from "../../components/OrderNote";
@@ -18,7 +18,7 @@ const ListNeedPurchased = () => {
   const [orders, setOrders] = useState([]);
   const [visibleSupplier, setVisibleSupplier] = useState(false);
   const [visibleUndo, setVisibleUndo] = useState(false);
-  const [visibleCancle, setVisibleCancle] = useState(false);
+  const [visibleCancel, setVisibleCancel] = useState(false);
   const [visibleAddNote, setVisibleAddNote] = useState(false);
   const [visibleLog, setVisibleLog] = useState(false);
   const [visibleNote, setVisibleNote] = useState(false);
@@ -27,6 +27,16 @@ const ListNeedPurchased = () => {
     const data = needPurchased.data;
     setOrders(data);
   }, []);
+
+  const actionSearch = (payload) => {
+    console.log(payload);
+    
+  }
+
+  const actionFilter = (payload) => {
+    console.log(payload);
+    
+  }
 
   const contentNotification = (message, description, icon, colorIcon) => {
     notification.open({
@@ -73,13 +83,13 @@ const ListNeedPurchased = () => {
     );
   };
 
-  const actionCancle = () => {
-    setVisibleCancle(!visibleCancle);
+  const actionCancel = () => {
+    setVisibleCancel(!visibleCancel);
   };
 
-  const actionSubmitCancle = payload => {
+  const actionSubmitCancel = payload => {
     console.log(payload);
-    actionCancle();
+    actionCancel();
     contentNotification(
       "Order Canceled.",
       "The Order is being canceled, you can see the history in activity log or canceled order tab",
@@ -94,6 +104,12 @@ const ListNeedPurchased = () => {
 
   const actionSubmitAddNote = payload => {
     actionAddNotes();
+    contentNotification(
+      "A note has been added.",
+      "You can see the history in activity notes",
+      "info-circle",
+      "#1890FF"
+    );
     console.log(payload);
   };
 
@@ -111,7 +127,7 @@ const ListNeedPurchased = () => {
 
   return (
     <React.Fragment>
-      <HeaderOrder />
+      <HeaderOrder onChangeFilter = {actionFilter} onSearch = {actionSearch} totalRecord={80}/>
       {orders.map(order => (
         <Card key={order.invoiceId}>
           <Row type="flex" justify="space-between">
@@ -169,7 +185,7 @@ const ListNeedPurchased = () => {
             <Col>
               <OrderAction
                 onClickUndo={() => actionUndo()}
-                onClickCancle={() => actionCancle()}
+                onClickCancel={() => actionCancel()}
                 onClickAddNotes={() => actionAddNotes()}
               />
               <OrderNote
@@ -179,19 +195,19 @@ const ListNeedPurchased = () => {
               <ModalUndo
                 visible={visibleUndo}
                 onSubmit={actionSubmitUndo}
-                onCancle={actionUndo}
+                onCancel={actionUndo}
                 invoiceId={order.invoiceId}
               />
-              <ModalCancle
-                visible={visibleCancle}
-                onSubmit={actionSubmitCancle}
-                onCancle={actionCancle}
+              <ModalCancel
+                visible={visibleCancel}
+                onSubmit={actionSubmitCancel}
+                onCancel={actionCancel}
                 invoiceId={order.invoiceId}
               />
               <ModalAddNote
                 visible={visibleAddNote}
                 onSubmit={actionSubmitAddNote}
-                onCancle={actionAddNotes}
+                onCancel={actionAddNotes}
                 invoiceId={order.invoiceId}
               />
               <ModalLogs visible={visibleLog} onOk={actionShowLog} logs={[]} />

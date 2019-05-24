@@ -13,7 +13,7 @@ const options = [
   { value: "102", name: "Others" }
 ];
 
-const ModalUndo = ({ visible, onSubmit, onCancle, loading, invoiceId }) => {
+const ModalUndo = ({ visible, onSubmit, onCancel, loading, invoiceId }) => {
   const [schema, SetSchema] = useState(
     yup.object().shape({
       reason: yup.string(),
@@ -42,7 +42,7 @@ const ModalUndo = ({ visible, onSubmit, onCancle, loading, invoiceId }) => {
       visible={visible}
       title={<span className="title-modal-danger">Are you going back / undo to previous process?</span>}
       onOk={onSubmit}
-      onCancel={onCancle}
+      onCancel={onCancel}
       closable={false}
       footer={null}
     >
@@ -113,8 +113,8 @@ const ModalUndo = ({ visible, onSubmit, onCancle, loading, invoiceId }) => {
               justify="end"
             >
               <Col>
-                <span className="cancle" onClick={onCancle}>
-                  Cancle
+                <span className="cancel" onClick={onCancel}>
+                  Cancel
                 </span>
                 <Button
                   htmlType="submit"

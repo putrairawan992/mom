@@ -7,7 +7,7 @@ import ListNeedPurchased from "../../containers/ListNeedPurchase";
 import ListFowarded from "../../containers/ListFowarded";
 
 const TabPane = Tabs.TabPane;
-const Order = () => {
+const OrderIndonesia = () => {
   return (
     <Tabs defaultActiveKey="1" type="itable-card">
       <TabPane tab="Need Response" key="1">
@@ -29,4 +29,4 @@ const Order = () => {
   );
 };
 
-export default Order;
+export default OrderIndonesia;

@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import { Layout } from "antd";
 import Header from "../../components/Header";
 import MenuAdminChina from "../../containers/MenuAdminChina";
+import { connect } from "react-redux";
+import { logout } from "../../store/actions/authentication";
 
 const { Content, Sider } = Layout;
 
-const MainLayout = ()=> {
+const MainLayout = (props) => {
   const [page, setPage] = useState([]);
 
   const actionChangePage = page => {
@@ -26,7 +28,7 @@ const MainLayout = ()=> {
             }}
           >
           <div className="logo" />
-          <MenuAdminChina onChange={actionChangePage} />
+          <MenuAdminChina onChange={actionChangePage} logout={props.logout}/>
           </Sider>
           <Layout style={{ marginLeft: 200 }}>
             <Content style={{ margin: "24px 16px 0", overflow: "initial" }}>
@@ -41,4 +43,8 @@ const MainLayout = ()=> {
   );
 };
 
-export default MainLayout;
+function mapStateToProps(state) {
+  return { isAuthenticated: state.authentication.isAuthenticated };
+}
+
+export default connect(mapStateToProps,{logout})(MainLayout);

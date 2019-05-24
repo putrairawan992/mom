@@ -1,9 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect } from "react";
-import { Menu, Icon } from "antd";
-import Order from "../../pages/Order";
+import React, { useEffect } from "./node_modules/react";
+import { Menu, Icon } from "./node_modules/antd";
+import OrderIndonesia from "../../pages/OrderIndonesia";
 
-const MenuAdminChina = props => {
+const MenuAdminIndonesia = props => {
   useEffect(() => {
     changeMenu(0);
   }, []);
@@ -17,13 +17,13 @@ const MenuAdminChina = props => {
         props.onChange(<h1>Dua</h1>);
         break;
       case 3:
-        props.onChange(<Order />);
+        props.onChange(<OrderIndonesia />);
         break;
       case 4:
         props.logout();
       break;
       default:
-        props.onChange(<Order />);
+        props.onChange(<OrderIndonesia />);
     }
   };
 
@@ -39,7 +39,7 @@ const MenuAdminChina = props => {
       </Menu.Item>
       <Menu.Item key="3" onClick={() => changeMenu(3)}>
         <Icon type="cloud-o" />
-        <span className="nav-text">Order</span>
+        <span className="nav-text">Order Indonesia</span>
       </Menu.Item>
       <Menu.Item key="4" onClick={() => changeMenu(4)}>
         <Icon type="cloud-o" />
@@ -49,4 +49,4 @@ const MenuAdminChina = props => {
   );
 };
 
-export default MenuAdminChina;
+export default MenuAdminIndonesia;

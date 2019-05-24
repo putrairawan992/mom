@@ -14,7 +14,7 @@ const options = [
   { value: "C03", name: "Others" }
 ];
 
-const ModalCancle = ({ visible, onSubmit, onCancle, loading, invoiceId }) => {
+const ModalCancel = ({ visible, onSubmit, onCancel, loading, invoiceId }) => {
   const [schema, SetSchema] = useState(
     yup.object().shape({
       reason: yup.string(),
@@ -41,9 +41,9 @@ const ModalCancle = ({ visible, onSubmit, onCancle, loading, invoiceId }) => {
   return (
     <Modal
       visible={visible}
-      title={<span className="title-modal-danger">Cancle Order</span>}
+      title={<span className="title-modal-danger">Cancel Order</span>}
       onOk={onSubmit}
-      onCancel={onCancle}
+      onCancel={onCancel}
       closable={false}
       footer={null}
     >
@@ -66,7 +66,7 @@ const ModalCancle = ({ visible, onSubmit, onCancle, loading, invoiceId }) => {
           <Form onSubmit={handleSubmit}>
             <Row>
               <Col>
-                <span className="label-reason">Canclelation Category</span>
+                <span className="label-reason">Cancellation Category</span>
                 <Select
                   onChange={value => {
                     updateSchema(value);
@@ -114,8 +114,8 @@ const ModalCancle = ({ visible, onSubmit, onCancle, loading, invoiceId }) => {
               justify="end"
             >
               <Col>
-                <span className="cancle" onClick={onCancle}>
-                  Cancle
+                <span className="cancel" onClick={onCancel}>
+                  Cancel
                 </span>
                 <Button
                   htmlType="submit"
@@ -123,7 +123,7 @@ const ModalCancle = ({ visible, onSubmit, onCancle, loading, invoiceId }) => {
                   size="large"
                   className="button-undo"
                 >
-                  Cancle Order
+                  Cancel Order
                 </Button>
               </Col>
             </Row>
@@ -134,7 +134,7 @@ const ModalCancle = ({ visible, onSubmit, onCancle, loading, invoiceId }) => {
   );
 };
 
-ModalCancle.propTypes = {
+ModalCancel.propTypes = {
   visible: PropTypes.bool,
   onSubmitUndo: PropTypes.func,
   onCancel: PropTypes.func,
@@ -142,4 +142,4 @@ ModalCancle.propTypes = {
   invoiceId: PropTypes.string
 };
 
-export default ModalCancle;
+export default ModalCancel;

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Icon } from "antd";
 import "./style.sass";
 
-const OrderAction = ({ onClickUndo, onClickCancle, onClickAddNotes }) => {
+const OrderAction = ({ onClickUndo, onClickCancel, onClickAddNotes }) => {
   return (
     <table border={0}>
       <tbody>
@@ -15,9 +15,9 @@ const OrderAction = ({ onClickUndo, onClickCancle, onClickAddNotes }) => {
             </span>
           </td>
           <td>
-            <span className="span-icon" onClick={onClickCancle}>
+            <span className="span-icon" onClick={onClickCancel}>
               <Icon type="close-circle" />
-              &nbsp;Cancle Order&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              &nbsp;Cancel Order&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             </span>
           </td>
           <td>
@@ -34,7 +34,7 @@ const OrderAction = ({ onClickUndo, onClickCancle, onClickAddNotes }) => {
 
 OrderAction.propTypes = {
   onClickNotes : PropTypes.func,
-  onClickCancle : PropTypes.func,
+  onClickCancel : PropTypes.func,
   onClickAddNotes: PropTypes.func
 };
 

@@ -29,7 +29,7 @@ export default (state = initialState, action) => {
     case TYPE.LOGOUT:
       return {
         ...state,
-        isAuthenticated: true
+        isAuthenticated: false
       };
     case TYPE.LOGOUT_FAILED:
       return {
