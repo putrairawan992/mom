@@ -79,6 +79,7 @@ const Login = (props) => {
               </Form.Item>
               <Button
                 type="primary"
+                width="full"
                 htmlType="submit"
                 disabled={isSubmitting}
               >

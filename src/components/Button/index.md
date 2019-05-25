@@ -16,16 +16,27 @@ This is button of Monggopesen
 ## Purpose
 - Type: 'primary' is used for regular button
 - Type: 'secondary' is used for first alternative after regular button
+- Width: 'default' is used for default width button
+- Width: 'full' is used for full width 100% button
 
-## Details
-no details
+## Playground
 
-## Button Primary (Default)
+### Button Primary (Default)
 <Playground>
     <Button>Click Me</Button>
 </Playground>
 
-## Button Secondary
+### Button Primary & Width Full
+<Playground>
+    <Button type="primary" width="full">Click Me</Button>
+</Playground>
+
+### Button Secondary
 <Playground>
     <Button type="secondary">Click Me</Button>
+</Playground>
+
+### Button Secondary & Width Full
+<Playground>
+    <Button type="secondary" width="full">Click Me</Button>
 </Playground>

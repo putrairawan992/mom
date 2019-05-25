@@ -1,5 +1,17 @@
 @import "../../sass/variable.sass";
 
-.primary
-    background: $primary-active !important
+.mp-btn-primary
+    @include btn-type-1
+    background: $color-safety-orange !important
     border-color: initial !important
+
+.mp-btn-secondary
+    @include btn-type-1
+    color: $color-teal !important
+    border-color: initial !important
+
+.mp-btn-width-default
+    @include btn-width-default
+
+.mp-btn-width-full
+    @include btn-width-full
