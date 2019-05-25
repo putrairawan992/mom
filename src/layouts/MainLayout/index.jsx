@@ -13,6 +13,8 @@ const MainLayout = (props) => {
   const actionChangePage = page => {
     setPage(page);
   }
+  
+  const childrenWithProps = React.cloneElement(props.children, {actionChangePage: actionChangePage, logout: props.logout});
 
   return (
     <Layout>
@@ -27,8 +29,7 @@ const MainLayout = (props) => {
               left: 0
             }}
           >
-          <div className="logo" />
-          <MenuAdminChina onChange={actionChangePage} logout={props.logout}/>
+          {childrenWithProps}
           </Sider>
           <Layout style={{ marginLeft: 200 }}>
             <Content style={{ margin: "24px 16px 0", overflow: "initial" }}>
