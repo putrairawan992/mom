@@ -1,11 +1,12 @@
 import React from "react";
-import { Icon, Input, Button, Form } from "antd";
+import { Icon, Input, Form } from "antd";
 import { connect } from "react-redux";
 import { Formik } from "formik";
 import * as yup from "yup";
 import "./style.sass";
 import { login } from "../../store/actions/authentication";
 import { PATH_AUTHENTICATION } from "../../services/path/login";
+import Button from "../../components/Button";
 
 const schema = yup.object().shape({
   username: yup.string().required(),
@@ -79,7 +80,6 @@ const Login = (props) => {
               <Button
                 type="primary"
                 htmlType="submit"
-                className="login-form-button"
                 disabled={isSubmitting}
               >
                 Log in

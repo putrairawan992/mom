@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Layout } from "antd";
 import Header from "../../components/Header";
-import MenuAdminChina from "../../containers/MenuAdminChina";
 import { connect } from "react-redux";
 import { logout } from "../../store/actions/authentication";
 
