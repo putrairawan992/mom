@@ -12,5 +12,7 @@ export default {
       use: ["style-loader", "css-loader", "sass-loader"]
     })
     return config
-  }
+  },
+  notUseSpecifiers: true,
+  filterComponents: files => files.filter(filepath => /w*.(js|jsx|ts|tsx)$/.test(filepath))
 }

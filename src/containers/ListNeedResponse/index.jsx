@@ -1,14 +1,19 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { Row, Col, Card, Button, notification, Icon } from "antd";
+import { Row, Col, Card, notification, Icon } from "antd";
 import "./style.sass";
 import OrderDetail from "../../components/OrderDetail";
-import { dataNeedResponse } from "../../dataSource/need_response";
 import HeaderOrder from "../../components/HeaderOrder";
 import OrderVariant from "../../components/OrderVariant";
+import Button from "../../components/Button";
 
-const ListNeedResponse = () => {
+const ListNeedResponse = (props) => {
   const [orders, setOrders] = useState([]);
+
+  useEffect(() => {
+    const {data} = {...props};
+    setOrders(data);
+  }, []);
 
   const actionSearch = (payload) => {
     console.log(payload);
@@ -32,11 +37,6 @@ const ListNeedResponse = () => {
     });
   };
 
-  useEffect(() => {
-    const data = dataNeedResponse.data;
-    setOrders(data);
-  }, []);
-
   const handleResponse = invoiceId => {
     console.log(invoiceId);
     contentNotification(
@@ -59,7 +59,6 @@ const ListNeedResponse = () => {
             <Col>
               <Button
                 type="primary"
-                className="button-primary"
                 onClick={() => handleResponse(order.invoiceId)}
               >
                 Response

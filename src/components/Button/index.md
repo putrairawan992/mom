@@ -13,11 +13,14 @@ This is button of Monggopesen
 ## Properties (props)
 <Props of={Button} />
 
-## Purpose
+## Purpose Of Props
 - Type: 'primary' is used for regular button
 - Type: 'secondary' is used for first alternative after regular button
 - Width: 'default' is used for default width button
 - Width: 'full' is used for full width 100% button
+
+## Details
+no details
 
 ## Playground
 

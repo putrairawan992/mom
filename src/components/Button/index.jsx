@@ -1,13 +1,12 @@
 import React from "react";
 import { Button as ButtonAnt } from 'antd';
-import className from 'classnames/bind';
+import classNames from 'classnames';
 import propTypes from 'prop-types';
 import style from "./style.sass";
 
-const classNameStyle = className.bind(style);
-
 const Button = props => {
-    const cssClasses = classNameStyle({
+    const classNamesStyle = classNames.bind(style);
+    const cssClasses = classNamesStyle({
         'mp-btn-primary': (props.type === 'primary'),
         'mp-btn-secondary': (props.type === 'secondary'),
         'mp-btn-width-default': (props.width === 'default'),
