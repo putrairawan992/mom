@@ -24,7 +24,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "docz:dev": "docz dev",
+    "docz:build": "docz build"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -42,6 +44,10 @@
     ]
   },
   "devDependencies": {
-    "react-to-print": "^2.1.2"
+    "css-loader": "^2.1.1",
+    "docz": "^1.2.0",
+    "docz-theme-default": "^1.2.0",
+    "react-to-print": "^2.1.2",
+    "sass-loader": "^7.1.0"
   }
 }
