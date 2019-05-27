@@ -9,7 +9,6 @@ const Button = props => {
     const cssClasses = classNamesStyle({
         'mp-btn-primary': (props.type === 'primary'),
         'mp-btn-secondary': (props.type === 'secondary'),
-        'mp-btn-width-default': (props.width === 'default'),
         'mp-btn-width-full': (props.width === 'full')
     });
 
