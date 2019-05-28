@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Modal, Button, Select, Input, Form, Row, Col } from "antd";
+import { Modal, Button, Select, Input, Form, Row, Col, Icon } from "antd";
 import * as yup from "yup";
 import "./style.sass";
 import { Formik } from "formik";
@@ -27,7 +27,7 @@ const ModalCancel = ({ visible, onSubmit, onCancel, loading, invoiceId }) => {
       ? SetSchema(
           yup.object().shape({
             reason: yup.string(),
-            note: yup.string().required("Please write the detail of cancelation")
+            note: yup.string().required(<span><Icon type="exclamation-circle" /> Please write the detail of cancelation</span>)
           })
         )
       : SetSchema(
@@ -37,6 +37,8 @@ const ModalCancel = ({ visible, onSubmit, onCancel, loading, invoiceId }) => {
           })
         );
   };
+
+  const initialValues = { reason: "C01", note: "" }
 
   return (
     <Modal
@@ -48,7 +50,7 @@ const ModalCancel = ({ visible, onSubmit, onCancel, loading, invoiceId }) => {
       footer={null}
     >
       <Formik
-        initialValues={{ reason: "C01", note: "" }}
+        initialValues={initialValues}
         onSubmit={values => {
           onSubmit({ ...values, invoiceId });
         }}
@@ -122,6 +124,7 @@ const ModalCancel = ({ visible, onSubmit, onCancel, loading, invoiceId }) => {
                   type="danger"
                   size="large"
                   className="button-undo"
+
                 >
                   Cancel Order
                 </Button>
