@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import { Modal, Button, Row, Col, Icon } from "antd";
 import PropTypes from "prop-types";
 import "./style.sass";
@@ -14,7 +14,6 @@ const ModalConfirmPrint = ({
   loading
 }) => {
   const componentRef = useRef();
-  const [show, setShow] = useState(false);
   return (
     <Modal
       visible={visible}
@@ -57,10 +56,11 @@ const ModalConfirmPrint = ({
                   </Button>
                 )}
                 content={() => componentRef.current}
-                onBeforePrint={()=> setShow(true)}
+                onAfterPrint={onOk}
+                closeAfterPrint={true}
               />
               <div style={{display: "none"}}>
-                <LabelChina show={show}ref={componentRef} />
+                <LabelChina ref={componentRef} />
               </div>
             </Col>
           </Row>

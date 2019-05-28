@@ -27,8 +27,8 @@ const OrderNote = ({ onClickLog, onClickNotes }) => {
 };
 
 OrderNote.propTypes = {
-    onClickLog: PropTypes.func,
-    onClickNotes: PropTypes.func
+  onClickLog: PropTypes.func,
+  onClickNotes: PropTypes.func
 };
 
 export default OrderNote;

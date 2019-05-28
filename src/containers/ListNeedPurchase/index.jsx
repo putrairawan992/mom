@@ -4,7 +4,7 @@ import "../../sass/style.sass";
 import OrderDetail from "../../components/OrderDetail";
 import HeaderOrder from "../../components/HeaderOrder";
 import OrderVariant from "../../components/OrderVariant";
-import OrderAction from "../../components/OrderAction";
+import OrderAction from "../../components/OrderFullAction";
 import ModalSupplier from "../../components/ModalSupplier";
 import ModalUndo from "../../components/ModalUndo";
 import ModalCancel from "../../components/ModalCancel";

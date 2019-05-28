@@ -1,42 +1,37 @@
 import React, { useState, useEffect } from "react";
-import { Row, Col, Card, Button, notification, Icon } from "antd";
+import { Row, Col, Card, Button, notification, Icon, Steps } from "antd";
 import "../../sass/style.sass";
 import OrderDetail from "../../components/OrderDetail";
 import HeaderOrder from "../../components/HeaderOrder";
 import OrderVariant from "../../components/OrderVariant";
-import OrderAction from "../../components/OrderAction";
 import ModalSupplier from "../../components/ModalSupplier";
 import ModalUndo from "../../components/ModalUndo";
-import ModalCancel from "../../components/ModalCancel";
-import ModalAddNote from "../../components/ModalAddNote";
 import { needPurchased } from "../../dataSource/need_purchased";
-import OrderNote from "../../components/OrderNote";
 import ModalLogs from "../../components/ModalLogs";
 import ModalNote from "../../components/ModalNote";
+import OrderUndo from "../../components/OrderUndoAction";
+import OrderNote from "../../components/OrderNote";
 
-const ListFowarded= () => {
+const ListFowarded = () => {
   const [orders, setOrders] = useState([]);
-  const [visibleSupplier, setVisibleSupplier] = useState(false);
   const [visibleUndo, setVisibleUndo] = useState(false);
-  const [visibleCancel, setVisibleCancel] = useState(false);
-  const [visibleAddNote, setVisibleAddNote] = useState(false);
   const [visibleLog, setVisibleLog] = useState(false);
   const [visibleNote, setVisibleNote] = useState(false);
+
+  const { Step } = Steps;
 
   useEffect(() => {
     const data = needPurchased.data;
     setOrders(data);
   }, []);
 
-  const actionSearch = (payload) => {
+  const actionSearch = payload => {
     console.log(payload);
-    
-  }
+  };
 
-  const actionFilter = (payload) => {
+  const actionFilter = payload => {
     console.log(payload);
-    
-  }
+  };
 
   const contentNotification = (message, description, icon, colorIcon) => {
     notification.open({
@@ -48,24 +43,6 @@ const ListFowarded= () => {
         marginLeft: 400 - 508
       }
     });
-  };
-
-  const handlePurchased = invoiceId => {
-    console.log(invoiceId);
-    contentNotification(
-      "New Order has moved to the next process.",
-      "Continue responding the order you have selected in Need Purchased Tabs.",
-      "check-circle",
-      "#52C41A"
-    );
-  };
-
-  const handleSupplierInfo = invoiceId => {
-    setVisibleSupplier(true);
-  };
-
-  const actionOk = () => {
-    setVisibleSupplier(!visibleSupplier);
   };
 
   const actionUndo = () => {
@@ -83,36 +60,6 @@ const ListFowarded= () => {
     );
   };
 
-  const actionCancel = () => {
-    setVisibleCancel(!visibleCancel);
-  };
-
-  const actionSubmitCancel = payload => {
-    console.log(payload);
-    actionCancel();
-    contentNotification(
-      "Order Canceled.",
-      "The Order is being canceled, you can see the history in activity log or canceled order tab",
-      "info-circle",
-      "#1890FF"
-    );
-  };
-
-  const actionAddNotes = () => {
-    setVisibleAddNote(!visibleAddNote);
-  };
-
-  const actionSubmitAddNote = payload => {
-    actionAddNotes();
-    contentNotification(
-      "A note has been added.",
-      "You can see the history in activity notes",
-      "info-circle",
-      "#1890FF"
-    );
-    console.log(payload);
-  };
-
   const actionShowLog = () => {
     setVisibleLog(!visibleLog);
   };
@@ -127,7 +74,11 @@ const ListFowarded= () => {
 
   return (
     <React.Fragment>
-      <HeaderOrder onChangeFilter = {actionFilter} onSearch = {actionSearch} totalRecord={80}/>
+      <HeaderOrder
+        onChangeFilter={actionFilter}
+        onSearch={actionSearch}
+        totalRecord={80}
+      />
       {orders.map(order => (
         <Card key={order.invoiceId}>
           <Row type="flex" justify="space-between">
@@ -135,29 +86,21 @@ const ListFowarded= () => {
               <OrderDetail order={order} />
             </Col>
             <Col>
-              <Button
-                className="button-secondary"
-                onClick={() => handleSupplierInfo(order.invoiceId)}
-              >
-                Print Label
-              </Button>
-              <ModalSupplier
-                order={order}
-                visible={visibleSupplier}
-                onOk={actionOk}
-              />
-              <Button
-                type="primary"
-                className="button-primary"
-                onClick={() => handlePurchased(order.invoiceId)}
-              >
-                Shipped
-              </Button>
+              <Row>
+                <Col>
+                  <Steps progressDot current={1}>
+                    <Step description="" />
+                  </Steps>
+                </Col>
+                <Col>
+                  <span>It's way to Indonesia</span>
+                </Col>
+              </Row>
             </Col>
           </Row>
           <Row type="flex" justify="space-between">
             <Col span={11}>
-            <Row>
+              <Row>
                 <Col span={5} />
                 <Col>
                   <Row>
@@ -183,11 +126,7 @@ const ListFowarded= () => {
               </Row>
             </Col>
             <Col>
-              <OrderAction
-                onClickUndo={() => actionUndo()}
-                onClickCancel={() => actionCancel()}
-                onClickAddNotes={() => actionAddNotes()}
-              />
+              <OrderUndo onClickUndo={() => actionUndo()} />
               <OrderNote
                 onClickLog={() => actionShowLog()}
                 onClickNotes={() => actionShowNotes()}
@@ -196,18 +135,6 @@ const ListFowarded= () => {
                 visible={visibleUndo}
                 onSubmit={actionSubmitUndo}
                 onCancel={actionUndo}
-                invoiceId={order.invoiceId}
-              />
-              <ModalCancel
-                visible={visibleCancel}
-                onSubmit={actionSubmitCancel}
-                onCancel={actionCancel}
-                invoiceId={order.invoiceId}
-              />
-              <ModalAddNote
-                visible={visibleAddNote}
-                onSubmit={actionSubmitAddNote}
-                onCancel={actionAddNotes}
                 invoiceId={order.invoiceId}
               />
               <ModalLogs visible={visibleLog} onOk={actionShowLog} logs={[]} />

@@ -1,42 +1,40 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Row, Col, Card, Button, notification, Icon } from "antd";
 import "../../sass/style.sass";
 import OrderDetail from "../../components/OrderDetail";
 import HeaderOrder from "../../components/HeaderOrder";
 import OrderVariant from "../../components/OrderVariant";
-import OrderAction from "../../components/OrderAction";
-import ModalSupplier from "../../components/ModalSupplier";
+import OrderUndoNotesAction from "../../components/OrderUndoNotesAction";
 import ModalUndo from "../../components/ModalUndo";
-import ModalCancel from "../../components/ModalCancel";
 import ModalAddNote from "../../components/ModalAddNote";
 import { needPurchased } from "../../dataSource/need_purchased";
 import OrderNote from "../../components/OrderNote";
 import ModalLogs from "../../components/ModalLogs";
 import ModalNote from "../../components/ModalNote";
+import ReactToPrint from "react-to-print";
+import LabelChina from "../../components/LabelChina";
 
 const ListReady = () => {
   const [orders, setOrders] = useState([]);
-  const [visibleSupplier, setVisibleSupplier] = useState(false);
   const [visibleUndo, setVisibleUndo] = useState(false);
-  const [visibleCancel, setVisibleCancel] = useState(false);
   const [visibleAddNote, setVisibleAddNote] = useState(false);
   const [visibleLog, setVisibleLog] = useState(false);
   const [visibleNote, setVisibleNote] = useState(false);
+
+  const componentRef = useRef();
 
   useEffect(() => {
     const data = needPurchased.data;
     setOrders(data);
   }, []);
 
-  const actionSearch = (payload) => {
+  const actionSearch = payload => {
     console.log(payload);
-    
-  }
+  };
 
-  const actionFilter = (payload) => {
+  const actionFilter = payload => {
     console.log(payload);
-    
-  }
+  };
 
   const contentNotification = (message, description, icon, colorIcon) => {
     notification.open({
@@ -60,14 +58,6 @@ const ListReady = () => {
     );
   };
 
-  const handleSupplierInfo = invoiceId => {
-    setVisibleSupplier(true);
-  };
-
-  const actionOk = () => {
-    setVisibleSupplier(!visibleSupplier);
-  };
-
   const actionUndo = () => {
     setVisibleUndo(!visibleUndo);
   };
@@ -78,21 +68,6 @@ const ListReady = () => {
     contentNotification(
       "Order Undo.",
       "The Order is being undo, you can see the history in activity log",
-      "info-circle",
-      "#1890FF"
-    );
-  };
-
-  const actionCancel = () => {
-    setVisibleCancel(!visibleCancel);
-  };
-
-  const actionSubmitCancel = payload => {
-    console.log(payload);
-    actionCancel();
-    contentNotification(
-      "Order Canceled.",
-      "The Order is being canceled, you can see the history in activity log or canceled order tab",
       "info-circle",
       "#1890FF"
     );
@@ -127,7 +102,11 @@ const ListReady = () => {
 
   return (
     <React.Fragment>
-      <HeaderOrder onChangeFilter = {actionFilter} onSearch = {actionSearch} totalRecord={80}/>
+      <HeaderOrder
+        onChangeFilter={actionFilter}
+        onSearch={actionSearch}
+        totalRecord={80}
+      />
       {orders.map(order => (
         <Card key={order.invoiceId}>
           <Row type="flex" justify="space-between">
@@ -135,17 +114,16 @@ const ListReady = () => {
               <OrderDetail order={order} />
             </Col>
             <Col>
-              <Button
-                className="button-secondary"
-                onClick={() => handleSupplierInfo(order.invoiceId)}
-              >
-                Print Label
-              </Button>
-              <ModalSupplier
-                order={order}
-                visible={visibleSupplier}
-                onOk={actionOk}
+              <ReactToPrint
+                trigger={() => (
+                  <Button className="button-secondary">Print Label</Button>
+                )}
+                content={() => componentRef.current}
+                closeAfterPrint={true}
               />
+              <div style={{ display: "none" }}>
+                <LabelChina ref={componentRef} />
+              </div>
               <Button
                 type="primary"
                 className="button-primary"
@@ -157,7 +135,7 @@ const ListReady = () => {
           </Row>
           <Row type="flex" justify="space-between">
             <Col span={11}>
-            <Row>
+              <Row>
                 <Col span={5} />
                 <Col>
                   <Row>
@@ -183,9 +161,8 @@ const ListReady = () => {
               </Row>
             </Col>
             <Col>
-              <OrderAction
+              <OrderUndoNotesAction
                 onClickUndo={() => actionUndo()}
-                onClickCancel={() => actionCancel()}
                 onClickAddNotes={() => actionAddNotes()}
               />
               <OrderNote
@@ -196,12 +173,6 @@ const ListReady = () => {
                 visible={visibleUndo}
                 onSubmit={actionSubmitUndo}
                 onCancel={actionUndo}
-                invoiceId={order.invoiceId}
-              />
-              <ModalCancel
-                visible={visibleCancel}
-                onSubmit={actionSubmitCancel}
-                onCancel={actionCancel}
                 invoiceId={order.invoiceId}
               />
               <ModalAddNote
