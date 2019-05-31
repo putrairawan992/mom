@@ -1,0 +1,20 @@
+@import "../../sass/mixin.sass"
+@import "../../sass/style.sass"
+@import "../../sass/variable.sass"
+
+.log-status
+    margin-bottom: 18px
+    &__admin
+        color: $color-teal
+        font-size: 12px
+        .ant-divider
+            background-color: $color-teal
+        &__separator
+            color: $color-teal !important
+        &__note
+            color: $color-black
+    &__button-OK
+        @include mp-btn
+        width: 64px
+        background-color: $color-safety-orange !important
+        border-color: transparent !important
