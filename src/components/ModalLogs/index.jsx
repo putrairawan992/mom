@@ -5,6 +5,8 @@ import PropTypes, { object } from "prop-types";
 import convertTimesTime from "../../helpers/convertTimestime";
 
 const ModalLogs = ({ order, visible, onOk }) => {
+  console.log("order log", order);
+
   console.log("activityLogs", order.activityLogs);
 
   return (
@@ -15,20 +17,24 @@ const ModalLogs = ({ order, visible, onOk }) => {
       onCancel={onOk}
       footer={null}
     >
-      {order.activityLogs.map(index => (
-        <div className="log-status">
+      {order.activityLogs.map((activityLog, index) => (
+        <div className="log-status" key={index}>
           <div className="log-status__admin">
-            <b>{convertTimesTime.second(index.date)}</b> -{" "}
-            <span>{index.admin}</span>
+            <b>{convertTimesTime.second(activityLog.date)}</b> -{" "}
+            <span>{activityLog.admin}</span>
             <Divider type="vertical" />
-            <span>{index.tabStatus}</span>
+            <span>{activityLog.tabStatus}</span>
           </div>
-          <span className="log-status__admin__note">{index.note}</span>
+          <span className="log-status__admin__note">{activityLog.note}</span>
         </div>
       ))}
       <Row type="flex" justify="end">
         <Col>
-          <Button className="log-status__button-OK" type="primary" onClick={onOk}>
+          <Button
+            className="log-status__button-OK"
+            type="primary"
+            onClick={onOk}
+          >
             OK
           </Button>
         </Col>
