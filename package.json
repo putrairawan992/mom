@@ -44,9 +44,11 @@
     ]
   },
   "devDependencies": {
+    "acorn": "^6.0.5",
     "css-loader": "^2.1.1",
-    "docz": "^1.2.0",
-    "docz-theme-default": "^1.2.0",
+    "docz": "1.2.0",
+    "docz-core": "1.2.0",
+    "docz-theme-default": "1.2.0",
     "react-to-print": "^2.1.2",
     "sass-loader": "^7.1.0"
   }
