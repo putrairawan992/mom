@@ -1,0 +1,22 @@
+@import "../../sass/variable.sass"
+
+.mp-input-default .ant-input:hover
+    border-color: $color-teal !important
+
+.mp-input-default .ant-input:focus
+    border-color: $color-teal !important
+
+.mp-input-default 
+    @include mp-input
+    background-color: $color-white
+
+.mp-input-error .ant-input
+    @include mp-input
+    border-color: red
+
+.mp-input-error .ant-input:focus
+    border-color: $color-teal !important
+
+.mp-input-error .ant-input:hover
+    border-color: red !important
+
