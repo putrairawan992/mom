@@ -4,13 +4,11 @@ import "../../sass/style.sass";
 import OrderDetail from "../../components/OrderDetail";
 import HeaderOrder from "../../components/HeaderOrder";
 import OrderVariant from "../../components/OrderVariant";
-import ModalSupplier from "../../components/ModalSupplier";
 import ModalUndo from "../../components/ModalUndo";
 import { needPurchased } from "../../dataSource/need_purchased";
 import ModalLogs from "../../components/ModalLogs";
 import ModalNote from "../../components/ModalNote";
-import OrderUndo from "../../components/OrderUndoAction";
-import OrderNote from "../../components/OrderNote";
+import ButtonTextIcon from "../../components/ButtonTextIcon";
 
 const ListFowarded = () => {
   const [orders, setOrders] = useState([]);
@@ -64,10 +62,6 @@ const ListFowarded = () => {
     setVisibleLog(!visibleLog);
   };
 
-  const actionShowNotes = () => {
-    setVisibleNote(!visibleNote);
-  };
-
   const actionShowNote = () => {
     setVisibleNote(!visibleNote);
   };
@@ -81,70 +75,75 @@ const ListFowarded = () => {
       />
       {orders.map(order => (
         <Card key={order.invoiceId}>
-          <Row type="flex" justify="space-between">
-            <Col span={11}>
-              <OrderDetail order={order} />
-            </Col>
-            <Col>
-              <Row>
-                <Col>
-                  <Steps progressDot current={1}>
-                    <Step description="" />
-                  </Steps>
-                </Col>
-                <Col>
-                  <span>It's way to Indonesia</span>
-                </Col>
-              </Row>
-            </Col>
-          </Row>
-          <Row type="flex" justify="space-between">
-            <Col span={11}>
-              <Row>
-                <Col span={5} />
-                <Col>
-                  <Row>
-                    <Col span={5}>
+          {order.indexes.map(index => (
+            <Row key={index.id}>
+              <Col md={2}>
+                <img
+                  src={index.productImage}
+                  alt=""
+                  className="img-order-product"
+                />
+              </Col>
+              <Col md={22}>
+                <Row>
+                  <Col md={12}>
+                    <OrderDetail
+                      invoiceNumber={order.invoiceNumber}
+                      index={index}
+                    />
+                  </Col>
+                  <Col md={12}>
+                    <span>TEst</span>
+                  </Col>
+                </Row>
+                <Row style={{ marginTop: 16 }}>
+                  <Col md={12}>
+                    <div className="wrap-variant">
                       <img
                         src="https://cdn2.iconfinder.com/data/icons/vacation-landmarks/512/45-512.png"
                         alt=""
                         className="image-shipping"
                       />
-                    </Col>
-                    <Col>
-                      {order.indexes.map(index => (
-                        <OrderVariant
-                          key={index.id}
-                          variants={index.variants}
-                          quantity={index.productQuantity}
-                          price={index.price}
-                        />
-                      ))}
-                    </Col>
-                  </Row>
-                </Col>
-              </Row>
-            </Col>
-            <Col>
-              <OrderUndo onClickUndo={() => actionUndo()} />
-              <OrderNote
-                onClickLog={() => actionShowLog()}
-                onClickNotes={() => actionShowNotes()}
-              />
-              <ModalUndo
-                visible={visibleUndo}
-                onSubmit={actionSubmitUndo}
-                onCancel={actionUndo}
-                invoiceId={order.invoiceId}
-              />
-              <ModalLogs visible={visibleLog} onOk={actionShowLog} logs={[]} />
-              <ModalNote
-                visible={visibleNote}
-                onOk={actionShowNote}
-                logs={[]}
-              />
-            </Col>
-          </Row>
+                      <OrderVariant
+                        variants={index.variants}
+                        quantity={index.productQuantity}
+                        price={index.price}
+                      />
+                    </div>
+                  </Col>
+                  <Col offset={3} md={9}>
+                    <div className="wrap-button-text-icon">
+                      <ButtonTextIcon
+                        icon="rollback"
+                        label="Undo"
+                        onClick={actionUndo}
+                      />
+                    </div>
+                    <div className="wrap-button-text-icon">
+                      <ButtonTextIcon
+                        icon="file-exclamation"
+                        label="Show Logs"
+                        onClick={actionShowLog}
+                      />
+                      <ButtonTextIcon
+                        icon="file-text"
+                        label="Show Admin Notes"
+                        onClick={actionShowNote}
+                      />
+                    </div>
+                  </Col>
+                </Row>
+              </Col>
+            </Row>
+          ))}
+          <ModalUndo
+            visible={visibleUndo}
+            onSubmit={actionSubmitUndo}
+            onCancel={actionUndo}
+            invoiceId={order.invoiceId}
+          />
+          <ModalLogs visible={visibleLog} onOk={actionShowLog} logs={[]} />
+          <ModalNote visible={visibleNote} onOk={actionShowNote} logs={[]} />
         </Card>
       ))}
     </React.Fragment>

@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { Row, Col, Card, Button, notification, Icon } from "antd";
+import { Row, Col, Card, notification, Icon } from "antd";
 import "../../sass/style.sass";
 import OrderDetail from "../../components/OrderDetail";
 import HeaderOrder from "../../components/HeaderOrder";
 import OrderVariant from "../../components/OrderVariant";
-import OrderAction from "../../components/OrderFullAction";
 import ModalUndo from "../../components/ModalUndo";
 import ModalCancel from "../../components/ModalCancel";
 import ModalAddNote from "../../components/ModalAddNote";
 import { needPurchased } from "../../dataSource/need_purchased";
-import OrderNote from "../../components/OrderNote";
 import ModalLogs from "../../components/ModalLogs";
 import ModalNote from "../../components/ModalNote";
 import ModalConfirm from "../../components/ModalConfirm";
 import ModalConfirmPrint from "../../components/ModalConfirmPrint";
+import ButtonTextIcon from "../../components/ButtonTextIcon";
+import Button from "../../components/Button";
 
 const ListPurchased = () => {
   const [orders, setOrders] = useState([]);
@@ -105,10 +105,6 @@ const ListPurchased = () => {
     setVisibleLog(!visibleLog);
   };
 
-  const actionShowNotes = () => {
-    setVisibleNote(!visibleNote);
-  };
-
   const actionShowNote = () => {
     setVisibleNote(!visibleNote);
   };
@@ -124,7 +120,8 @@ const ListPurchased = () => {
     })
       .then(() => {
         showConfirm();
-      }).then(()=>{
+      })
+      .then(() => {
         setLoadingConfirm(false);
         actionConfirmPrint();
       })
@@ -136,12 +133,12 @@ const ListPurchased = () => {
   };
 
   const actionConfirmPrint = () => {
-    setVisibleConfirmPrint(!visibleConfirmPrint)
-  }
+    setVisibleConfirmPrint(!visibleConfirmPrint);
+  };
 
   const actionCancelPrint = () => {
-    setVisibleConfirmPrint(!visibleConfirmPrint)
-  }
+    setVisibleConfirmPrint(!visibleConfirmPrint);
+  };
 
   return (
     <React.Fragment>
@@ -152,101 +149,124 @@ const ListPurchased = () => {
       />
       {orders.map(order => (
         <Card key={order.invoiceId}>
-          <Row type="flex" justify="space-between">
-            <Col span={11}>
-              <OrderDetail order={order} />
-            </Col>
-            <Col>
-              <Button
-                type="primary"
-                className="button-primary"
-                onClick={() => handlePurchased(order.invoiceId)}
-              >
-                Ready to Ship
-              </Button>
-            </Col>
-          </Row>
-          <Row type="flex" justify="space-between">
-            <Col span={11}>
-              <Row>
-                <Col span={5} />
-                <Col>
-                  <Row>
-                    <Col span={5}>
+          {order.indexes.map(index => (
+            <Row key={index.id}>
+              <Col md={2}>
+                <img
+                  src={index.productImage}
+                  alt=""
+                  className="img-order-product"
+                />
+              </Col>
+              <Col md={22}>
+                <Row>
+                  <Col md={12}>
+                    <OrderDetail
+                      invoiceNumber={order.invoiceNumber}
+                      index={index}
+                    />
+                  </Col>
+                  <Col md={12}>
+                    <div className="wrap-button">
+                      <Button
+                        type="primary"
+                        onClick={() => handlePurchased(order.invoiceId)}
+                      >
+                        Ready to Ship
+                      </Button>
+                    </div>
+                  </Col>
+                </Row>
+                <Row style={{ marginTop: 16 }}>
+                  <Col md={12}>
+                    <div className="wrap-variant">
                       <img
                         src="https://cdn2.iconfinder.com/data/icons/vacation-landmarks/512/45-512.png"
                         alt=""
                         className="image-shipping"
                       />
-                    </Col>
-                    <Col>
-                      {order.indexes.map(index => (
-                        <OrderVariant
-                          key={index.id}
-                          variants={index.variants}
-                          quantity={index.productQuantity}
-                          price={index.price}
-                        />
-                      ))}
-                    </Col>
-                  </Row>
-                </Col>
-              </Row>
-            </Col>
-            <Col>
-              <OrderAction
-                onClickUndo={() => actionUndo()}
-                onClickCancel={() => actionCancel()}
-                onClickAddNotes={() => actionAddNotes()}
-              />
-              <OrderNote
-                onClickLog={() => actionShowLog()}
-                onClickNotes={() => actionShowNotes()}
-              />
-              <ModalUndo
-                visible={visibleUndo}
-                onSubmit={actionSubmitUndo}
-                onCancel={actionUndo}
-                invoiceId={order.invoiceId}
-              />
-              <ModalCancel
-                visible={visibleCancel}
-                onSubmit={actionSubmitCancel}
-                onCancel={actionCancel}
-                invoiceId={order.invoiceId}
-              />
-              <ModalAddNote
-                visible={visibleAddNote}
-                onSubmit={actionSubmitAddNote}
-                onCancel={actionAddNotes}
-                invoiceId={order.invoiceId}
-              />
-              <ModalLogs visible={visibleLog} onOk={actionShowLog} logs={[]} />
-              <ModalNote
-                visible={visibleNote}
-                onOk={actionShowNote}
-                logs={[]}
-              />
-              <ModalConfirm
-                visible={visibleConfirm}
-                loading={loadingConfirm}
-                onOk={actionConfirm}
-                onCancel={actionCancelConfirm}
-                title={"Makes Sure that the package is ready to be shipped."}
-                description={
-                  "Please check if the package is neatly wrapped and the label is already patched to the package"
-                }
-              />
-              <ModalConfirmPrint
-                visible={visibleConfirmPrint}
-                loading={false}
-                onOk={actionConfirmPrint}
-                onCancel={actionCancelPrint}
-                title={"The order has moved to the next process, you can print the label now or you can print it later."}
-                description={""}
-              />
-            </Col>
-          </Row>
+                      <OrderVariant
+                        variants={index.variants}
+                        quantity={index.productQuantity}
+                        price={index.price}
+                      />
+                    </div>
+                  </Col>
+                  <Col offset={3} md={9}>
+                    <div className="wrap-button-text-icon">
+                      <ButtonTextIcon
+                        icon="rollback"
+                        label="Undo"
+                        onClick={actionUndo}
+                      />
+                      <ButtonTextIcon
+                        icon="close-circle"
+                        label="Cancle Order"
+                        onClick={actionCancel}
+                      />
+                      <ButtonTextIcon
+                        icon="message"
+                        label="Add Admin Notes"
+                        onClick={actionAddNotes}
+                      />
+                    </div>
+                    <div className="wrap-button-text-icon">
+                      <ButtonTextIcon
+                        icon="file-exclamation"
+                        label="Show Logs"
+                        onClick={actionShowLog}
+                      />
+                      <ButtonTextIcon
+                        icon="file-text"
+                        label="Show Admin Notes"
+                        onClick={actionShowNote}
+                      />
+                    </div>
+                  </Col>
+                </Row>
+              </Col>
+            </Row>
+          ))}
+          <ModalUndo
+            visible={visibleUndo}
+            onSubmit={actionSubmitUndo}
+            onCancel={actionUndo}
+            invoiceId={order.invoiceId}
+          />
+          <ModalCancel
+            visible={visibleCancel}
+            onSubmit={actionSubmitCancel}
+            onCancel={actionCancel}
+            invoiceId={order.invoiceId}
+          />
+          <ModalAddNote
+            visible={visibleAddNote}
+            onSubmit={actionSubmitAddNote}
+            onCancel={actionAddNotes}
+            invoiceId={order.invoiceId}
+          />
+          <ModalLogs visible={visibleLog} onOk={actionShowLog} logs={[]} />
+          <ModalNote visible={visibleNote} onOk={actionShowNote} logs={[]} />
+          <ModalConfirm
+            visible={visibleConfirm}
+            loading={loadingConfirm}
+            onOk={actionConfirm}
+            onCancel={actionCancelConfirm}
+            title={"Makes Sure that the package is ready to be shipped."}
+            description={
+              "Please check if the package is neatly wrapped and the label is already patched to the package"
+            }
+          />
+          <ModalConfirmPrint
+            visible={visibleConfirmPrint}
+            loading={false}
+            onOk={actionConfirmPrint}
+            onCancel={actionCancelPrint}
+            title={
+              "The order has moved to the next process, you can print the label now or you can print it later."
+            }
+            description={""}
+          />
         </Card>
       ))}
     </React.Fragment>

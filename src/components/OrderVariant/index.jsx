@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { currencyYuan } from "../../helpers/currency";
 import "./style.sass";
 
-const OrderVariant = ({ variants, quantity, price, span }) => {
+const OrderVariant = ({ variants, quantity, price }) => {
   let names = variants.map(variant => `${variant.value}`).join(", ");
   return (
     <table border={1} className="table-container">

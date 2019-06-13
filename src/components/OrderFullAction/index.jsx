@@ -1,41 +1,28 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Icon } from "antd";
 import "./style.sass";
+import ButtonTextIcon from "../ButtonTextIcon";
 
-const OrderAction = ({ onClickUndo, onClickCancel, onClickAddNotes }) => {
+const OrderFullAction = ({ onClickUndo, onClickCancel, onClickAddNotes }) => {
   return (
-    <table border={0}>
-      <tbody>
-        <tr className="row-action">
-          <td>
-            <span className="span-icon" onClick={onClickUndo}>
-              <Icon type="rollback" />
-              &nbsp;Undo&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            </span>
-          </td>
-          <td>
-            <span className="span-icon" onClick={onClickCancel}>
-              <Icon type="close-circle" />
-              &nbsp;Cancel Order&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            </span>
-          </td>
-          <td>
-            <span className="span-icon" onClick={onClickAddNotes}>
-              <Icon type="message" />
-              &nbsp;Add Admin Notes
-            </span>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div className="action-container">
+      <div className="action">
+        <ButtonTextIcon icon="rollback" label="Undo" onClick={onClickUndo} />
+      </div>
+      <div className="order-action">
+        <ButtonTextIcon icon="close-circle" label="Cancle Order" onClick={onClickCancel} />
+      </div>
+      <div className="order-action">
+        <ButtonTextIcon icon="message" label="Add Admin Notes" onClick={onClickAddNotes} />
+      </div>
+    </div>
   );
 };
 
-OrderAction.propTypes = {
-  onClickNotes : PropTypes.func,
-  onClickCancel : PropTypes.func,
+OrderFullAction.propTypes = {
+  onClickNotes: PropTypes.func,
+  onClickCancel: PropTypes.func,
   onClickAddNotes: PropTypes.func
 };
 
-export default OrderAction;
+export default OrderFullAction;

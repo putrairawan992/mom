@@ -1,14 +1,21 @@
-@import "../../sass/variable.sass";
+@import "../../sass/variable.sass"
 
 .mp-btn-primary
     @include mp-btn
-    background: $color-safety-orange !important
+    background-color: $color-safety-orange !important
     border-color: initial !important
+
+.mp-btn-primary:hover
+    background: $color-safety-orange-hover !important 
+    border-color: $color-safety-orange-hover !important 
 
 .mp-btn-secondary
     @include mp-btn
     color: $color-teal !important
     border-color: initial !important
+
+.mp-btn-secondary:hover
+    color: $color-teal !important
 
 .mp-btn-width-full
     width: 100% !important
