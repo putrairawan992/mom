@@ -21,3 +21,9 @@ yarn-debug.log*
 yarn-error.log*
 
 .docz
+
+
+src/assets/img
+
+package-lock.json
+
