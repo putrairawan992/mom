@@ -1,5 +1,5 @@
 import React from "react";
-import { Icon, Form } from "antd";
+import { Icon, Form , Col, Row } from "antd";
 import { connect } from "react-redux";
 import { Formik } from "formik";
 import * as yup from "yup";
@@ -8,6 +8,7 @@ import { login } from "../../store/actions/authentication";
 import { PATH_AUTHENTICATION } from "../../services/path/login";
 import Button from "../../components/Button";
 import Input from "../../components/Input"
+import logo from "../../assets/img/logo_monggopesen/ic_logo_bag_borderteal.png"
 
 const schema = yup.object().shape({
   username: yup.string().required(),
@@ -18,7 +19,14 @@ const Login = (props) => {
   return (
     <div className="loginContainer">
       <div style={{ width: 360}}>
-        <h1>LOGIN</h1>
+        <div className="loginForm">
+          <img src={logo} alt=""/><br/>
+        </div>
+        <br/>
+        <div className="loginForm">
+          <p className="admin">Admin Login</p>
+        </div>
+        <br/>
         <Formik
           initialValues={{ username: "", password: "" }}
           onSubmit={values => {

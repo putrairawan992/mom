@@ -15,11 +15,19 @@ This is input of Monggopesen
 
 ## Purpose Of Props
 - Status: 'default' is used for regular input
-- Status: 'error' is used for handling error
+- Status: 'error' is used for handling error'
 
-### Playground
+## Details
+no details
 
-### Input (Default)
+## Playground
+
+### Input status Default
+<Playground>
+    <Input status="default" />
+</Playground>
+
+### Input status Error
 <Playground>
     <Input status="error" />
 </Playground>

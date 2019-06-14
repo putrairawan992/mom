@@ -1,6 +1,5 @@
 import React from 'react'
 import { Input as InputAnt } from 'antd'
-// import './style.sass' 
 import classNames from 'classnames'
 import style from './style.sass'
 import propTypes from 'prop-types'
@@ -13,7 +12,9 @@ const Input = props => {
     })
 
     return (
-            <InputAnt className={cssClasses} {...props}/>
+        <span className={cssClasses}>
+            <InputAnt  {...props}/>
+        </span>
     )
 }
 
