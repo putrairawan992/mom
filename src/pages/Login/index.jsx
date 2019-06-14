@@ -1,5 +1,5 @@
 import React from "react";
-import { Icon, Input, Form } from "antd";
+import { Icon, Form , Col, Row } from "antd";
 import { connect } from "react-redux";
 import { Formik } from "formik";
 import * as yup from "yup";
@@ -7,6 +7,8 @@ import "./style.sass";
 import { login } from "../../store/actions/authentication";
 import { PATH_AUTHENTICATION } from "../../services/path/login";
 import Button from "../../components/Button";
+import Input from "../../components/Input"
+import logo from "../../assets/img/logo_monggopesen/ic_logo_bag_borderteal.png"
 
 const schema = yup.object().shape({
   username: yup.string().required(),
@@ -15,9 +17,16 @@ const schema = yup.object().shape({
 
 const Login = (props) => {
   return (
-    <div style={{ display: "flex" }}>
-      <div style={{ width: 400, margin: "auto" }}>
-        <h1>LOGIN</h1>
+    <div className="loginContainer">
+      <div style={{ width: 360}}>
+        <div className="loginForm">
+          <img src={logo} alt=""/><br/>
+        </div>
+        <br/>
+        <div className="loginForm">
+          <p className="admin">Admin Login</p>
+        </div>
+        <br/>
         <Formik
           initialValues={{ username: "", password: "" }}
           onSubmit={values => {
@@ -38,18 +47,18 @@ const Login = (props) => {
             <Form onSubmit={handleSubmit}>
               <Form.Item>
                 <Input
+                  placeholder="Username"
                   name="username"
                   prefix={
-                    <Icon type="user" style={{ color: "rgba(0,0,0,.25)" }} />
+                    <Icon type="user" style={{ color: "rgba(0,0,0,.25)", fontSize: "15.64px" }} />
                   }
-                  placeholder="Username"
                   onChange={handleChange}
                   value={values.username}
                   onBlur={handleBlur}
-                  className={
+                  status={
                     errors.username && touched.username
-                      ? "input-text input-error"
-                      : "input-text"
+                      ? "error"
+                      : "default"
                   }
                 />
                 {errors.username && touched.username && (
@@ -67,10 +76,10 @@ const Login = (props) => {
                   onChange={handleChange}
                   value={values.password}
                   onBlur={handleBlur}
-                  className={
+                  status={
                     errors.password && touched.password
-                      ? "input-text input-error"
-                      : "input-text"
+                      ? "error"
+                      : "default"
                   }
                 />
                 {errors.password && touched.password && (
@@ -84,7 +93,7 @@ const Login = (props) => {
                 disabled={isSubmitting}
               >
                 Log in
-              </Button>
+              </Button>    
             </Form>
           )}
         </Formik>
