@@ -210,7 +210,7 @@ const ListReady = () => {
                 onCancel={actionAddNotes}
                 invoiceId={order.invoiceId}
               />
-              <ModalLogs visible={visibleLog} onOk={actionShowLog} logs={[]} />
+              <ModalLogs order={order} visible={visibleLog} onOk={actionShowLog} logs={[]} />
               <ModalNote
                 visible={visibleNote}
                 onOk={actionShowNote}

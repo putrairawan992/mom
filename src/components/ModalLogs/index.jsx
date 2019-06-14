@@ -12,6 +12,7 @@ const ModalLogs = ({ order, visible, onOk }) => {
   return (
     <Modal
       title="Activity Log"
+      centered
       visible={visible}
       onOk={onOk}
       onCancel={onOk}
