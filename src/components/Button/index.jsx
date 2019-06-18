@@ -9,7 +9,11 @@ const Button = props => {
     const cssClasses = classNamesStyle({
         'mp-btn-primary': (props.type === 'primary'),
         'mp-btn-secondary': (props.type === 'secondary'),
-        'mp-btn-width-full': (props.width === 'full')
+        'mp-btn-danger': (props.type === 'danger'),
+        'mp-btn-link' : (props.type === 'link'),
+        'mp-btn-width-full': (props.width === 'full'),
+        'mp-btn-size-large': (props.size === 'large'),
+        'mp-btn-size-small': (props.size === 'small'),
     });
 
     return (
@@ -18,13 +22,14 @@ const Button = props => {
 }
 
 Button.propTypes = {
-    type: propTypes.oneOf(['primary', 'secondary']),
-    width: propTypes.oneOf(['default', 'full'])
+    type: propTypes.oneOf(['primary', 'secondary','link','danger']),
+    width: propTypes.oneOf(['default', 'full']),
+    size: propTypes.oneOf(['small','large'])
 }
 
 Button.defaultProps = {
     type: 'primary',
-    width: 'default'
+    width: 'default',
 }
 
 export default Button;
