@@ -6,7 +6,7 @@ export default ComposedComponent => {
     PropTypes = {
       router: PropTypes.object
     };
-    
+
     componentWillMount() {
       if (!this.props.isAuthenticated) {
         this.props.history.push("/login");
@@ -24,7 +24,10 @@ export default ComposedComponent => {
     }
   }
   function mapStateToProps(state) {
-    return { isAuthenticated: state.authentication.isAuthenticated };
+    return {
+      isAuthenticated: state.authentication.isAuthenticated,
+      authority: state.authentication.authority
+    };
   }
   return connect(mapStateToProps)(Authentication);
 };

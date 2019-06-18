@@ -4,7 +4,7 @@ import ListNeedResponse from "../../containers/ListNeedResponse";
 import ListPurchased from "../../containers/ListPurchased";
 import ListReady from "../../containers/ListReady";
 import ListNeedPurchased from "../../containers/ListNeedPurchase";
-import ListFowarded from "../../containers/ListFowarded";
+import ListShipped from "../../containers/ListShipped";
 import { dataNeedResponse } from "../../dataSource/need_response";
 
 const TabPane = Tabs.TabPane;
@@ -13,7 +13,6 @@ const Order = () => {
 
   const changeTab = (key) => {
     setOrders([]);
-
     switch(key) {
       case "NRP":
         const data = getDataListNeedResponse();
@@ -27,6 +26,8 @@ const Order = () => {
         break;
       case "FTE":
         break;
+      default :
+      setOrders(data);
     }
   }
 
@@ -52,11 +53,11 @@ const Order = () => {
       <TabPane tab="Purchased" key="PCD">
         <ListPurchased />
       </TabPane>
-      <TabPane tab="Ready" key="RDY">
+      <TabPane tab="Ready To Ship" key="RDY">
         <ListReady />
       </TabPane>
-      <TabPane tab="Fowarded to Ekspedition" key="FTE">
-        <ListFowarded />
+      <TabPane tab="Shipped" key="FTE">
+        <ListShipped />
       </TabPane>
     </Tabs>
   );

@@ -1,30 +1,29 @@
 import React, { useState, useEffect } from "react";
 import { Row, Col, Card, notification, Icon } from "antd";
 import HeaderOrder from "../../components/HeaderOrder";
-import OrderVariant from "../../components/OrderVariant";
-import ModalSupplier from "../../components/ModalSupplier";
-import ModalUndo from "../../components/ModalUndo";
-import ModalCancel from "../../components/ModalCancel";
 import ModalAddNote from "../../components/ModalAddNote";
+import ModalUndo from "../../components/ModalUndo";
 import { needPurchased } from "../../dataSource/need_purchased";
 import ModalLogs from "../../components/ModalLogs";
 import ModalNote from "../../components/ModalNote";
+import ModalConfirm from "../../components/ModalConfirm";
+import ModalConfirmPrint from "../../components/ModalConfirmPrint";
 import ButtonTextIcon from "../../components/ButtonTextIcon";
 import Button from "../../components/Button";
 import TextInvoiceNumber from "../../components/TextInvoiceNumber";
-import TextProductName from "../../components/TextProductName";
 
 import "../../sass/style.sass";
 import "./style.sass";
 
-const ListNeedPurchased = () => {
+const ListDelivered = () => {
   const [orders, setOrders] = useState([]);
-  const [visibleSupplier, setVisibleSupplier] = useState(false);
-  const [visibleUndo, setVisibleUndo] = useState(false);
-  const [visibleCancel, setVisibleCancel] = useState(false);
   const [visibleAddNote, setVisibleAddNote] = useState(false);
+  const [visibleUndo, setVisibleUndo] = useState(false);
   const [visibleLog, setVisibleLog] = useState(false);
   const [visibleNote, setVisibleNote] = useState(false);
+  const [visibleConfirm, setVisibleConfirm] = useState(false);
+  const [loadingConfirm, setLoadingConfirm] = useState(false);
+  const [visibleConfirmPrint, setVisibleConfirmPrint] = useState(false);
 
   useEffect(() => {
     const data = needPurchased.data;
@@ -51,26 +50,55 @@ const ListNeedPurchased = () => {
     });
   };
 
-  const handlePurchased = invoiceId => {
+  const showConfirm = () => {
+    setVisibleConfirm(!visibleConfirm);
+  };
+
+  const actionConfirm = () => {
+    setLoadingConfirm(!loadingConfirm);
+    return new Promise((resolve, reject) => {
+      setTimeout(2 > 0.5 ? resolve : reject, 2000);
+    })
+      .then(() => {
+        showConfirm();
+      })
+      .then(() => {
+        setLoadingConfirm(false);
+        showModalPrint();
+      })
+      .catch(() => console.log("Oops errors!"));
+  };
+
+  const actionCancelConfirm = () => {
+    showConfirm();
+  };
+
+  const showModalPrint = () => {
+    setVisibleConfirmPrint(!visibleConfirmPrint);
+  };
+
+  const actionConfirmPrint = () => {
+    showModalPrint();
+    notifCreateReceipt();
+  };
+
+  const actionCancelPrint = () => {
+    showModalPrint();
+    notifCreateReceipt();
+  };
+
+  const handleCreateReceipt = invoiceId => {
     console.log(invoiceId);
+    showConfirm();
+  };
+
+  const notifCreateReceipt = () => {
     contentNotification(
       "New Order has moved to the next process.",
       "Continue responding the order you have selected in Need Purchased Tabs.",
       "check-circle",
       "#52C41A"
     );
-  };
-
-  const handleSupplierInfo = invoiceId => {
-    setVisibleSupplier(true);
-  };
-
-  const actionOk = () => {
-    setVisibleSupplier(!visibleSupplier);
-  };
-
-  const actionUndo = () => {
-    setVisibleUndo(!visibleUndo);
   };
 
   const actionSubmitUndo = payload => {
@@ -84,19 +112,8 @@ const ListNeedPurchased = () => {
     );
   };
 
-  const actionCancel = () => {
-    setVisibleCancel(!visibleCancel);
-  };
-
-  const actionSubmitCancel = payload => {
-    console.log(payload);
-    actionCancel();
-    contentNotification(
-      "Order Canceled.",
-      "The Order is being canceled, you can see the history in activity log or canceled order tab",
-      "info-circle",
-      "#1890FF"
-    );
+  const actionUndo = () => {
+    setVisibleUndo(!visibleUndo);
   };
 
   const actionAddNotes = () => {
@@ -144,28 +161,15 @@ const ListNeedPurchased = () => {
                 <Row>
                   <Col md={12}>
                     <TextInvoiceNumber invoiceNumber={order.invoiceNumber} />
-                    <TextProductName
-                      productTextChina={index.productNameChina}
-                      productTextIndonesia={index.productName}
-                    />
                     <table border={0}>
                       <tbody>
                         <tr>
                           <td style={{ paddingRight: 20 }}>
-                            <span>Respond Time </span>
+                            <span>Delivered Time </span>
                           </td>
                           <td>:</td>
                           <td>
                             <span>28-02-2019 13:20</span>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <span>Customer Note </span>
-                          </td>
-                          <td>:</td>
-                          <td>
-                            <span>{index.note}</span>
                           </td>
                         </tr>
                       </tbody>
@@ -174,16 +178,10 @@ const ListNeedPurchased = () => {
                   <Col md={12}>
                     <div className="wrap-button">
                       <Button
-                        type="secondary"
-                        onClick={() => handleSupplierInfo(order.invoiceId)}
+                        type="white"
+                        onClick={() => handleCreateReceipt(order.invoiceId)}
                       >
-                        Supplier Info
-                      </Button>
-                      <Button
-                        type="primary"
-                        onClick={() => handlePurchased(order.invoiceId)}
-                      >
-                        Purchased
+                        See Detail
                       </Button>
                     </div>
                   </Col>
@@ -191,17 +189,7 @@ const ListNeedPurchased = () => {
                 <Row style={{ marginTop: 16 }}>
                   <Col md={12}>
                     <div className="wrap-variant">
-                      <img
-                        src="https://cdn2.iconfinder.com/data/icons/vacation-landmarks/512/45-512.png"
-                        alt=""
-                        className="image-shipping"
-                      />
-                      <OrderVariant
-                        variants={index.variants}
-                        quantity={index.productQuantity}
-                        price={index.price}
-                        withPrice={true}
-                      />
+                      <span className="delivered-text">Delivered</span>
                     </div>
                   </Col>
                   <Col offset={3} md={9}>
@@ -210,11 +198,6 @@ const ListNeedPurchased = () => {
                         icon="rollback"
                         label="Undo"
                         onClick={actionUndo}
-                      />
-                      <ButtonTextIcon
-                        icon="close-circle"
-                        label="Cancel Order"
-                        onClick={actionCancel}
                       />
                       <ButtonTextIcon
                         icon="message"
@@ -239,21 +222,30 @@ const ListNeedPurchased = () => {
               </Col>
             </Row>
           ))}
-          <ModalSupplier
-            order={order}
-            visible={visibleSupplier}
-            onOk={actionOk}
+          <ModalConfirm
+            visible={visibleConfirm}
+            loading={loadingConfirm}
+            onOk={actionConfirm}
+            onCancel={actionCancelConfirm}
+            title={"Makes Sure that the package is ready to be delivered."}
+            description={
+              "Before creating the receipt, please make sure that the product is already checked and being re-packed"
+            }
+          />
+          <ModalConfirmPrint
+            visible={visibleConfirmPrint}
+            loading={false}
+            onOk={actionConfirmPrint}
+            onCancel={actionCancelPrint}
+            title={
+              "The order has moved to the next process, you can print the label now or you can print it later."
+            }
+            description={""}
           />
           <ModalUndo
             visible={visibleUndo}
             onSubmit={actionSubmitUndo}
             onCancel={actionUndo}
-            invoiceId={order.invoiceId}
-          />
-          <ModalCancel
-            visible={visibleCancel}
-            onSubmit={actionSubmitCancel}
-            onCancel={actionCancel}
             invoiceId={order.invoiceId}
           />
           <ModalAddNote
@@ -270,4 +262,4 @@ const ListNeedPurchased = () => {
   );
 };
 
-export default ListNeedPurchased;
+export default ListDelivered;

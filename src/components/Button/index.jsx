@@ -9,6 +9,7 @@ class Button extends React.Component {
     cssClasses = this.classNamesStyle({
         'mp-btn-primary': (this.props.type === 'primary'),
         'mp-btn-secondary': (this.props.type === 'secondary'),
+        'mp-btn-white': (this.props.type === 'white'),
         'mp-btn-width-full': (this.props.width === 'full')
     });
 
@@ -18,7 +19,7 @@ class Button extends React.Component {
 }
 
 Button.propTypes = {
-    type: propTypes.oneOf(['primary', 'secondary']),
+    type: propTypes.oneOf(['primary', 'secondary', 'white']),
     width: propTypes.oneOf(['default', 'full'])
 }
 

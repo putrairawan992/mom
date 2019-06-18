@@ -2,10 +2,11 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Row, Col, Card, notification, Icon } from "antd";
 import "./style.sass";
-import OrderDetail from "../../components/OrderDetail";
 import HeaderOrder from "../../components/HeaderOrder";
 import OrderVariant from "../../components/OrderVariant";
 import Button from "../../components/Button";
+import TextInvoiceNumber from "../../components/TextInvoiceNumber";
+import TextProductName from "../../components/TextProductName";
 
 const ListNeedResponse = props => {
   const [orders, setOrders] = useState([]);
@@ -66,10 +67,33 @@ const ListNeedResponse = props => {
               <Col md={22}>
                 <Row>
                   <Col md={12}>
-                    <OrderDetail
-                      invoiceNumber={order.invoiceNumber}
-                      index={index}
+                    <TextInvoiceNumber invoiceNumber={order.invoiceNumber} />
+                    <TextProductName
+                      productTextChina={index.productNameChina}
+                      productTextIndonesia={index.productName}
                     />
+                    <table border={0}>
+                      <tbody>
+                        <tr>
+                          <td style={{ paddingRight: 20 }}>
+                            <span>Order Time </span>
+                          </td>
+                          <td>:</td>
+                          <td>
+                            <span>28-02-2019 13:20</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <span>Customer Note </span>
+                          </td>
+                          <td>:</td>
+                          <td>
+                            <span>{index.note}</span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </Col>
                   <Col md={12}>
                     <div className="wrap-button">
@@ -94,6 +118,7 @@ const ListNeedResponse = props => {
                         variants={index.variants}
                         quantity={index.productQuantity}
                         price={index.price}
+                        withPrice={true}
                       />
                     </div>
                   </Col>

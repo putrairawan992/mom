@@ -10,7 +10,7 @@ const OrderFullAction = ({ onClickUndo, onClickCancel, onClickAddNotes }) => {
         <ButtonTextIcon icon="rollback" label="Undo" onClick={onClickUndo} />
       </div>
       <div className="order-action">
-        <ButtonTextIcon icon="close-circle" label="Cancle Order" onClick={onClickCancel} />
+        <ButtonTextIcon icon="close-circle" label="Cancel Order" onClick={onClickCancel} />
       </div>
       <div className="order-action">
         <ButtonTextIcon icon="message" label="Add Admin Notes" onClick={onClickAddNotes} />

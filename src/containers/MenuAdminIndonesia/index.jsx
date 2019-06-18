@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect } from "./node_modules/react";
-import { Menu, Icon } from "./node_modules/antd";
+import React, { useEffect } from "react";
+import { Menu, Icon } from "antd";
 import OrderIndonesia from "../../pages/OrderIndonesia";
 
 const MenuAdminIndonesia = props => {

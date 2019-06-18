@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Row, Col, Card, notification, Icon } from "antd";
 import "../../sass/style.sass";
-import OrderDetail from "../../components/OrderDetail";
 import HeaderOrder from "../../components/HeaderOrder";
 import OrderVariant from "../../components/OrderVariant";
 import ModalUndo from "../../components/ModalUndo";
@@ -14,6 +13,8 @@ import ModalConfirm from "../../components/ModalConfirm";
 import ModalConfirmPrint from "../../components/ModalConfirmPrint";
 import ButtonTextIcon from "../../components/ButtonTextIcon";
 import Button from "../../components/Button";
+import TextInvoiceNumber from "../../components/TextInvoiceNumber";
+import TextProductName from "../../components/TextProductName";
 
 const ListPurchased = () => {
   const [orders, setOrders] = useState([]);
@@ -161,10 +162,33 @@ const ListPurchased = () => {
               <Col md={22}>
                 <Row>
                   <Col md={12}>
-                    <OrderDetail
-                      invoiceNumber={order.invoiceNumber}
-                      index={index}
+                    <TextInvoiceNumber invoiceNumber={order.invoiceNumber} />
+                    <TextProductName
+                      productTextChina={index.productNameChina}
+                      productTextIndonesia={index.productName}
                     />
+                    <table border={0}>
+                      <tbody>
+                        <tr>
+                          <td style={{ paddingRight: 20 }}>
+                            <span>Purchased Time </span>
+                          </td>
+                          <td>:</td>
+                          <td>
+                            <span>28-02-2019 13:20</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <span>Customer Note </span>
+                          </td>
+                          <td>:</td>
+                          <td>
+                            <span>{index.note}</span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </Col>
                   <Col md={12}>
                     <div className="wrap-button">
@@ -189,6 +213,7 @@ const ListPurchased = () => {
                         variants={index.variants}
                         quantity={index.productQuantity}
                         price={index.price}
+                        withPrice={true}
                       />
                     </div>
                   </Col>
@@ -201,7 +226,7 @@ const ListPurchased = () => {
                       />
                       <ButtonTextIcon
                         icon="close-circle"
-                        label="Cancle Order"
+                        label="Cancel Order"
                         onClick={actionCancel}
                       />
                       <ButtonTextIcon

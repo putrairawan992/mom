@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Row, Col, Card, Button, notification, Icon, Steps } from "antd";
+import { Row, Col, Card, notification, Icon } from "antd";
 import "../../sass/style.sass";
-import OrderDetail from "../../components/OrderDetail";
 import HeaderOrder from "../../components/HeaderOrder";
 import OrderVariant from "../../components/OrderVariant";
 import ModalUndo from "../../components/ModalUndo";
@@ -9,14 +8,14 @@ import { needPurchased } from "../../dataSource/need_purchased";
 import ModalLogs from "../../components/ModalLogs";
 import ModalNote from "../../components/ModalNote";
 import ButtonTextIcon from "../../components/ButtonTextIcon";
+import TextInvoiceNumber from "../../components/TextInvoiceNumber";
+import TextProductName from "../../components/TextProductName";
 
-const ListFowarded = () => {
+const ListShipped = () => {
   const [orders, setOrders] = useState([]);
   const [visibleUndo, setVisibleUndo] = useState(false);
   const [visibleLog, setVisibleLog] = useState(false);
   const [visibleNote, setVisibleNote] = useState(false);
-
-  const { Step } = Steps;
 
   useEffect(() => {
     const data = needPurchased.data;
@@ -87,13 +86,38 @@ const ListFowarded = () => {
               <Col md={22}>
                 <Row>
                   <Col md={12}>
-                    <OrderDetail
-                      invoiceNumber={order.invoiceNumber}
-                      index={index}
+                    <TextInvoiceNumber invoiceNumber={order.invoiceNumber} />
+                    <TextProductName
+                      productTextChina={index.productNameChina}
+                      productTextIndonesia={index.productName}
                     />
+                    <table border={0}>
+                      <tbody>
+                        <tr>
+                          <td style={{ paddingRight: 20 }}>
+                            <span>Shipped Time </span>
+                          </td>
+                          <td>:</td>
+                          <td>
+                            <span>28-02-2019 13:20</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <span>Customer Note </span>
+                          </td>
+                          <td>:</td>
+                          <td>
+                            <span>{index.note}</span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </Col>
                   <Col md={12}>
-                    <span>TEst</span>
+                    <div className="wrap-button">
+                      <span>On it's way to Indonesia</span>
+                    </div>
                   </Col>
                 </Row>
                 <Row style={{ marginTop: 16 }}>
@@ -108,6 +132,7 @@ const ListFowarded = () => {
                         variants={index.variants}
                         quantity={index.productQuantity}
                         price={index.price}
+                        withPrice={true}
                       />
                     </div>
                   </Col>
@@ -150,4 +175,4 @@ const ListFowarded = () => {
   );
 };
 
-export default ListFowarded;
+export default ListShipped;

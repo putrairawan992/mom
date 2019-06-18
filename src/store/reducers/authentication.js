@@ -17,7 +17,8 @@ export default (state = initialState, action) => {
     case TYPE.LOGIN:
       return {
         ...state,
-        isAuthenticated: true
+        isAuthenticated: true,
+        authority : action.payload.username
       };
     case TYPE.LOGIN_FAILED:
       return {
