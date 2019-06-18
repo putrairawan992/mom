@@ -24,12 +24,13 @@ const Button = props => {
 Button.propTypes = {
     type: propTypes.oneOf(['primary', 'secondary','link','danger']),
     width: propTypes.oneOf(['default', 'full']),
-    size: propTypes.oneOf(['small','large'])
+    size: propTypes.oneOf(['default','large'])
 }
 
 Button.defaultProps = {
     type: 'primary',
     width: 'default',
+    size: 'default'
 }
 
 export default Button;
