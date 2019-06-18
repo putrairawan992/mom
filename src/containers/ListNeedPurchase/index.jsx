@@ -5,15 +5,11 @@ import OrderDetail from "../../components/OrderDetail";
 import HeaderOrder from "../../components/HeaderOrder";
 import OrderVariant from "../../components/OrderVariant";
 import OrderAction from "../../components/OrderAction";
-import ModalSupplier from "../../components/ModalSupplier";
-// import ModalUndo from "../../components/ModalUndo";
-// import ModalCancel from "../../components/ModalCancel";
+import ModalSupplier from "../ModalSupplier";
 import ModalAddNote from "../../components/ModalAddNote";
 import { needPurchased } from "../../dataSource/need_purchased";
 import OrderNote from "../../components/OrderNote";
-import ModalLogs from "../../components/ModalLogs";
-import ModalNote from "../../components/ModalNote";
-// import Modal from "../../components/Modal"
+import ModalHistory from "../ModalHistory";
 import Button from "../../components/Button"
 import ModalReason from "../../containers/ModalReason"
 
@@ -243,12 +239,7 @@ const ListNeedPurchased = () => {
                 onCancel={actionAddNotes}
                 invoiceId={order.invoiceId}
               />
-              <ModalLogs visible={visibleLog} onOk={actionShowLog} logs={[]} />
-              <ModalNote
-                visible={visibleNote}
-                onOk={actionShowNote}
-                logs={[]}
-              />
+              <ModalHistory lists={order.activityLogs} visible={visibleLog} onOk={actionShowLog} onCancel={actionShowLog} logs={[]} />
             </Col>
           </Row>
         </Card>

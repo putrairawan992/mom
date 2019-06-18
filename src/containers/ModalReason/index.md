@@ -34,10 +34,10 @@ no details
 <Playground>
 { () => {
    const [toggleValue, toggle] = useState(false)
-   const actionCancel = () => {
+   const actiontoggle = () => {
      toggle(!toggleValue)
    }
-   const optionsCancel = [
+   const options = [
     { value: "C01", name: "Out of Stock" },
     { value: "C02", name: "Product Discontinued" },
     { value: "C03", name: "Others" }
@@ -46,13 +46,13 @@ no details
     <>
     <ModalReason
       visible={toggleValue}
-      options={optionsCancel}
+      options={options}
       title={"Cancel Order"}
       buttonTitle={"Cancel Order"}
-      onCancel={actionCancel}
-      onSubmit={actionCancel}
+      onCancel={actiontoggle}
+      onSubmit={actiontoggle}
       />
-      <Button onClick={actionCancel} type="primary">Show Modal</Button>
+      <Button onClick={actiontoggle} type="primary">Show Modal</Button>
     </>
   )
 }}
