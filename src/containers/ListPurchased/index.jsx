@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Row, Col, Card, Button, notification, Icon } from "antd";
+import { Row, Col, Card, notification, Icon } from "antd";
 import "../../sass/style.sass";
 import OrderDetail from "../../components/OrderDetail";
 import HeaderOrder from "../../components/HeaderOrder";
 import OrderVariant from "../../components/OrderVariant";
 import OrderAction from "../../components/OrderAction";
-import ModalUndo from "../../components/ModalUndo";
-import ModalCancel from "../../components/ModalCancel";
+// import ModalUndo from "../../components/ModalUndo";
+// import ModalCancel from "../../components/ModalCancel";
 import ModalAddNote from "../../components/ModalAddNote";
 import { needPurchased } from "../../dataSource/need_purchased";
 import OrderNote from "../../components/OrderNote";
@@ -14,6 +14,8 @@ import ModalLogs from "../../components/ModalLogs";
 import ModalNote from "../../components/ModalNote";
 import ModalConfirm from "../../components/ModalConfirm";
 import ModalConfirmPrint from "../../components/ModalConfirmPrint";
+import Button from "../../components/Button"
+import ModalReason from "../../containers/ModalReason"
 
 const ListPurchased = () => {
   const [orders, setOrders] = useState([]);
@@ -143,6 +145,17 @@ const ListPurchased = () => {
     setVisibleConfirmPrint(!visibleConfirmPrint)
   }
 
+  const optionsCancel = [
+    { value: "C01", name: "Out of Stock" },
+    { value: "C02", name: "Product Discontinued" },
+    { value: "C03", name: "Others" }
+  ]
+
+  const optionsUndo = [
+    { value: "101", name: "Wrong Press" },
+    { value: "102", name: "Others" }
+  ]
+
   return (
     <React.Fragment>
       <HeaderOrder
@@ -159,7 +172,7 @@ const ListPurchased = () => {
             <Col>
               <Button
                 type="primary"
-                className="button-primary"
+                // className="button-primary"
                 onClick={() => handlePurchased(order.invoiceId)}
               >
                 Ready to Ship
@@ -203,7 +216,7 @@ const ListPurchased = () => {
                 onClickLog={() => actionShowLog()}
                 onClickNotes={() => actionShowNotes()}
               />
-              <ModalUndo
+              {/* <ModalUndo
                 visible={visibleUndo}
                 onSubmit={actionSubmitUndo}
                 onCancel={actionUndo}
@@ -214,6 +227,26 @@ const ListPurchased = () => {
                 onSubmit={actionSubmitCancel}
                 onCancel={actionCancel}
                 invoiceId={order.invoiceId}
+              /> */}
+              <ModalReason
+                visible={visibleUndo}
+                onSubmit={actionSubmitUndo}
+                onCancel={actionUndo}
+                invoiceId={order.invoiceId}
+                options={optionsUndo}
+                title={"Are you going back / undo to previous process?"}
+                buttonTitle={"Undo"}
+                max={255}
+              />
+              <ModalReason
+                options={optionsCancel}
+                visible={visibleCancel}
+                onCancel={actionCancel}
+                onSubmit={actionSubmitCancel}
+                invoiceId={order.invoiceId}
+                title={"Cancel Order"}
+                buttonTitle={"Cancel Order"}
+                max={255}
               />
               <ModalAddNote
                 visible={visibleAddNote}
