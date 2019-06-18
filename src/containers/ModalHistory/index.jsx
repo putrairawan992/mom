@@ -5,7 +5,7 @@ import Button from "../../components/Button";
 import PropTypes, { object } from "prop-types";
 import convertTimesTime from "../../helpers/convertTimestime";
 
-const ModalHistory = ({ title, lists, visible, onOk, onCancel }) => {
+const ModalHistory = ({ title, list, visible, onOk, onCancel }) => {
   return (
     <Modal
       title={title}
@@ -15,7 +15,7 @@ const ModalHistory = ({ title, lists, visible, onOk, onCancel }) => {
       onCancel={onCancel}
       footer={null}
     >
-      {lists.map((list, index) => (
+      {list.map((list, index) => (
         <div className="log-status" key={index}>
           <div className="log-status__admin">
             <b>{convertTimesTime.second(list.date)}</b> -{" "}
@@ -43,7 +43,7 @@ const ModalHistory = ({ title, lists, visible, onOk, onCancel }) => {
 
 ModalHistory.propTypes = {
   title: PropTypes.string,
-  lists: PropTypes.array,
+  list: PropTypes.array,
   visible: PropTypes.bool,
   onOk: PropTypes.func,
   onCancel: PropTypes.func

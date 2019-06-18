@@ -9,7 +9,7 @@ import './style.sass'
 
 const Option = Select.Option;
 
-const Modal = ({visible, onSubmit, onCancel, loading, invoiceId, options, title,buttonTitle, max}) => {
+const Modal = ({visible, onSubmit, onCancel, loading, invoiceId, options, title,buttonTitle}) => {
     const [schema, SetSchema] = useState(
 			yup.object().shape({
 					reason: yup.string(),
@@ -90,7 +90,7 @@ const Modal = ({visible, onSubmit, onCancel, loading, invoiceId, options, title,
 										autosize={{ minRows: 6, maxRows: 6}}
 										onChange={handleChange}
 										value={values.note}
-										maxLength={max}
+										maxLength={255}
 										type={errors.note && touched.note ? "error" : "default"}
 										// className={errors.note && touched.note && "input-error"}
 									/>
@@ -131,7 +131,6 @@ Modal.propTypes = {
 	invoiceId : propTypes.string,
 	title : propTypes.string,
 	buttonTitle: propTypes.string,
-	max: propTypes.number
 
 }
 

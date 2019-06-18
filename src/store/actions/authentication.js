@@ -5,11 +5,7 @@ export const login = (path, payload) => async dispatch => {
     try{
         //const response = await apiPostWithoutToken(path, payload);
         //console.log(response);
-        console.log(payload);
-        
-        console.log(path);
-        
-        dispatch(dispatchType.login())
+        dispatch(dispatchType.login(payload))
     }catch(error){
         dispatch(dispatchType.loginFailed(error))
     }

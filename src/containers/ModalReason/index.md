@@ -24,7 +24,6 @@ onCancel : func to close modal
 onSubmit : func to execute data
 title : title for title modal
 buttonTitle : title for button
-max : maximum length for text area
 ```
 
 ## Details

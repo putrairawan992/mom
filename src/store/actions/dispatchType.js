@@ -1,8 +1,9 @@
 import TYPE from "./type";
 
-const login = () => {
+const login = (payload) => {
   return {
-    type: TYPE.LOGIN
+    type: TYPE.LOGIN,
+    payload: payload
   };
 };
 

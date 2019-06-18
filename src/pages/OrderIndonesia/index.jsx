@@ -1,29 +1,25 @@
 import React from "react";
 import { Tabs } from "antd";
-import ListNeedResponse from "../../containers/ListNeedResponse";
-import ListPurchased from "../../containers/ListPurchased";
-import ListReady from "../../containers/ListReady";
-import ListNeedPurchased from "../../containers/ListNeedPurchase";
-import ListFowarded from "../../containers/ListFowarded";
+import ListArrival from "../../containers/ListArrival";
+import ListReadyPickUp from "../../containers/ListReadyPickUp";
+import ListPickedUp from "../../containers/ListPickedUp";
+import ListDelivered from "../../containers/ListDelivered";
 
 const TabPane = Tabs.TabPane;
 const OrderIndonesia = () => {
   return (
     <Tabs defaultActiveKey="1" type="itable-card">
-      <TabPane tab="Need Response" key="1">
-        <ListNeedResponse />
+      <TabPane tab="Arrival" key="1">
+        <ListArrival />
       </TabPane>
-      <TabPane tab="Need Purchase" key="2">
-        <ListNeedPurchased />
+      <TabPane tab="Ready For Courier To Pick Up" key="2">
+        <ListReadyPickUp />
       </TabPane>
-      <TabPane tab="Purchased" key="3">
-        <ListPurchased />
+      <TabPane tab="Picked Up By Courier" key="3">
+        <ListPickedUp />
       </TabPane>
-      <TabPane tab="Ready" key="4">
-        <ListReady />
-      </TabPane>
-      <TabPane tab="Fowarded to Ekspedition" key="5">
-        <ListFowarded />
+      <TabPane tab="Delivered To Customer" key="4">
+        <ListDelivered />
       </TabPane>
     </Tabs>
   );

@@ -1,0 +1,30 @@
+.wrap-button-text-icon {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+}
+
+.wrap-button-text-icon > span:first-child {
+    margin-left: 0px;
+}
+
+.wrap-button-text-icon > span:last-child {
+    margin-right: 0px;
+}
+
+.wrap-button{
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+}
+
+.img-order-product{
+    height: 80px;
+    width: 80px;
+}
+
+.wrap-variant{
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}

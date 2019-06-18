@@ -1,0 +1,63 @@
+.label-body {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .label-china {
+    font-family: arial;
+    width: 388px;
+    border: 1px solid #cccccc;
+  }
+  
+  .label-invoice {
+    text-align: center;
+    color: #007e80;
+    font-size: 25px;
+    line-height: 30px;
+    text-align: center;
+    font-weight: bold;
+  }
+  
+  .label-info {
+    background-color: #fafafa;
+    margin: 0 8px
+  }
+  
+  .label-items-info {
+    font-size: 12px;
+    padding: 12px 18px;
+    width: 100%;
+  }
+  
+  .label-item {
+    color: #777777;
+  }
+  
+  .label-item-info {
+    margin-left: 4px;
+    color: #000000;
+  }
+  
+  .label-items-cust {
+    background-color: #eeeeee;
+    font-size: 12px;
+    padding: 8px 18px;
+    color: #004853;
+    font-weight: bold;
+  }
+  
+  .label-logo-bottom {
+    display: flex;
+    justify-content: flex-end;
+    margin: 12px;
+  }
+  
+  .item-colon {
+    text-align: end;
+    padding-right: 2px;
+  }
+  
+  .item-cust-info {
+    margin-left: 4px;
+  }
+  
