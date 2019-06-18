@@ -9,11 +9,11 @@ import ModalSupplier from "../../containers/ModalSupplier";
 import ModalAddNote from "../../components/ModalAddNote";
 import { needPurchased } from "../../dataSource/need_purchased";
 import OrderNote from "../../components/OrderNote";
+import Button from "../../components/Button";
 import ModalHistory from "../ModalHistory";
-import Button from "../../components/Button"
-import ModalReason from "../../containers/ModalReason"
+import ModalReason from "../../containers/ModalReason";
 
-const ListFowarded= () => {
+const ListFowarded = () => {
   const [orders, setOrders] = useState([]);
   const [visibleSupplier, setVisibleSupplier] = useState(false);
   const [visibleUndo, setVisibleUndo] = useState(false);
@@ -27,15 +27,13 @@ const ListFowarded= () => {
     setOrders(data);
   }, []);
 
-  const actionSearch = (payload) => {
+  const actionSearch = payload => {
     console.log(payload);
-    
-  }
+  };
 
-  const actionFilter = (payload) => {
+  const actionFilter = payload => {
     console.log(payload);
-    
-  }
+  };
 
   const contentNotification = (message, description, icon, colorIcon) => {
     notification.open({
@@ -128,16 +126,20 @@ const ListFowarded= () => {
     { value: "C01", name: "Out of Stock" },
     { value: "C02", name: "Product Discontinued" },
     { value: "C03", name: "Others" }
-  ]
+  ];
 
   const optionsUndo = [
     { value: "101", name: "Wrong Press" },
     { value: "102", name: "Others" }
-  ]
+  ];
 
   return (
     <React.Fragment>
-      <HeaderOrder onChangeFilter = {actionFilter} onSearch = {actionSearch} totalRecord={80}/>
+      <HeaderOrder
+        onChangeFilter={actionFilter}
+        onSearch={actionSearch}
+        totalRecord={80}
+      />
       {orders.map(order => (
         <Card key={order.invoiceId}>
           <Row type="flex" justify="space-between">
@@ -160,7 +162,7 @@ const ListFowarded= () => {
               <Button
                 type="primary"
                 // className="button-primary"
-                style={{marginLeft: "10px"}}
+                style={{ marginLeft: "10px" }}
                 onClick={() => handlePurchased(order.invoiceId)}
               >
                 Shipped
@@ -169,7 +171,7 @@ const ListFowarded= () => {
           </Row>
           <Row type="flex" justify="space-between">
             <Col span={11}>
-            <Row>
+              <Row>
                 <Col span={5} />
                 <Col>
                   <Row>
@@ -204,18 +206,6 @@ const ListFowarded= () => {
                 onClickLog={() => actionShowLog()}
                 onClickNotes={() => actionShowNotes()}
               />
-              {/* <ModalUndo
-                visible={visibleUndo}
-                onSubmit={actionSubmitUndo}
-                onCancel={actionUndo}
-                invoiceId={order.invoiceId}
-              />
-              <ModalCancel
-                visible={visibleCancel}
-                onSubmit={actionSubmitCancel}
-                onCancel={actionCancel}
-                invoiceId={order.invoiceId}
-              /> */}
               <ModalReason
                 visible={visibleUndo}
                 onSubmit={actionSubmitUndo}
@@ -224,7 +214,6 @@ const ListFowarded= () => {
                 options={optionsUndo}
                 title={"Are you going back / undo to previous process?"}
                 buttonTitle={"Undo"}
-                max={255}
               />
               <ModalReason
                 options={optionsCancel}
@@ -234,7 +223,6 @@ const ListFowarded= () => {
                 invoiceId={order.invoiceId}
                 title={"Cancel Order"}
                 buttonTitle={"Cancel Order"}
-                max={255}
               />
               <ModalAddNote
                 visible={visibleAddNote}
@@ -242,7 +230,13 @@ const ListFowarded= () => {
                 onCancel={actionAddNotes}
                 invoiceId={order.invoiceId}
               />
-              <ModalHistory lists={order.activityLogs} visible={visibleLog} onOk={actionShowLog} onCancel={actionShowLog} logs={[]} />
+              <ModalHistory
+                title="Activity Logs"
+                list={order.activityLogs}
+                visible={visibleLog}
+                onOk={actionShowLog}
+                onCancel={actionShowLog}
+              />
             </Col>
           </Row>
         </Card>

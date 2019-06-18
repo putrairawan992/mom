@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Modal, Button, Row, Col, Icon } from "antd";
 import PropTypes from "prop-types";
 import "./style.sass";
+import ReactToPrint from "react-to-print";
+import LabelChina from "../LabelChina";
 
 const ModalConfirmPrint = ({
   title,
@@ -11,6 +13,7 @@ const ModalConfirmPrint = ({
   onCancel,
   loading
 }) => {
+  const componentRef = useRef();
   return (
     <Modal
       visible={visible}
@@ -19,7 +22,7 @@ const ModalConfirmPrint = ({
       footer={null}
       closable={false}
       width={600}
-      bodyStyle={{padding:30}}
+      bodyStyle={{ padding: 30 }}
     >
       <Row>
         <Col span={2}>
@@ -34,20 +37,31 @@ const ModalConfirmPrint = ({
               <span className="confirm-title">{title}</span>
             </Col>
           </Row>
-          <br/><br/>
+          <br />
+          <br />
           <Row type="flex" justify="end">
             <Col>
               <span className="cancel" onClick={onCancel}>
                 Print Later
               </span>
-              <Button
-                onClick={onOk}
-                type="primary"
-                size="large"
-                className="button-primary"
-              >
-                Print Now
-              </Button>
+              <ReactToPrint
+                trigger={() => (
+                  <Button
+                    onClick={onOk}
+                    type="primary"
+                    size="large"
+                    className="button-primary"
+                  >
+                    Print Now
+                  </Button>
+                )}
+                content={() => componentRef.current}
+                onAfterPrint={onOk}
+                closeAfterPrint={true}
+              />
+              <div style={{display: "none"}}>
+                <LabelChina ref={componentRef} />
+              </div>
             </Col>
           </Row>
         </Col>

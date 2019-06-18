@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { currencyYuan } from "../../helpers/currency";
 import "./style.sass";
 
-const OrderVariant = ({ variants, quantity, price, span }) => {
+const OrderVariant = ({ variants, quantity, price, withPrice }) => {
   let names = variants.map(variant => `${variant.value}`).join(", ");
   return (
     <table border={1} className="table-container">
@@ -15,6 +15,7 @@ const OrderVariant = ({ variants, quantity, price, span }) => {
             </span>
           </td>
         </tr>
+        {withPrice &&
         <tr>
           <td className="row-price">
             <span>
@@ -27,6 +28,7 @@ const OrderVariant = ({ variants, quantity, price, span }) => {
             </span>
           </td>
         </tr>
+        }
       </tbody>
     </table>
   );
