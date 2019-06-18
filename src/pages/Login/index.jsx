@@ -1,5 +1,5 @@
 import React from "react";
-import { Icon, Form , Col, Row } from "antd";
+import { Icon, Form  } from "antd";
 import { connect } from "react-redux";
 import { Formik } from "formik";
 import * as yup from "yup";
@@ -88,6 +88,7 @@ const Login = (props) => {
               </Form.Item>
               <Button
                 type="primary"
+                size="large"
                 width="full"
                 htmlType="submit"
                 disabled={isSubmitting}

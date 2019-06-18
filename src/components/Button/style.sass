@@ -10,5 +10,26 @@
     color: $color-teal !important
     border-color: initial !important
 
+.mp-btn-danger
+    @include mp-btn
+    background-color: $color-white !important
+    border-color: $color-carmine !important
+    color: $color-carmine !important
+    font-weight: 500
+    letter-spacing: 0.11px
+    line-height: 23px
+
+.mp-btn-danger:hover
+    @include mp-btn
+    background-color: $color-carmine !important
+    color: $color-white !important
+
 .mp-btn-width-full
     width: 100% !important
+
+.mp-btn-size-large
+    height: 48px !important
+
+.mp-btn-link
+    @include mp-btn
+    color: $color-grey !important

@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { Row, Col, Card, Button, notification, Icon } from "antd";
+import { Row, Col, Card, notification, Icon } from "antd";
 import "../../sass/style.sass";
 import OrderDetail from "../../components/OrderDetail";
 import HeaderOrder from "../../components/HeaderOrder";
 import OrderVariant from "../../components/OrderVariant";
 import OrderAction from "../../components/OrderAction";
 import ModalSupplier from "../../containers/ModalSupplier";
-import ModalUndo from "../../components/ModalUndo";
-import ModalCancel from "../../components/ModalCancel";
 import ModalAddNote from "../../components/ModalAddNote";
 import { needPurchased } from "../../dataSource/need_purchased";
 import OrderNote from "../../components/OrderNote";
 import ModalHistory from "../ModalHistory";
+import Button from "../../components/Button"
+import ModalReason from "../../containers/ModalReason"
 
 const ListReady = () => {
   const [orders, setOrders] = useState([]);
@@ -124,6 +124,17 @@ const ListReady = () => {
     setVisibleNote(!visibleNote);
   };
 
+  const optionsCancel = [
+    { value: "C01", name: "Out of Stock" },
+    { value: "C02", name: "Product Discontinued" },
+    { value: "C03", name: "Others" }
+  ]
+
+  const optionsUndo = [
+    { value: "101", name: "Wrong Press" },
+    { value: "102", name: "Others" }
+  ]
+
   return (
     <React.Fragment>
       <HeaderOrder onChangeFilter = {actionFilter} onSearch = {actionSearch} totalRecord={80}/>
@@ -134,24 +145,26 @@ const ListReady = () => {
               <OrderDetail order={order} />
             </Col>
             <Col>
-              <Button
-                className="button-secondary"
-                onClick={() => handleSupplierInfo(order.invoiceId)}
-              >
-                Print Label
-              </Button>
-              <ModalSupplier
-                order={order}
-                visible={visibleSupplier}
-                onOk={actionOk}
-              />
-              <Button
-                type="primary"
-                className="button-primary"
-                onClick={() => handlePurchased(order.invoiceId)}
-              >
-                Shipped
-              </Button>
+                <Button
+                  // className="button-secondary"
+                  type="secondary"
+                  onClick={() => handleSupplierInfo(order.invoiceId)}
+                >
+                  Print Label
+                </Button>
+                <ModalSupplier
+                  order={order}
+                  visible={visibleSupplier}
+                  onOk={actionOk}
+                />
+                <Button
+                  type="primary"
+                  style={{marginLeft: "10px"}}
+                  // className="button-primary"
+                  onClick={() => handlePurchased(order.invoiceId)}
+                >
+                  Shipped
+                </Button>
             </Col>
           </Row>
           <Row type="flex" justify="space-between">
@@ -191,7 +204,7 @@ const ListReady = () => {
                 onClickLog={() => actionShowLog()}
                 onClickNotes={() => actionShowNotes()}
               />
-              <ModalUndo
+              {/* <ModalUndo
                 visible={visibleUndo}
                 onSubmit={actionSubmitUndo}
                 onCancel={actionUndo}
@@ -202,6 +215,26 @@ const ListReady = () => {
                 onSubmit={actionSubmitCancel}
                 onCancel={actionCancel}
                 invoiceId={order.invoiceId}
+              /> */}
+                <ModalReason
+                visible={visibleUndo}
+                onSubmit={actionSubmitUndo}
+                onCancel={actionUndo}
+                invoiceId={order.invoiceId}
+                options={optionsUndo}
+                title={"Are you going back / undo to previous process?"}
+                buttonTitle={"Undo"}
+                max={255}
+              />
+              <ModalReason
+                options={optionsCancel}
+                visible={visibleCancel}
+                onCancel={actionCancel}
+                onSubmit={actionSubmitCancel}
+                invoiceId={order.invoiceId}
+                title={"Cancel Order"}
+                buttonTitle={"Cancel Order"}
+                max={255}
               />
               <ModalAddNote
                 visible={visibleAddNote}

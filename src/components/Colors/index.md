@@ -62,3 +62,6 @@ This is color guidelines of Monggopesen
 
 ## Variable: $color-dodger-blue
 <Colors type="type14"></Colors>
+
+## Variable: $color-white
+<Colors type="type15"></Colors>

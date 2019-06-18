@@ -29,6 +29,11 @@ no details
     <Button>Click Me</Button>
 </Playground>
 
+### Button Primary & Size Large
+<Playground>
+    <Button type="primary" size="large">Click Me</Button>
+</Playground>
+
 ### Button Primary & Width Full
 <Playground>
     <Button type="primary" width="full">Click Me</Button>
@@ -39,7 +44,12 @@ no details
     <Button type="secondary">Click Me</Button>
 </Playground>
 
-### Button Secondary & Width Full
+### Button Danger
 <Playground>
-    <Button type="secondary" width="full">Click Me</Button>
+    <Button type="danger">Click Me</Button>
+</Playground>
+
+### Button Link
+<Playground>
+    <Button type="link">Click Me</Button>
 </Playground>

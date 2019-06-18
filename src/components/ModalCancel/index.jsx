@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Modal, Button, Select, Input, Form, Row, Col } from "antd";
+import { Modal, Select, Input, Form, Row, Col } from "antd";
 import * as yup from "yup";
 import "./style.sass";
 import { Formik } from "formik";
+import Button from '../Button'
 
 const Option = Select.Option;
 const TextArea = Input.TextArea;
@@ -114,16 +115,16 @@ const ModalCancel = ({ visible, onSubmit, onCancel, loading, invoiceId }) => {
               justify="end"
             >
               <Col>
-                <span className="cancel" onClick={onCancel}>
-                  Cancel
-                </span>
+                <Button
+                  onClick={onCancel}
+                  type="link"
+                >Cancel</Button>
                 <Button
                   htmlType="submit"
                   type="danger"
-                  size="large"
-                  className="button-undo"
+
                 >
-                  Cancel Order
+                Cancel Order
                 </Button>
               </Col>
             </Row>
