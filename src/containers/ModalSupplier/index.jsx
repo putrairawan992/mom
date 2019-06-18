@@ -1,9 +1,9 @@
 import React from "react";
-import PropTypes from "prop-types";
-import { CopyToClipboard } from "react-copy-to-clipboard";
-import { Row, Col, Modal, Button, Divider, Icon, notification } from "antd";
 import "./style.sass";
-// import { currencyYuan } from "../../helpers/currency";
+import PropTypes from "prop-types";
+import Button from "../../components/Button";
+import { CopyToClipboard } from "react-copy-to-clipboard";
+import { Row, Col, Divider, Icon, Modal, notification } from "antd";
 import OrderVariant from "../../components/OrderVariant";
 
 const ModalSupplier = ({ order, visible, onOk }) => {
@@ -27,7 +27,6 @@ const ModalSupplier = ({ order, visible, onOk }) => {
       console.log("error");
     }, 6000);
   };
-  console.log(order);
   return (
     <Modal
       bodyStyle={{ padding: "0" }}
@@ -181,7 +180,7 @@ const ModalSupplier = ({ order, visible, onOk }) => {
             <Row type="flex" justify="end">
               <Col>
                 <Button
-                  className="supplier__modal__button-OK"
+                  //   className="supplier__modal__button-OK"
                   type="primary"
                   onClick={onOk}
                 >

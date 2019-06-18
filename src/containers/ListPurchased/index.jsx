@@ -10,10 +10,9 @@ import ModalCancel from "../../components/ModalCancel";
 import ModalAddNote from "../../components/ModalAddNote";
 import { needPurchased } from "../../dataSource/need_purchased";
 import OrderNote from "../../components/OrderNote";
-import ModalLogs from "../../components/ModalLogs";
-import ModalNote from "../../components/ModalNote";
 import ModalConfirm from "../../components/ModalConfirm";
 import ModalConfirmPrint from "../../components/ModalConfirmPrint";
+import ModalHistory from "../ModalHistory";
 
 const ListPurchased = () => {
   const [orders, setOrders] = useState([]);
@@ -221,12 +220,7 @@ const ListPurchased = () => {
                 onCancel={actionAddNotes}
                 invoiceId={order.invoiceId}
               />
-              <ModalLogs order={order} visible={visibleLog} onOk={actionShowLog} logs={[]} />
-              <ModalNote
-                visible={visibleNote}
-                onOk={actionShowNote}
-                logs={[]}
-              />
+              <ModalHistory lists={order.activityLogs} visible={visibleLog} onOk={actionShowLog} onCancel={actionShowLog} logs={[]} />
               <ModalConfirm
                 visible={visibleConfirm}
                 loading={loadingConfirm}
