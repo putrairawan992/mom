@@ -13,6 +13,7 @@ import TextInvoiceNumber from "../../components/TextInvoiceNumber";
 import TextProductName from "../../components/TextProductName";
 import ModalHistory from "../ModalHistory";
 import ModalReason from "../../containers/ModalReason";
+import strings from '../../localization'
 
 const ListPurchased = () => {
   const [orders, setOrders] = useState([]);
@@ -180,7 +181,7 @@ const ListPurchased = () => {
                       <tbody>
                         <tr>
                           <td style={{ paddingRight: 20 }}>
-                            <span>Purchased Time </span>
+                            <span>{strings.purchased_time}</span>
                           </td>
                           <td>:</td>
                           <td>
@@ -189,7 +190,7 @@ const ListPurchased = () => {
                         </tr>
                         <tr>
                           <td>
-                            <span>Customer Note </span>
+                            <span>{strings.customer_note}</span>
                           </td>
                           <td>:</td>
                           <td>

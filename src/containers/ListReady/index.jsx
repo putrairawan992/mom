@@ -13,6 +13,7 @@ import TextInvoiceNumber from "../../components/TextInvoiceNumber";
 import TextProductName from "../../components/TextProductName";
 import ModalHistory from "../ModalHistory";
 import ModalReason from "../../containers/ModalReason";
+import strings from '../../localization'
 
 const ListReady = () => {
   const [orders, setOrders] = useState([]);
@@ -162,7 +163,7 @@ const ListReady = () => {
                       <tbody>
                         <tr>
                           <td style={{ paddingRight: 20 }}>
-                            <span>Ready Time </span>
+                            <span>{strings.ready_time}</span>
                           </td>
                           <td>:</td>
                           <td>
@@ -171,7 +172,7 @@ const ListReady = () => {
                         </tr>
                         <tr>
                           <td>
-                            <span>Customer Note </span>
+                            <span>{strings.customer_note}</span>
                           </td>
                           <td>:</td>
                           <td>
@@ -254,8 +255,8 @@ const ListReady = () => {
             onCancel={actionUndo}
             invoiceId={order.invoiceId}
             options={optionsUndo}
-            title={"Are you going back / undo to previous process?"}
-            buttonTitle={"Undo"}
+            title={strings.modal_undo_title}
+            buttonTitle={strings.undo}
             max={255}
           />
           <ModalHistory

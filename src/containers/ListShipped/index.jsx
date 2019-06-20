@@ -3,12 +3,13 @@ import { Row, Col, Card, notification, Icon } from "antd";
 import "../../sass/style.sass";
 import HeaderOrder from "../../components/HeaderOrder";
 import OrderVariant from "../../components/OrderVariant";
-import ModalUndo from "../../components/ModalUndo";
 import { needPurchased } from "../../dataSource/need_purchased";
 import ModalHistory from "../../containers/ModalHistory";
 import ButtonTextIcon from "../../components/ButtonTextIcon";
 import TextInvoiceNumber from "../../components/TextInvoiceNumber";
 import TextProductName from "../../components/TextProductName";
+import strings from '../../localization'
+import ModalReason from '../../containers/ModalReason'
 
 const ListShipped = () => {
   const [orders, setOrders] = useState([]);
@@ -64,6 +65,11 @@ const ListShipped = () => {
     setVisibleNote(!visibleNote);
   };
 
+  const optionsUndo = [
+    { value: "101", name: "Wrong Press" },
+    { value: "102", name: "Others" }
+  ];
+
   return (
     <React.Fragment>
       <HeaderOrder
@@ -94,7 +100,7 @@ const ListShipped = () => {
                       <tbody>
                         <tr>
                           <td style={{ paddingRight: 20 }}>
-                            <span>Shipped Time </span>
+                            <span>{strings.shipped_time}</span>
                           </td>
                           <td>:</td>
                           <td>
@@ -103,7 +109,7 @@ const ListShipped = () => {
                         </tr>
                         <tr>
                           <td>
-                            <span>Customer Note </span>
+                            <span>{strings.customer_note}</span>
                           </td>
                           <td>:</td>
                           <td>
@@ -115,7 +121,7 @@ const ListShipped = () => {
                   </Col>
                   <Col md={12}>
                     <div className="wrap-button">
-                      <span>On it's way to Indonesia</span>
+                      <span>{strings.its_way_to_indonesia}</span>
                     </div>
                   </Col>
                 </Row>
@@ -139,14 +145,14 @@ const ListShipped = () => {
                     <div className="wrap-button-text-icon">
                       <ButtonTextIcon
                         icon="rollback"
-                        label="Undo"
+                        label={strings.undo}
                         onClick={actionUndo}
                       />
                     </div>
                     <div className="wrap-button-text-icon">
                       <ButtonTextIcon
                         icon="file-exclamation"
-                        label="Show Logs"
+                        label={strings.show_logs}
                         onClick={actionShowLog}
                       />
                       <ButtonTextIcon
@@ -160,11 +166,15 @@ const ListShipped = () => {
               </Col>
             </Row>
           ))}
-          <ModalUndo
+          <ModalReason
             visible={visibleUndo}
             onSubmit={actionSubmitUndo}
             onCancel={actionUndo}
             invoiceId={order.invoiceId}
+            options={optionsUndo}
+            title={strings.modal_undo_title}
+            buttonTitle={strings.undo}
+            max={255}
           />
           <ModalHistory
             title="Activity Logs"

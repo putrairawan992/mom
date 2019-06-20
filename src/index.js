@@ -7,6 +7,8 @@ import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import "antd/dist/antd.css";
 import "./index.css";
+import "./local"
+import "./localization"
 
 const app = (
   <Provider store={store}>
