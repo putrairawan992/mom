@@ -11,11 +11,15 @@ import TextInvoiceNumber from "../../components/TextInvoiceNumber";
 import TextProductName from "../../components/TextProductName";
 import ModalReason from "../../containers/ModalReason";
 import ModalHistory from "../ModalHistory";
-
+import strings from '../../localization'
 import "../../sass/style.sass";
 import "./style.sass";
 
 const ListNeedPurchased = () => {
+  const {
+    modalUndoTitle,
+    labelButtonUndo,
+   } = window.localization  
   const [orders, setOrders] = useState([]);
   const [visibleSupplier, setVisibleSupplier] = useState(false);
   const [visibleUndo, setVisibleUndo] = useState(false);
@@ -169,7 +173,7 @@ const ListNeedPurchased = () => {
                         </tr>
                         <tr>
                           <td>
-                            <span>Customer Note </span>
+                            <span>{strings.customer_note}</span>
                           </td>
                           <td>:</td>
                           <td>
@@ -216,12 +220,12 @@ const ListNeedPurchased = () => {
                     <div className="wrap-button-text-icon">
                       <ButtonTextIcon
                         icon="rollback"
-                        label="Undo"
+                        label={strings.undo}
                         onClick={actionUndo}
                       />
                       <ButtonTextIcon
                         icon="close-circle"
-                        label="Cancel Order"
+                        label={strings.cancel_order}
                         onClick={actionCancel}
                       />
                       <ButtonTextIcon
@@ -233,7 +237,7 @@ const ListNeedPurchased = () => {
                     <div className="wrap-button-text-icon">
                       <ButtonTextIcon
                         icon="file-exclamation"
-                        label="Show Logs"
+                        label={strings.show_logs}
                         onClick={actionShowLog}
                       />
                       <ButtonTextIcon
@@ -258,8 +262,8 @@ const ListNeedPurchased = () => {
             onCancel={actionUndo}
             invoiceId={order.invoiceId}
             options={optionsUndo}
-            title={"Are you going back / undo to previous process?"}
-            buttonTitle={"Undo"}
+            title={modalUndoTitle}
+            buttonTitle={labelButtonUndo}
             max={255}
           />
           <ModalReason
@@ -268,8 +272,8 @@ const ListNeedPurchased = () => {
             onCancel={actionCancel}
             onSubmit={actionSubmitCancel}
             invoiceId={order.invoiceId}
-            title={"Cancel Order"}
-            buttonTitle={"Cancel Order"}
+            title={window.localization.modalCancelTitle}
+            buttonTitle={window.localization.labelButtonCancel}
             max={255}
           />
           <ModalAddNote

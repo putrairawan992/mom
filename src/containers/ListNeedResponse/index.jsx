@@ -7,6 +7,7 @@ import OrderVariant from "../../components/OrderVariant";
 import Button from "../../components/Button";
 import TextInvoiceNumber from "../../components/TextInvoiceNumber";
 import TextProductName from "../../components/TextProductName";
+import strings from '../../localization'
 
 const ListNeedResponse = props => {
   const [orders, setOrders] = useState([]);
@@ -76,7 +77,7 @@ const ListNeedResponse = props => {
                       <tbody>
                         <tr>
                           <td style={{ paddingRight: 20 }}>
-                            <span>Order Time </span>
+                            <span>{strings.order_time}</span>
                           </td>
                           <td>:</td>
                           <td>
@@ -85,7 +86,7 @@ const ListNeedResponse = props => {
                         </tr>
                         <tr>
                           <td>
-                            <span>Customer Note </span>
+                            <span>{strings.customer_note}</span>
                           </td>
                           <td>:</td>
                           <td>
@@ -101,7 +102,7 @@ const ListNeedResponse = props => {
                         type="primary"
                         onClick={() => handleResponse(order.invoiceId)}
                       >
-                        Response
+                        {strings.respond}
                       </Button>
                     </div>
                   </Col>

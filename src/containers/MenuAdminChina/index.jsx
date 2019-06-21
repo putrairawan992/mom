@@ -2,8 +2,12 @@
 import React, { useEffect } from "react";
 import { Menu, Icon } from "antd";
 import Order from "../../pages/Order";
+import strings from '../../localization';
+import Product from '../../pages/Product'
+
 
 const MenuAdminChina = props => {
+  
   useEffect(() => {
     changeMenu(0);
   }, []);
@@ -31,19 +35,19 @@ const MenuAdminChina = props => {
     <Menu theme="dark" mode="inline" defaultSelectedKeys={['3']}>
       <Menu.Item key="1" onClick={() => changeMenu(1)}>
         <Icon type="bar-chart" />
-        <span className="nav-text">Dashboard</span>
+        <span className="nav-text">{strings.dashboard}</span>
       </Menu.Item>
       <Menu.Item key="2" onClick={() => changeMenu(2)}>
         <Icon type="shop" />
-        <span className="nav-text">Product</span>
+        <span className="nav-text">{strings.product}</span>
       </Menu.Item>
       <Menu.Item key="3" onClick={() => changeMenu(3)}>
         <Icon type="cloud-o" />
-        <span className="nav-text">Order</span>
+        <span className="nav-text">{strings.order}</span>
       </Menu.Item>
       <Menu.Item key="4" onClick={() => changeMenu(4)}>
         <Icon type="cloud-o" />
-        <span className="nav-text">Logout</span>
+        <span className="nav-text">{strings.logout}</span>
       </Menu.Item>
     </Menu>
   );
