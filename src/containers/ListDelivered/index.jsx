@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Row, Col, Card, notification, Icon } from "antd";
 import HeaderOrder from "../../components/HeaderOrder";
 import ModalAddNote from "../../components/ModalAddNote";
-import ModalUndo from "../../components/ModalUndo";
+import ModalReason from "../../containers/ModalReason";
 import { needPurchased } from "../../dataSource/need_purchased";
 import ModalConfirm from "../../components/ModalConfirm";
 import ModalConfirmPrint from "../../components/ModalConfirmPrint";
@@ -138,6 +138,11 @@ const ListDelivered = () => {
     setVisibleNote(!visibleNote);
   };
 
+  const optionsUndo = [
+    { value: "101", name: "Wrong Press" },
+    { value: "102", name: "Others" }
+  ];
+  
   return (
     <React.Fragment>
       <HeaderOrder
@@ -241,11 +246,14 @@ const ListDelivered = () => {
             }
             description={""}
           />
-          <ModalUndo
+          <ModalReason
             visible={visibleUndo}
             onSubmit={actionSubmitUndo}
             onCancel={actionUndo}
             invoiceId={order.invoiceId}
+            options={optionsUndo}
+            title={"Are you going back / undo to previous process?"}
+            buttonTitle={"Undo"}
           />
           <ModalAddNote
             visible={visibleAddNote}
