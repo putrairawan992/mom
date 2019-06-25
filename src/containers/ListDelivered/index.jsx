@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Row, Col, Card, notification, Icon } from "antd";
 import HeaderOrder from "../../components/HeaderOrder";
 import ModalAddNote from "../../components/ModalAddNote";
-// import ModalUndo from "../../components/ModalUndo";
 import { needPurchased } from "../../dataSource/need_purchased";
 import ModalConfirm from "../../components/ModalConfirm";
 import ModalConfirmPrint from "../../components/ModalConfirmPrint";
@@ -10,7 +9,6 @@ import ButtonTextIcon from "../../components/ButtonTextIcon";
 import Button from "../../components/Button";
 import TextInvoiceNumber from "../../components/TextInvoiceNumber";
 import ModalReason from '../ModalReason'
-
 import "../../sass/style.sass";
 import "./style.sass";
 import ModalHistory from "../ModalHistory";
@@ -143,7 +141,7 @@ const ListDelivered = () => {
     { value: "101", name: "Wrong Press" },
     { value: "102", name: "Others" }
   ];
-
+  
   return (
     <React.Fragment>
       <HeaderOrder
