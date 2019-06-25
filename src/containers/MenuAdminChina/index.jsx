@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from "react";
 import { Menu, Icon } from "antd";
-import Order from "../../pages/Order";
+import OrderChina from "../../pages/OrderChina";
 import strings from '../../localization';
 import Product from '../../pages/Product'
 
@@ -21,13 +21,13 @@ const MenuAdminChina = props => {
         props.onChange(<Product/>);
         break;
       case 3:
-        props.onChange(<Order />);
+        props.onChange(<OrderChina />);
         break;
       case 4:
         props.logout();
       break;
       default:
-        props.onChange(<Order />);
+        props.onChange(<OrderChina />);
     }
   };
 

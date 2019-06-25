@@ -6,6 +6,7 @@ import "./style.sass";
 const ModalConfirm = ({
   title,
   description,
+  value,
   visible,
   onOk,
   onCancel,
@@ -48,7 +49,7 @@ const ModalConfirm = ({
                 Go Back
               </span>
               <Button
-                onClick={onOk}
+                onClick={()=>onOk(value)}
                 type="primary"
                 size="large"
                 className="button-primary"

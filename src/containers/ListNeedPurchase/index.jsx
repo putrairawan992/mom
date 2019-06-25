@@ -1,26 +1,25 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Row, Col, Card, notification, Icon } from "antd";
 import HeaderOrder from "../../components/HeaderOrder";
 import OrderVariant from "../../components/OrderVariant";
 import ModalSupplier from "../../containers/ModalSupplier";
 import ModalAddNote from "../../components/ModalAddNote";
-import { needPurchased } from "../../dataSource/need_purchased";
 import ButtonTextIcon from "../../components/ButtonTextIcon";
 import Button from "../../components/Button";
 import TextInvoiceNumber from "../../components/TextInvoiceNumber";
 import TextProductName from "../../components/TextProductName";
 import ModalReason from "../../containers/ModalReason";
 import ModalHistory from "../ModalHistory";
-import strings from '../../localization'
+import { apiPatchWithToken } from "../../services/api";
+import { PATH_ORDER } from "../../services/path/order";
+import ImageShipping from "../../components/ImageShipping";
+import convertTimesTime from "../../helpers/convertTimestime";
+import strings from '../../localization';
+
 import "../../sass/style.sass";
 import "./style.sass";
 
-const ListNeedPurchased = () => {
-  const {
-    modalUndoTitle,
-    labelButtonUndo,
-   } = window.localization  
-  const [orders, setOrders] = useState([]);
+const ListNeedPurchased = (props) => {
   const [visibleSupplier, setVisibleSupplier] = useState(false);
   const [visibleUndo, setVisibleUndo] = useState(false);
   const [visibleCancel, setVisibleCancel] = useState(false);
@@ -28,10 +27,74 @@ const ListNeedPurchased = () => {
   const [visibleLog, setVisibleLog] = useState(false);
   const [visibleNote, setVisibleNote] = useState(false);
 
-  useEffect(() => {
-    const data = needPurchased.data;
-    setOrders(data);
-  }, []);
+  const getListNeedPurchase = async (update=false, action) => {
+    try {
+      if(update){
+        if(action === "UNDO"){
+          await props.onLoad();
+          actionUndo();
+          contentNotification(
+            "Order Undo.",
+            "The Order is being undo, you can see the history in activity log",
+            "info-circle",
+            "#1890FF"
+          );
+        }else if(action === "CANCEL"){
+          await props.onLoad();
+          actionCancel();
+          contentNotification(
+            "Order Canceled.",
+            "The Order is being canceled, you can see the history in activity log or canceled order tab",
+            "info-circle",
+            "#1890FF"
+          );
+        }else if(action === "NEXT"){
+          await props.onLoad();
+          contentNotification(
+            "New Order has moved to the next process.",
+            "Continue responding the order you have selected in Need Purchased Tabs.",
+            "check-circle",
+            "#52C41A"
+          );
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const patchNextNeedPurchase = async (invoiceId) => {
+    try {
+      const response = await apiPatchWithToken(`${PATH_ORDER.NEXT}/${invoiceId}`);
+      if(response){
+        getListNeedPurchase(true, "NEXT");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const patchUndoNeedPurchase = async (payload) => {
+    try {
+      const response = await apiPatchWithToken(`${PATH_ORDER.UNDO}/${payload.invoiceId}`);
+      if(response){
+        getListNeedPurchase(true, "UNDO");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const patchCancleNeedPurchase = async (payload) => {
+    try {
+      const response = await apiPatchWithToken(`${PATH_ORDER.CANCEL}/${payload.invoiceId}`);
+      if(response){
+        getListNeedPurchase(true, "CANCEL");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   const actionSearch = payload => {
     console.log(payload);
@@ -54,13 +117,7 @@ const ListNeedPurchased = () => {
   };
 
   const handlePurchased = invoiceId => {
-    console.log(invoiceId);
-    contentNotification(
-      "New Order has moved to the next process.",
-      "Continue responding the order you have selected in Need Purchased Tabs.",
-      "check-circle",
-      "#52C41A"
-    );
+    patchNextNeedPurchase(invoiceId);
   };
 
   const handleSupplierInfo = invoiceId => {
@@ -76,15 +133,7 @@ const ListNeedPurchased = () => {
   };
 
   const actionSubmitUndo = payload => {
-    console.log(payload);
-    console.log(payload.note.length);
-    actionUndo();
-    contentNotification(
-      "Order Undo.",
-      "The Order is being undo, you can see the history in activity log",
-      "info-circle",
-      "#1890FF"
-    );
+    patchUndoNeedPurchase(payload);
   };
 
   const actionCancel = () => {
@@ -92,13 +141,7 @@ const ListNeedPurchased = () => {
   };
 
   const actionSubmitCancel = payload => {
-    actionCancel();
-    contentNotification(
-      "Order Canceled.",
-      "The Order is being canceled, you can see the history in activity log or canceled order tab",
-      "info-circle",
-      "#1890FF"
-    );
+    patchCancleNeedPurchase(payload);
   };
 
   const actionAddNotes = () => {
@@ -139,15 +182,15 @@ const ListNeedPurchased = () => {
       <HeaderOrder
         onChangeFilter={actionFilter}
         onSearch={actionSearch}
-        totalRecord={80}
+        totalRecord={props.total}
       />
-      {orders.map(order => (
-        <Card key={order.invoiceId}>
-          {order.indexes.map(index => (
-            <Row key={index.id}>
+      {props.invoices ? props.invoices.map(invoice => (
+        <Card key={invoice.id}>
+        {invoice.items.map(item => (
+            <Row key={item.id}>
               <Col md={2}>
-                <img
-                  src={index.productImage}
+              <img
+                  src={item.productSnapshot.image}
                   alt=""
                   className="img-order-product"
                 />
@@ -155,10 +198,10 @@ const ListNeedPurchased = () => {
               <Col md={22}>
                 <Row>
                   <Col md={12}>
-                    <TextInvoiceNumber invoiceNumber={order.invoiceNumber} />
+                    <TextInvoiceNumber invoiceNumber={invoice.number} />
                     <TextProductName
-                      productTextChina={index.productNameChina}
-                      productTextIndonesia={index.productName}
+                      productTextChina={item.productSnapshot.nameChina}
+                      productTextIndonesia={item.productSnapshot.name}
                     />
                     <table border={0}>
                       <tbody>
@@ -168,7 +211,7 @@ const ListNeedPurchased = () => {
                           </td>
                           <td>:</td>
                           <td>
-                            <span>28-02-2019 13:20</span>
+                            <span>{convertTimesTime.millisecond(item.orderDate)}</span>
                           </td>
                         </tr>
                         <tr>
@@ -177,7 +220,7 @@ const ListNeedPurchased = () => {
                           </td>
                           <td>:</td>
                           <td>
-                            <span>{index.note}</span>
+                            <span>{item.note}</span>
                           </td>
                         </tr>
                       </tbody>
@@ -187,13 +230,13 @@ const ListNeedPurchased = () => {
                     <div className="wrap-button">
                       <Button
                         type="secondary"
-                        onClick={() => handleSupplierInfo(order.invoiceId)}
+                        onClick={() => handleSupplierInfo(invoice.id)}
                       >
                         Supplier Info
                       </Button>
                       <Button
                         type="primary"
-                        onClick={() => handlePurchased(order.invoiceId)}
+                        onClick={() => handlePurchased(invoice.id)}
                       >
                         Purchased
                       </Button>
@@ -203,15 +246,11 @@ const ListNeedPurchased = () => {
                 <Row style={{ marginTop: 16 }}>
                   <Col md={12}>
                     <div className="wrap-variant">
-                      <img
-                        src="https://cdn2.iconfinder.com/data/icons/vacation-landmarks/512/45-512.png"
-                        alt=""
-                        className="image-shipping"
-                      />
+                    <ImageShipping shipping={item.shipping} />
                       <OrderVariant
-                        variants={index.variants}
-                        quantity={index.productQuantity}
-                        price={index.price}
+                        variant={item.productSnapshot.variant}
+                        quantity={item.productSnapshot.quantity}
+                        price={item.productSnapshot.price}
                         withPrice={true}
                       />
                     </div>
@@ -252,7 +291,7 @@ const ListNeedPurchased = () => {
             </Row>
           ))}
           <ModalSupplier
-            order={order}
+            invoice={invoice}
             visible={visibleSupplier}
             onOk={actionOk}
           />
@@ -260,37 +299,35 @@ const ListNeedPurchased = () => {
             visible={visibleUndo}
             onSubmit={actionSubmitUndo}
             onCancel={actionUndo}
-            invoiceId={order.invoiceId}
+            invoiceId={invoice.id}
             options={optionsUndo}
-            title={modalUndoTitle}
-            buttonTitle={labelButtonUndo}
-            max={255}
+            title={"Are you going back / undo to previous process?"}
+            buttonTitle={"Undo"}
           />
           <ModalReason
             options={optionsCancel}
             visible={visibleCancel}
             onCancel={actionCancel}
             onSubmit={actionSubmitCancel}
-            invoiceId={order.invoiceId}
-            title={window.localization.modalCancelTitle}
-            buttonTitle={window.localization.labelButtonCancel}
-            max={255}
+            invoiceId={invoice.id}
+            title={"Cancel Order"}
+            buttonTitle={"Cancel Order"}
           />
           <ModalAddNote
             visible={visibleAddNote}
             onSubmit={actionSubmitAddNote}
             onCancel={actionAddNotes}
-            invoiceId={order.invoiceId}
+            invoiceId={invoice.id}
           />
-          <ModalHistory
+          {/* <ModalHistory
             title="Activity Logs"
             list={order.activityLogs}
             visible={visibleLog}
             onOk={actionShowLog}
             onCancel={actionShowLog}
-          />
+          /> */}
         </Card>
-      ))}
+      )):null}
     </React.Fragment>
   );
 };

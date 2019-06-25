@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
+import React from "react";
 import { Row, Col, Card, notification, Icon } from "antd";
 import "./style.sass";
 import HeaderOrder from "../../components/HeaderOrder";
@@ -7,15 +6,43 @@ import OrderVariant from "../../components/OrderVariant";
 import Button from "../../components/Button";
 import TextInvoiceNumber from "../../components/TextInvoiceNumber";
 import TextProductName from "../../components/TextProductName";
-import strings from '../../localization'
+import { apiPatchWithToken } from "../../services/api";
+import { PATH_ORDER } from "../../services/path/order";
+import convertTimesTime from "../../helpers/convertTimestime";
+import ImageShipping from "../../components/ImageShipping";
+import strings from '../../localization';
 
-const ListNeedResponse = props => {
-  const [orders, setOrders] = useState([]);
+const ListNeedResponse = (props) => {
+  const getListNeedResponse = async (update=false) => {
+    try {
+      if(update) {
+        await props.onLoad();
+        contentNotification(
+        "New Order has moved to the next process.",
+        "Continue responding the order you have selected in Need Purchased Tabs.",
+        "check-circle",
+        "#52C41A"
+      );
+        }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
-  useEffect(() => {
-    const { data } = { ...props };
-    setOrders(data);
-  }, []);
+  const patchNextNeedResponse = async (invoiceId) => {
+    try {
+      const response = await apiPatchWithToken(`${PATH_ORDER.NEXT}/${invoiceId}`);
+      if(response){
+        getListNeedResponse(true);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  // useEffect(() => {
+  //   getListNeedResponse();
+  // }, []);
 
   const actionSearch = payload => {
     console.log(payload);
@@ -38,13 +65,7 @@ const ListNeedResponse = props => {
   };
 
   const handleResponse = invoiceId => {
-    console.log(invoiceId);
-    contentNotification(
-      "New Order has moved to the next process.",
-      "Continue responding the order you have selected in Need Purchased Tabs.",
-      "check-circle",
-      "#52C41A"
-    );
+    patchNextNeedResponse(invoiceId)
   };
 
   return (
@@ -52,15 +73,15 @@ const ListNeedResponse = props => {
       <HeaderOrder
         onChangeFilter={actionFilter}
         onSearch={actionSearch}
-        totalRecord={80}
+        totalRecord={props.total}
       />
-      {orders.map(order => (
-        <Card key={order.invoiceId}>
-          {order.indexes.map(index => (
-            <Row key={index.id}>
+      {props.invoices ? props.invoices.map(invoice => (
+        <Card key={invoice.id}>
+          {invoice.items.map(item => (
+            <Row key={item.id}>
               <Col md={2}>
                 <img
-                  src={index.productImage}
+                  src={item.productSnapshot.image}
                   alt=""
                   className="img-order-product"
                 />
@@ -68,10 +89,10 @@ const ListNeedResponse = props => {
               <Col md={22}>
                 <Row>
                   <Col md={12}>
-                    <TextInvoiceNumber invoiceNumber={order.invoiceNumber} />
+                    <TextInvoiceNumber invoiceNumber={invoice.number} />
                     <TextProductName
-                      productTextChina={index.productNameChina}
-                      productTextIndonesia={index.productName}
+                      productTextChina={item.productSnapshot.nameChina}
+                      productTextIndonesia={item.productSnapshot.name}
                     />
                     <table border={0}>
                       <tbody>
@@ -81,7 +102,7 @@ const ListNeedResponse = props => {
                           </td>
                           <td>:</td>
                           <td>
-                            <span>28-02-2019 13:20</span>
+                            <span>{convertTimesTime.millisecond(item.orderDate)}</span>
                           </td>
                         </tr>
                         <tr>
@@ -90,7 +111,7 @@ const ListNeedResponse = props => {
                           </td>
                           <td>:</td>
                           <td>
-                            <span>{index.note}</span>
+                            <span>{item.note}</span>
                           </td>
                         </tr>
                       </tbody>
@@ -100,7 +121,7 @@ const ListNeedResponse = props => {
                     <div className="wrap-button">
                       <Button
                         type="primary"
-                        onClick={() => handleResponse(order.invoiceId)}
+                        onClick={() => handleResponse(invoice.id)}
                       >
                         {strings.respond}
                       </Button>
@@ -110,15 +131,11 @@ const ListNeedResponse = props => {
                 <Row style={{ marginTop: 16 }}>
                   <Col md={12}>
                     <div className="wrap-variant">
-                      <img
-                        src="https://cdn2.iconfinder.com/data/icons/vacation-landmarks/512/45-512.png"
-                        alt=""
-                        className="image-shipping"
-                      />
+                      <ImageShipping shipping={item.shipping} />
                       <OrderVariant
-                        variants={index.variants}
-                        quantity={index.productQuantity}
-                        price={index.price}
+                        variant={item.productSnapshot.variant}
+                        quantity={item.productSnapshot.quantity}
+                        price={item.productSnapshot.price}
                         withPrice={true}
                       />
                     </div>
@@ -128,13 +145,9 @@ const ListNeedResponse = props => {
             </Row>
           ))}
         </Card>
-      ))}
+      )):null}
     </React.Fragment>
   );
-};
-
-ListNeedResponse.propTypes = {
-  data: PropTypes.arrayOf(Object)
 };
 
 export default ListNeedResponse;
