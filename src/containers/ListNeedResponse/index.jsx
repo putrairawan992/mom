@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Row, Col, Card, notification, Icon } from "antd";
 import "./style.sass";
 import HeaderOrder from "../../components/HeaderOrder";
@@ -10,15 +10,12 @@ import { apiPatchWithToken } from "../../services/api";
 import { PATH_ORDER } from "../../services/path/order";
 import convertTimesTime from "../../helpers/convertTimestime";
 import ImageShipping from "../../components/ImageShipping";
-import { connect } from "react-redux";
-import { getGlobalListNeedResponse, getGlobalListNeedPurchase } from "../../store/actions/order";
 
 const ListNeedResponse = (props) => {
   const getListNeedResponse = async (update=false) => {
     try {
-      await props.getGlobalListNeedResponse(`${PATH_ORDER.MANAGE_ORDER}/NRP`);
       if(update) {
-        await props.getGlobalListNeedPurchase(`${PATH_ORDER.MANAGE_ORDER}/NPR`);
+        await props.onLoad();
         contentNotification(
         "New Order has moved to the next process.",
         "Continue responding the order you have selected in Need Purchased Tabs.",
@@ -42,9 +39,9 @@ const ListNeedResponse = (props) => {
     }
   }
 
-  useEffect(() => {
-    getListNeedResponse();
-  }, []);
+  // useEffect(() => {
+  //   getListNeedResponse();
+  // }, []);
 
   const actionSearch = payload => {
     console.log(payload);
@@ -152,10 +149,4 @@ const ListNeedResponse = (props) => {
   );
 };
 
-const mapStateToProps = state => ({
-  invoices : state.order.invoiceNeedResponse,
-  total : state.order.totalNeedResponse,
-})
-
-
-export default connect(mapStateToProps,{getGlobalListNeedResponse, getGlobalListNeedPurchase})(ListNeedResponse);
+export default ListNeedResponse;

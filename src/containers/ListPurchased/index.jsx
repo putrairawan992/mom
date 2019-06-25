@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Row, Col, Card, notification, Icon } from "antd";
 import HeaderOrder from "../../components/HeaderOrder";
 import OrderVariant from "../../components/OrderVariant";
@@ -11,16 +11,14 @@ import TextInvoiceNumber from "../../components/TextInvoiceNumber";
 import TextProductName from "../../components/TextProductName";
 import ModalHistory from "../ModalHistory";
 import ModalReason from "../../containers/ModalReason";
-import { apiGetWithToken, apiPatchWithToken } from "../../services/api";
+import { apiPatchWithToken } from "../../services/api";
 import { PATH_ORDER } from "../../services/path/order";
 import ImageShipping from "../../components/ImageShipping";
 import convertTimesTime from "../../helpers/convertTimestime";
 
 import "../../sass/style.sass";
 
-const ListPurchased = () => {
-  const [totalRecord, setTotalRecord] = useState();
-  const [invoices, setInvoices] = useState([]);
+const ListPurchased = (props) => {
   const [visibleConfirm, setVisibleConfirm] = useState(false);
   const [visibleConfirmPrint, setVisibleConfirmPrint] = useState(false);
   const [visibleUndo, setVisibleUndo] = useState(false);
@@ -30,17 +28,11 @@ const ListPurchased = () => {
   const [visibleNote, setVisibleNote] = useState(false);
   const [loadingConfirm, setLoadingConfirm] = useState(false);
 
-  useEffect(() => {
-    getListPurchased();
-  }, []);
-
   const getListPurchased = async (update=false, action) => {
     try {
-      const response = await apiGetWithToken(`${PATH_ORDER.MANAGE_ORDER}/PRC`);
-      setTotalRecord(response.data.data.total);
-      setInvoices(response.data.data.invoices);
       if(update){
         if(action === "UNDO"){
+          await props.onLoad();
           actionUndo();
           contentNotification(
             "Order Undo.",
@@ -49,6 +41,7 @@ const ListPurchased = () => {
             "#1890FF"
           );
         }else if(action === "CANCEL"){
+          await props.onLoad();
           actionCancel();
           contentNotification(
             "Order Canceled.",
@@ -57,14 +50,15 @@ const ListPurchased = () => {
             "#1890FF"
           );
         }
-        // else if(action === "NEXT"){
-        //   contentNotification(
-        //     "New Order has moved to the next process.",
-        //     "Continue responding the order you have selected in Need Purchased Tabs.",
-        //     "check-circle",
-        //     "#52C41A"
-        //   );
-        // }
+        else if(action === "NEXT"){
+          await props.onLoad();
+          contentNotification(
+            "New Order has moved to the next process.",
+            "Continue responding the order you have selected in Need Purchased Tabs.",
+            "check-circle",
+            "#52C41A"
+          );
+        }
       }
     } catch (error) {
       console.log(error);
@@ -207,9 +201,9 @@ const ListPurchased = () => {
       <HeaderOrder
         onChangeFilter={actionFilter}
         onSearch={actionSearch}
-        totalRecord={totalRecord}
+        totalRecord={props.total}
       />
-      {invoices.length > 0 ? invoices.map(invoice => (
+      {props.invoices ? props.invoices.map(invoice => (
         <Card key={invoice.id}>
         {invoice.items.map(item => (
             <Row key={item.id}>

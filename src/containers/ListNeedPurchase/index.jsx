@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Row, Col, Card, notification, Icon } from "antd";
 import HeaderOrder from "../../components/HeaderOrder";
 import OrderVariant from "../../components/OrderVariant";
@@ -14,8 +14,6 @@ import { apiPatchWithToken } from "../../services/api";
 import { PATH_ORDER } from "../../services/path/order";
 import ImageShipping from "../../components/ImageShipping";
 import convertTimesTime from "../../helpers/convertTimestime";
-import { connect } from "react-redux";
-import { getGlobalListNeedPurchase, getGlobalListNeedResponse } from "../../store/actions/order";
 
 import "../../sass/style.sass";
 import "./style.sass";
@@ -30,10 +28,9 @@ const ListNeedPurchased = (props) => {
 
   const getListNeedPurchase = async (update=false, action) => {
     try {
-      await props.getGlobalListNeedPurchase(`${PATH_ORDER.MANAGE_ORDER}/NPR`);
       if(update){
         if(action === "UNDO"){
-          await props.getGlobalListNeedResponse(`${PATH_ORDER.MANAGE_ORDER}/NRP`);
+          await props.onLoad();
           actionUndo();
           contentNotification(
             "Order Undo.",
@@ -42,6 +39,7 @@ const ListNeedPurchased = (props) => {
             "#1890FF"
           );
         }else if(action === "CANCEL"){
+          await props.onLoad();
           actionCancel();
           contentNotification(
             "Order Canceled.",
@@ -50,6 +48,7 @@ const ListNeedPurchased = (props) => {
             "#1890FF"
           );
         }else if(action === "NEXT"){
+          await props.onLoad();
           contentNotification(
             "New Order has moved to the next process.",
             "Continue responding the order you have selected in Need Purchased Tabs.",
@@ -95,11 +94,6 @@ const ListNeedPurchased = (props) => {
       console.log(error);
     }
   }
-
-  useEffect(() => {
-    getListNeedPurchase();
-  }, []);
-
 
   const actionSearch = payload => {
     console.log(payload);
@@ -337,9 +331,4 @@ const ListNeedPurchased = (props) => {
   );
 };
 
-const mapStateToProps = state => ({
-  invoices : state.order.invoiceNeedPurchase,
-  total : state.order.totalNeedPurchase
-})
-
-export default connect(mapStateToProps,{getGlobalListNeedPurchase, getGlobalListNeedResponse})(ListNeedPurchased);
+export default ListNeedPurchased;
