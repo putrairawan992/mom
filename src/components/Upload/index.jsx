@@ -1,6 +1,7 @@
 import React from 'react'
 import { Upload as UploadAnt, Icon } from 'antd'
 import Button from '../Button'
+import propTypes from 'prop-types'
 import './style.sass'
 
 const Upload = props => {
@@ -14,14 +15,13 @@ const Upload = props => {
     <div className="containerUpload">
       <img src={props.imageUrl}  alt="avatar"/>
       <Icon type="camera" className="cameraIcon"/>
-      <Icon type="delete" className="deleteIcon"/>
-      {
-        props.type === 'default' ?
-        <Button width="full" type="upload-default">Default</Button>:
-        <Button width="full" type="upload-non-default">Set Default</Button>
-      }
-      
-      
+      <Icon onClick={() => props.remove(props.index)} type="delete" className="deleteIcon"/>
+      <Button width="full"
+        onClick={() => props.changeDefault(props.index,props)} 
+        className={props.type === 'default' ? 'mp-btn-upload' : 'mp-btn-upload-non-default'}
+        >
+        {props.type === 'default' ? 'Default' : 'Set Default' }
+      </Button>
     </div>
   )
 
@@ -30,11 +30,23 @@ const Upload = props => {
       {...props}
       name="avatar"
       listType="picture-card"
+      // showUploadList={{showRemoveIcon : true,showPreviewIcon:false}}
       showUploadList={false}
       >
       {props.imageUrl ? imageUpload : uploadButton}
     </UploadAnt>
   )
+}
+
+Upload.propTypes = {
+  customeRequest: propTypes.func,
+  action :propTypes.string,
+  changeDefault: propTypes.func,
+  remove: propTypes.func,
+  type: propTypes.string,
+  disabled: propTypes.bool,
+  imageUrl: propTypes.string,
+  onChange: propTypes.func
 }
 
 export default Upload
