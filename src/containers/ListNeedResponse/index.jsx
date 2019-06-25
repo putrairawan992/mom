@@ -10,6 +10,7 @@ import { apiPatchWithToken } from "../../services/api";
 import { PATH_ORDER } from "../../services/path/order";
 import convertTimesTime from "../../helpers/convertTimestime";
 import ImageShipping from "../../components/ImageShipping";
+import strings from '../../localization';
 
 const ListNeedResponse = (props) => {
   const getListNeedResponse = async (update=false) => {
@@ -97,7 +98,7 @@ const ListNeedResponse = (props) => {
                       <tbody>
                         <tr>
                           <td style={{ paddingRight: 20 }}>
-                            <span>Order Time </span>
+                            <span>{strings.order_time}</span>
                           </td>
                           <td>:</td>
                           <td>
@@ -106,7 +107,7 @@ const ListNeedResponse = (props) => {
                         </tr>
                         <tr>
                           <td>
-                            <span>Customer Note </span>
+                            <span>{strings.customer_note}</span>
                           </td>
                           <td>:</td>
                           <td>
@@ -122,7 +123,7 @@ const ListNeedResponse = (props) => {
                         type="primary"
                         onClick={() => handleResponse(invoice.id)}
                       >
-                        Response
+                        {strings.respond}
                       </Button>
                     </div>
                   </Col>

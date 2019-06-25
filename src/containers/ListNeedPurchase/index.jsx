@@ -14,6 +14,7 @@ import { apiPatchWithToken } from "../../services/api";
 import { PATH_ORDER } from "../../services/path/order";
 import ImageShipping from "../../components/ImageShipping";
 import convertTimesTime from "../../helpers/convertTimestime";
+import strings from '../../localization';
 
 import "../../sass/style.sass";
 import "./style.sass";
@@ -215,7 +216,7 @@ const ListNeedPurchased = (props) => {
                         </tr>
                         <tr>
                           <td>
-                            <span>Customer Note </span>
+                            <span>{strings.customer_note}</span>
                           </td>
                           <td>:</td>
                           <td>
@@ -258,12 +259,12 @@ const ListNeedPurchased = (props) => {
                     <div className="wrap-button-text-icon">
                       <ButtonTextIcon
                         icon="rollback"
-                        label="Undo"
+                        label={strings.undo}
                         onClick={actionUndo}
                       />
                       <ButtonTextIcon
                         icon="close-circle"
-                        label="Cancel Order"
+                        label={strings.cancel_order}
                         onClick={actionCancel}
                       />
                       <ButtonTextIcon
@@ -275,7 +276,7 @@ const ListNeedPurchased = (props) => {
                     <div className="wrap-button-text-icon">
                       <ButtonTextIcon
                         icon="file-exclamation"
-                        label="Show Logs"
+                        label={strings.show_logs}
                         onClick={actionShowLog}
                       />
                       <ButtonTextIcon

@@ -15,6 +15,7 @@ import { apiPatchWithToken } from "../../services/api";
 import { PATH_ORDER } from "../../services/path/order";
 import ImageShipping from "../../components/ImageShipping";
 import convertTimesTime from "../../helpers/convertTimestime";
+import strings from '../../localization';
 
 import "../../sass/style.sass";
 
@@ -226,7 +227,7 @@ const ListPurchased = (props) => {
                       <tbody>
                         <tr>
                           <td style={{ paddingRight: 20 }}>
-                            <span>Purchased Time </span>
+                            <span>{strings.purchased_time}</span>
                           </td>
                           <td>:</td>
                           <td>
@@ -235,7 +236,7 @@ const ListPurchased = (props) => {
                         </tr>
                         <tr>
                           <td>
-                            <span>Customer Note </span>
+                            <span>{strings.customer_note}</span>
                           </td>
                           <td>:</td>
                           <td>

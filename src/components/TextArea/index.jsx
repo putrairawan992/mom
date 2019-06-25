@@ -35,6 +35,7 @@ const Text = props => {
 
 Text.propTypes = {
   type: propTypes.oneOf(['default','error']),
+  maxLength: propTypes.number
 }
 
 Text.defaultProps = {

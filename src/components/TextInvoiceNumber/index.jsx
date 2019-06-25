@@ -1,11 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
+import strings from '../../localization'
 import "./style.sass";
 
 const TextInvoiceNumber = ({invoiceNumber}) => {
   return (
     <div>
-      Invoice No. <span className="invoice-number">{invoiceNumber}</span>
+      {strings.invoice_no}<span className="invoice-number">{invoiceNumber}</span>
     </div>
   );
 };
