@@ -3,7 +3,6 @@ import { Row, Col, Card, notification, Icon } from "antd";
 import HeaderOrder from "../../components/HeaderOrder";
 import OrderVariant from "../../components/OrderVariant";
 import ModalAddNote from "../../components/ModalAddNote";
-import ModalReason from "../../containers/ModalReason";
 import { needPurchased } from "../../dataSource/need_purchased";
 import ModalConfirm from "../../components/ModalConfirm";
 import ButtonTextIcon from "../../components/ButtonTextIcon";
@@ -11,6 +10,7 @@ import Button from "../../components/Button";
 import TextInvoiceNumber from "../../components/TextInvoiceNumber";
 import TextProductName from "../../components/TextProductName";
 import OrderDetailIndonesia from "../../components/OrderDetailIndonesia";
+import ModalReason from '../ModalReason'
 
 import "../../sass/style.sass";
 import ModalHistory from "../ModalHistory";

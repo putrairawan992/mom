@@ -15,8 +15,6 @@ class Button extends React.Component {
         'mp-btn-width-full': (this.props.width === 'full'),
         'mp-btn-size-large': (this.props.size === 'large'),
         'mp-btn-size-small': (this.props.size === 'small'),
-        'mp-btn-upload' : (this.props.type === 'upload-default'),
-        'mp-btn-upload-non-default' : (this.props.type === 'upload-non-default')
     });
 
     render(){
@@ -25,7 +23,7 @@ class Button extends React.Component {
 }
 
 Button.propTypes = {
-    type: propTypes.oneOf(['primary', 'secondary','white','link','danger','upload-default','upload-non-default']),
+    type: propTypes.oneOf(['primary', 'secondary','white','link','danger']),
     width: propTypes.oneOf(['default', 'full']),
     size: propTypes.oneOf(['default','large'])
 }

@@ -2,14 +2,13 @@ import React, { useState, useEffect } from "react";
 import { Row, Col, Card, notification, Icon } from "antd";
 import HeaderOrder from "../../components/HeaderOrder";
 import ModalAddNote from "../../components/ModalAddNote";
-import ModalReason from "../../containers/ModalReason";
 import { needPurchased } from "../../dataSource/need_purchased";
 import ModalConfirm from "../../components/ModalConfirm";
 import ModalConfirmPrint from "../../components/ModalConfirmPrint";
 import ButtonTextIcon from "../../components/ButtonTextIcon";
 import Button from "../../components/Button";
 import TextInvoiceNumber from "../../components/TextInvoiceNumber";
-
+import ModalReason from '../ModalReason'
 import "../../sass/style.sass";
 import "./style.sass";
 import ModalHistory from "../ModalHistory";
