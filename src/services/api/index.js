@@ -11,7 +11,7 @@ export const apiGetWithToken = (url, params) => {
 };
 
 export const apiPostWithToken = (url, params) => {
-  return serviceWithToken().post(url, params);
+  return serviceWithToken().post(url, params)
 };
 
 export const apiPatchWithToken = (url, params) => {

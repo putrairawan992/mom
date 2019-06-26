@@ -3,7 +3,9 @@ import UploadImages from '../../containers/UploadImages'
 
 const Product = () => {
   return (
-    <UploadImages/>
+    <UploadImages
+      maxImage={5}
+    />
   )
 }
 
