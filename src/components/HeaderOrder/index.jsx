@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { Row, Col, Card, Select, Input } from "antd";
 import "./style.sass";
@@ -8,7 +8,6 @@ const Search = Input.Search;
 const Option = Select.Option;
 
 const HeaderOrder = props => {
-  const [optionSearch, setOptionSearch] = useState("invoice");
   return (<Card>
     <Row type="flex" justify="space-between">
       <Col>
@@ -18,36 +17,43 @@ const HeaderOrder = props => {
           style={{ width: 120 }}
           onChange={value => props.onChangeFilter(value)}
         >
-          <Option value="udara">By Air</Option>
-          <Option value="laut">By Sea</Option>
+          <Option value="air">By Air</Option>
+          <Option value="sea">By Sea</Option>
         </Select>
       </Col>
       <Col>
         <InputGroup compact>
-          <Select style={{width:150}} value={optionSearch} onChange={value => setOptionSearch(value)} size="large">
-            <Option value="invoice">No. Invoice</Option>
-            <Option value="name">Supplier Name</Option>
-            <Option value="code">Supplier Code</Option>
+          <Select style={{width:150}} defaultValue="invoice_number" onChange={value => props.onChangeCategory(value)} size="large">
+            <Option value="invoice_number">No. Invoice</Option>
+            <Option value="supplier_name">Supplier Name</Option>
+            <Option value="supplier_code">Supplier Code</Option>
           </Select>
           <Search
             placeholder="input search text"
-            onSearch={value => props.onSearch({optionSearch: optionSearch,query : value})}
+            onSearch={(value,event) => {props.onSearch(value)
+            console.log(event.target)
+            }}
+            id="text-search"
             style={{ width: 500 }}
             size="large"
+            onChange={event => props.onChangeQuery(event.target.value)}
           />
         </InputGroup>
       </Col>
     </Row>
     <Row>
       <Col>
-        <span className="label-total">Total Orders : {props.totalRecord}</span>
+        <span className="label-total">Total Orders : {props.total}</span>
       </Col>
     </Row>
   </Card>)
 };
 
 HeaderOrder.propTypes = {
-  data: PropTypes.arrayOf(Object)
+  total: PropTypes.number,
+  onChangeFilter: PropTypes.func,
+  onChangeCategory: PropTypes.func,
+  onSearch: PropTypes.func
 };
 
 export default HeaderOrder;

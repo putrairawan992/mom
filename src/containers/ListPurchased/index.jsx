@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Row, Col, Card, notification, Icon } from "antd";
-import HeaderOrder from "../../components/HeaderOrder";
 import OrderVariant from "../../components/OrderVariant";
 import ModalAddNote from "../../components/ModalAddNote";
 import ModalConfirm from "../../components/ModalConfirm";
@@ -18,6 +17,8 @@ import convertTimesTime from "../../helpers/convertTimestime";
 import strings from '../../localization';
 
 import "../../sass/style.sass";
+import LabelChina from "../../components/LabelChina";
+import LoaderItem from "../../components/LoaderItem";
 
 const ListPurchased = (props) => {
   const [visibleConfirm, setVisibleConfirm] = useState(false);
@@ -199,12 +200,14 @@ const ListPurchased = (props) => {
 
   return (
     <React.Fragment>
-      <HeaderOrder
-        onChangeFilter={actionFilter}
-        onSearch={actionSearch}
-        totalRecord={props.total}
-      />
-      {props.invoices ? props.invoices.map(invoice => (
+      {props.loading && (
+        <Card>
+          <Row type="flex" justify="center">
+            <LoaderItem size={10} loading={props.loading} />
+          </Row>
+        </Card>
+      )}
+      {props.invoices && !props.loading ? props.invoices.map(invoice => (
         <Card key={invoice.id}>
         {invoice.items.map(item => (
             <Row key={item.id}>
@@ -355,7 +358,9 @@ const ListPurchased = (props) => {
               "The order has moved to the next process, you can print the label now or you can print it later."
             }
             description={""}
-          />
+          >
+            <LabelChina />
+          </ModalConfirmPrint>
         </Card>
       )):null}
     </React.Fragment>

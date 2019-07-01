@@ -2,27 +2,30 @@ import React, { useState, useEffect } from "react";
 import { Tabs } from "antd";
 import ListNeedResponse from "../../containers/ListNeedResponse";
 import ListPurchased from "../../containers/ListPurchased";
-import ListReadyToShip from "../../containers/ListReady";
+import ListReadyToShip from "../../containers/ListReadyToShip";
 import ListNeedPurchased from "../../containers/ListNeedPurchase";
 import ListShipped from "../../containers/ListShipped";
 import { apiGetWithToken } from "../../services/api";
 import { PATH_ORDER } from "../../services/path/order";
+import HeaderOrder from "../../components/HeaderOrder";
 
 const TabPane = Tabs.TabPane;
 const OrderChina = () => {
   const [resListNeedResponse, setResListNeedResponse] = useState([]);
-  const [resTotalNeedResponse, setResTotalNeedResponse] = useState(0);
   const [resListNeedPurchase, setResListNeedPurchase] = useState([]);
-  const [resTotalNeedPurchase, setResTotalNeedPurchase] = useState(0);
   const [resListPurchased, setResListPurchased] = useState([]);
-  const [resTotalPurchased, setResTotalPurchased] = useState(0);
   const [resListReadyToShip, setResListReadyToShip] = useState([]);
-  const [resTotalReadyToShip, setResTotalReadyToShip] = useState(0);
   const [resListShipped, setResListShipped] = useState([]);
-  const [resTotalShipped, setResTotalShipped] = useState(0);
+  const [totalInvoice, setTotalInvoice] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [filter, setFilter] = useState("sea");
+  const [query, setQuery] = useState("");
+  const [categorySearch, setCategorySearch] = useState("invoice_number");
+  const [keyTab, setKeyTab] = useState("NRP");
 
-  const changeTab = key => {
-    switch (key) {
+  const initTabActive = (tab) => {
+    //document.getElementById("text-search").value = "";
+    switch (tab) {
       case "NRP":
         getListNeedResponse();
         break;
@@ -33,111 +36,192 @@ const OrderChina = () => {
         getListPurchased();
         break;
       case "RTS":
+        getListReadyToShip();
         break;
       case "SHP":
+        getListShipped();
         break;
       default:
         getListNeedResponse();
     }
+  }
+
+  const changeTab = key => {
+    setKeyTab(key);
+    initTabActive(key)
   };
 
   useEffect(() => {
     getListNeedResponse();
   }, []);
 
+  // useEffect(() => {
+  //   query !== "" &&
+  //   initTabActive(keyTab);
+  // }, [query]);
+
+  const actionFilter = value => {
+    setFilter(value);
+  };
+
+  const actionCategory = value => {
+    setCategorySearch(value);
+  }
+
+  const actionSearch = (value) => {
+    initTabActive(keyTab);
+  };
+
+  const actionChangeQuery = value => {
+    setQuery(value);
+  }
+
+  const paramGetListInvoice = (categorySearch, query) => {
+    return `?searchBy=${categorySearch}&keyword=${query}`;
+  };
+
+  const revertState = (query, loading, total) => {
+    setQuery(query);
+    setLoading(loading);
+    setTotalInvoice(total);
+  }
+
   const getListNeedResponse = async () => {
+    setLoading(true);
+    setTotalInvoice(0);
     try {
-      const response = await apiGetWithToken(`${PATH_ORDER.MANAGE_ORDER}/NRP`);
+      const response = await apiGetWithToken(
+        `${PATH_ORDER.MANAGE_ORDER}/status/NRP${paramGetListInvoice(categorySearch, query)}`
+      );
+      revertState("", false, response.data.data.total);
       setResListNeedResponse(response.data.data.invoices);
-      setResTotalNeedResponse(response.data.data.total);
     } catch (error) {
+      revertState("", false, 0);
       setResListNeedResponse([]);
-      setResTotalNeedResponse(0);
     }
   };
 
   const getListNeedPurchase = async () => {
+    setLoading(true);
+    setTotalInvoice(0);
     try {
-      const response = await apiGetWithToken(`${PATH_ORDER.MANAGE_ORDER}/NPR`);
+      const response = await apiGetWithToken(
+        `${PATH_ORDER.MANAGE_ORDER}/status/NPR${paramGetListInvoice(categorySearch, query)}`
+      );
+      revertState("", false, response.data.data.total);
       setResListNeedPurchase(response.data.data.invoices);
-      setResTotalNeedPurchase(response.data.data.total);
     } catch (error) {
+      revertState("", false, 0);
       setResListNeedPurchase([]);
-      setResTotalNeedPurchase(0);
     }
   };
 
   const getListPurchased = async () => {
+    setLoading(true);
+    setTotalInvoice(0);
     try {
-      const response = await apiGetWithToken(`${PATH_ORDER.MANAGE_ORDER}/PRC`);
+      const response = await apiGetWithToken(
+        `${PATH_ORDER.MANAGE_ORDER}/status/PRC${paramGetListInvoice(categorySearch, query)}`
+      );
+      revertState("", false, response.data.data.total);
       setResListPurchased(response.data.data.invoices);
-      setResTotalPurchased(response.data.data.total);
     } catch (error) {
+      revertState("", false, 0);
       setResListPurchased([]);
-      setResTotalPurchased(0);
     }
   };
 
   const getListReadyToShip = async () => {
+    setLoading(true);
+    setTotalInvoice(0);
     try {
-      const response = await apiGetWithToken(`${PATH_ORDER.MANAGE_ORDER}/RTS`);
+      const response = await apiGetWithToken(
+        `${PATH_ORDER.MANAGE_ORDER}/status/RTS${paramGetListInvoice(categorySearch, query)}`
+      );
+      revertState("", false, response.data.data.total);
       setResListReadyToShip(response.data.data.invoices);
-      setResTotalReadyToShip(response.data.data.total);
     } catch (error) {
+      revertState("", false, 0);
       setResListReadyToShip([]);
-      setResTotalReadyToShip(0);
     }
   };
 
   const getListShipped = async () => {
+    setLoading(true);
+    setTotalInvoice(0);
     try {
-      const response = await apiGetWithToken(`${PATH_ORDER.MANAGE_ORDER}/SHP`);
+      const response = await apiGetWithToken(
+        `${PATH_ORDER.MANAGE_ORDER}/status/SHP${paramGetListInvoice(categorySearch, query)}`
+      );
+      revertState("", false, response.data.data.total);
       setResListShipped(response.data.data.invoices);
-      setResTotalShipped(response.data.data.total);
     } catch (error) {
+      revertState("", false, 0);
       setResListShipped([]);
-      setResTotalShipped(0);
     }
   };
 
+  const header = () => (
+    <HeaderOrder
+      onChangeFilter={actionFilter}
+      onChangeCategory={actionCategory}
+      onSearch={actionSearch}
+      total={totalInvoice}
+      onChangeQuery={actionChangeQuery}
+      valueSearch={query}
+    />
+  );
+
   return (
-    <Tabs defaultActiveKey="NRP" type="itable-card" onChange={changeTab}>
-      <TabPane tab="Need Response" key="NRP">
-        <ListNeedResponse
-          invoices={resListNeedResponse}
-          total={resTotalNeedResponse}
-          onLoad={()=>getListNeedResponse()}
-        />
-      </TabPane>
-      <TabPane tab="Need Purchase" key="NPR">
-        <ListNeedPurchased 
-          invoices={resListNeedPurchase}
-          total={resTotalNeedPurchase}
-          onLoad={()=>getListNeedPurchase()}
-        />
-      </TabPane>
-      <TabPane tab="Purchased" key="PRC">
-        <ListPurchased 
-          invoices={resListPurchased}
-          total={resTotalPurchased}
-          onLoad={()=>getListPurchased()}
-        />
-      </TabPane>
-      <TabPane tab="Ready To Ship" key="RTS">
-        <ListReadyToShip 
-          invoices={resListReadyToShip}
-          total={resTotalReadyToShip}
-          onLoad={()=>getListReadyToShip()}
-        />
-      </TabPane>
-      <TabPane tab="Shipped" key="SHP">
-        <ListShipped 
-          invoices={resListShipped}
-          total={resTotalShipped}
-          onLoad={()=>getListShipped()}
-        />
-      </TabPane>
-    </Tabs>
+    <React.Fragment>
+      <Tabs defaultActiveKey="NRP" type="itable-card" onChange={changeTab}>
+        <TabPane tab="Need Response" key="NRP">
+          {header()}
+          <ListNeedResponse
+            invoices={resListNeedResponse}
+            total={totalInvoice}
+            loading={loading}
+            onLoad={() => getListNeedResponse()}
+          />
+        </TabPane>
+        <TabPane tab="Need Purchase" key="NPR">
+          {header()}
+          <ListNeedPurchased
+            invoices={resListNeedPurchase}
+            total={totalInvoice}
+            loading={loading}
+            onLoad={() => getListNeedPurchase()}
+          />
+        </TabPane>
+        <TabPane tab="Purchased" key="PRC">
+          {header()}
+          <ListPurchased
+            invoices={resListPurchased}
+            total={totalInvoice}
+            loading={loading}
+            onLoad={() => getListPurchased()}
+          />
+        </TabPane>
+        <TabPane tab="Ready To Ship" key="RTS">
+          {header()}
+          <ListReadyToShip
+            invoices={resListReadyToShip}
+            total={totalInvoice}
+            loading={loading}
+            onLoad={() => getListReadyToShip()}
+          />
+        </TabPane>
+        <TabPane tab="Shipped" key="SHP">
+          {header()}
+          <ListShipped
+            invoices={resListShipped}
+            total={totalInvoice}
+            loading={loading}
+            onLoad={() => getListShipped()}
+          />
+        </TabPane>
+      </Tabs>
+    </React.Fragment>
   );
 };
 

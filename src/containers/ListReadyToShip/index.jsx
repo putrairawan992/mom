@@ -1,44 +1,54 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Row, Col, Card, notification, Icon } from "antd";
-import HeaderOrder from "../../components/HeaderOrder";
+import "../../sass/style.sass";
 import OrderVariant from "../../components/OrderVariant";
-import ModalAddNote from "../../components/ModalAddNote";
-import ModalConfirm from "../../components/ModalConfirm";
+import ReactToPrint from "react-to-print";
+import LabelChina from "../../components/LabelChina";
 import ButtonTextIcon from "../../components/ButtonTextIcon";
+import ModalConfirm from "../../components/ModalConfirm";
 import Button from "../../components/Button";
 import TextInvoiceNumber from "../../components/TextInvoiceNumber";
 import TextProductName from "../../components/TextProductName";
-import OrderDetailIndonesia from "../../components/OrderDetailIndonesia";
 import ModalHistory from "../ModalHistory";
 import ModalReason from "../../containers/ModalReason";
+import strings from "../../localization";
 import { apiPatchWithToken } from "../../services/api";
 import { PATH_ORDER } from "../../services/path/order";
+import ImageShipping from "../../components/ImageShipping";
+import convertTimesTime from "../../helpers/convertTimestime";
 import LoaderItem from "../../components/LoaderItem";
 
-import "../../sass/style.sass";
-
-const ListPickedUp = props => {
+const ListReadyToShip = props => {
+  const [visibleUndo, setVisibleUndo] = useState(false);
   const [visibleAddNote, setVisibleAddNote] = useState(false);
   const [visibleLog, setVisibleLog] = useState(false);
-  const [visibleUndo, setVisibleUndo] = useState(false);
   const [visibleNote, setVisibleNote] = useState(false);
   const [visibleConfirm, setVisibleConfirm] = useState(false);
   const [loadingConfirm, setLoadingConfirm] = useState(false);
 
-  const getListInvoice = async (update = false, action) => {
+  const componentRef = useRef();
+
+  const actionSearch = payload => {
+    console.log(payload);
+  };
+
+  const actionFilter = payload => {
+    console.log(payload);
+  };
+
+  const getListPurchased = async (update = false, action) => {
     try {
       if (update) {
         if (action === "UNDO") {
-          actionUndo();
           await props.onLoad();
+          actionUndo();
           contentNotification(
             "Order Undo.",
             "The Order is being undo, you can see the history in activity log",
             "info-circle",
             "#1890FF"
           );
-        } else if (action === "ADD_NOTES") {
-          actionAddNotes();
+        } else if (action === "NEXT") {
           await props.onLoad();
           contentNotification(
             "New Order has moved to the next process.",
@@ -46,9 +56,22 @@ const ListPickedUp = props => {
             "check-circle",
             "#52C41A"
           );
-        } else if (action === "NEXT") {
-          await props.onLoad();
         }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const patchNextPurchased = async invoiceId => {
+    try {
+      const response = await apiPatchWithToken(
+        `${PATH_ORDER.NEXT}/${invoiceId}`
+      );
+      if (response) {
+        showConfirm();
+        setLoadingConfirm(false);
+        getListPurchased(true, "NEXT");
       }
     } catch (error) {
       console.log(error);
@@ -61,34 +84,11 @@ const ListPickedUp = props => {
         `${PATH_ORDER.UNDO}/${payload.invoiceId}`
       );
       if (response) {
-        getListInvoice(true, "UNDO");
+        getListPurchased(true, "UNDO");
       }
     } catch (error) {
       console.log(error);
     }
-  };
-
-  const patchNextArrival = async invoiceId => {
-    try {
-      const response = await apiPatchWithToken(
-        `${PATH_ORDER.NEXT}/${invoiceId}`
-      );
-      if (response) {
-        showConfirm();
-        setLoadingConfirm(false);
-        getListInvoice(true, "NEXT");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const actionSearch = payload => {
-    console.log(payload);
-  };
-
-  const actionFilter = payload => {
-    console.log(payload);
   };
 
   const contentNotification = (message, description, icon, colorIcon) => {
@@ -103,29 +103,16 @@ const ListPickedUp = props => {
     });
   };
 
-  const showConfirm = () => {
-    setVisibleConfirm(!visibleConfirm);
-  };
-
-  const actionConfirm = invoiceId => {
-    setLoadingConfirm(!loadingConfirm);
-    patchNextArrival(invoiceId);
-  };
-
-  const actionCancelConfirm = () => {
+  const handleReadyToShip = invoiceId => {
     showConfirm();
-  };
-
-  const handleNextAction = () => {
-    showConfirm();
-  };
-
-  const actionSubmitUndo = payload => {
-    patchUndoPurchased(payload);
   };
 
   const actionUndo = () => {
     setVisibleUndo(!visibleUndo);
+  };
+
+  const actionSubmitUndo = payload => {
+    patchUndoPurchased(payload);
   };
 
   const actionAddNotes = () => {
@@ -151,6 +138,19 @@ const ListPickedUp = props => {
     setVisibleNote(!visibleNote);
   };
 
+  const showConfirm = () => {
+    setVisibleConfirm(!visibleConfirm);
+  };
+
+  const actionConfirm = invoiceId => {
+    setLoadingConfirm(!loadingConfirm);
+    patchNextPurchased(invoiceId);
+  };
+
+  const actionCancelConfirm = () => {
+    showConfirm();
+  };
+
   const optionsUndo = [
     { value: "101", name: "Wrong Press" },
     { value: "102", name: "Others" }
@@ -158,11 +158,6 @@ const ListPickedUp = props => {
 
   return (
     <React.Fragment>
-      <HeaderOrder
-        onChangeFilter={actionFilter}
-        onSearch={actionSearch}
-        totalRecord={props.total}
-      />
       {props.loading && (
         <Card>
           <Row type="flex" justify="center">
@@ -190,15 +185,48 @@ const ListPickedUp = props => {
                           productTextChina={item.productSnapshot.nameChina}
                           productTextIndonesia={item.productSnapshot.name}
                         />
-                        <OrderDetailIndonesia
-                          prevStatus="Shipped Time"
-                          item={item}
-                        />
+                        <table border={0}>
+                          <tbody>
+                            <tr>
+                              <td style={{ paddingRight: 20 }}>
+                                <span>{strings.ready_time}</span>
+                              </td>
+                              <td>:</td>
+                              <td>
+                                <span>
+                                  {convertTimesTime.millisecond(item.orderDate)}
+                                </span>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <span>{strings.customer_note}</span>
+                              </td>
+                              <td>:</td>
+                              <td>
+                                <span>{item.note}</span>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
                       </Col>
                       <Col md={12}>
                         <div className="wrap-button">
-                          <Button type="white" onClick={() => handleNextAction()}>
-                            Picked Up
+                          <ReactToPrint
+                            trigger={() => (
+                              <Button type="secondary">Print Label</Button>
+                            )}
+                            content={() => componentRef.current}
+                            closeAfterPrint={true}
+                          />
+                          <div style={{ display: "none" }}>
+                            <LabelChina ref={componentRef} />
+                          </div>
+                          <Button
+                            type="primary"
+                            onClick={() => handleReadyToShip(invoice.id)}
+                          >
+                            Ready To Ship
                           </Button>
                         </div>
                       </Col>
@@ -206,11 +234,12 @@ const ListPickedUp = props => {
                     <Row style={{ marginTop: 16 }}>
                       <Col md={12}>
                         <div className="wrap-variant">
+                          <ImageShipping shipping={item.shipping} />
                           <OrderVariant
                             variant={item.productSnapshot.variant}
                             quantity={item.productSnapshot.quantity}
                             price={item.productSnapshot.price}
-                            withPrice={false}
+                            withPrice={true}
                           />
                         </div>
                       </Col>
@@ -244,39 +273,33 @@ const ListPickedUp = props => {
                   </Col>
                 </Row>
               ))}
-              <ModalConfirm
-                visible={visibleConfirm}
-                value={invoice.id}
-                loading={loadingConfirm}
-                onOk={actionConfirm}
-                onCancel={actionCancelConfirm}
-                title={"Makes Sure that the package is picked up by courier."}
-                description={
-                  "This action button only used if the status update of delivery is not working properly"
-                }
-              />
               <ModalReason
                 visible={visibleUndo}
                 onSubmit={actionSubmitUndo}
                 onCancel={actionUndo}
                 invoiceId={invoice.id}
                 options={optionsUndo}
-                title={"Are you going back / undo to previous process?"}
-                buttonTitle={"Undo"}
-              />
-              <ModalAddNote
-                visible={visibleAddNote}
-                onSubmit={actionSubmitAddNote}
-                onCancel={actionAddNotes}
-                invoiceId={invoice.id}
+                title={strings.modal_undo_title}
+                buttonTitle={strings.undo}
               />
               {/* <ModalHistory
             title="Activity Logs"
-            list={invoice}
+            list={order.activityLogs}
             visible={visibleLog}
             onOk={actionShowLog}
             onCancel={actionShowLog}
           /> */}
+              <ModalConfirm
+                visible={visibleConfirm}
+                value={invoice.id}
+                loading={loadingConfirm}
+                onOk={actionConfirm}
+                onCancel={actionCancelConfirm}
+                title={"Makes Sure that the package is ready to be shipped."}
+                description={
+                  "Please check if the package is neatly wrapped and the label is already patched to the package"
+                }
+              />
             </Card>
           ))
         : null}
@@ -284,4 +307,4 @@ const ListPickedUp = props => {
   );
 };
 
-export default ListPickedUp;
+export default ListReadyToShip;

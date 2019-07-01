@@ -1,32 +1,85 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Row, Col, Card, notification, Icon } from "antd";
 import HeaderOrder from "../../components/HeaderOrder";
 import ModalAddNote from "../../components/ModalAddNote";
-import { needPurchased } from "../../dataSource/need_purchased";
 import ModalConfirm from "../../components/ModalConfirm";
-import ModalConfirmPrint from "../../components/ModalConfirmPrint";
 import ButtonTextIcon from "../../components/ButtonTextIcon";
 import Button from "../../components/Button";
 import TextInvoiceNumber from "../../components/TextInvoiceNumber";
-import ModalReason from '../ModalReason'
+import ModalHistory from "../ModalHistory";
+import ModalReason from "../../containers/ModalReason";
+import { apiPatchWithToken } from "../../services/api";
+import { PATH_ORDER } from "../../services/path/order";
+import LoaderItem from "../../components/LoaderItem";
+
 import "../../sass/style.sass";
 import "./style.sass";
-import ModalHistory from "../ModalHistory";
 
-const ListDelivered = () => {
-  const [orders, setOrders] = useState([]);
+const ListDelivered = props => {
   const [visibleAddNote, setVisibleAddNote] = useState(false);
-  const [visibleUndo, setVisibleUndo] = useState(false);
   const [visibleLog, setVisibleLog] = useState(false);
+  const [visibleUndo, setVisibleUndo] = useState(false);
   const [visibleNote, setVisibleNote] = useState(false);
   const [visibleConfirm, setVisibleConfirm] = useState(false);
   const [loadingConfirm, setLoadingConfirm] = useState(false);
-  const [visibleConfirmPrint, setVisibleConfirmPrint] = useState(false);
 
-  useEffect(() => {
-    const data = needPurchased.data;
-    setOrders(data);
-  }, []);
+  const getListInvoice = async (update = false, action) => {
+    try {
+      if (update) {
+        if (action === "UNDO") {
+          actionUndo();
+          await props.onLoad();
+          contentNotification(
+            "Order Undo.",
+            "The Order is being undo, you can see the history in activity log",
+            "info-circle",
+            "#1890FF"
+          );
+        } else if (action === "ADD_NOTES") {
+          actionAddNotes();
+          await props.onLoad();
+          contentNotification(
+            "New Order has moved to the next process.",
+            "Continue responding the order you have selected in Need Purchased Tabs.",
+            "check-circle",
+            "#52C41A"
+          );
+        } else if (action === "NEXT") {
+          await props.onLoad();
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const patchUndoPurchased = async payload => {
+    try {
+      const response = await apiPatchWithToken(
+        `${PATH_ORDER.UNDO}/${payload.invoiceId}`
+      );
+      if (response) {
+        getListInvoice(true, "UNDO");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const patchNextArrival = async invoiceId => {
+    try {
+      const response = await apiPatchWithToken(
+        `${PATH_ORDER.NEXT}/${invoiceId}`
+      );
+      if (response) {
+        showConfirm();
+        setLoadingConfirm(false);
+        getListInvoice(true, "NEXT");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const actionSearch = payload => {
     console.log(payload);
@@ -52,62 +105,21 @@ const ListDelivered = () => {
     setVisibleConfirm(!visibleConfirm);
   };
 
-  const actionConfirm = () => {
+  const actionConfirm = invoiceId => {
     setLoadingConfirm(!loadingConfirm);
-    return new Promise((resolve, reject) => {
-      setTimeout(2 > 0.5 ? resolve : reject, 2000);
-    })
-      .then(() => {
-        showConfirm();
-      })
-      .then(() => {
-        setLoadingConfirm(false);
-        showModalPrint();
-      })
-      .catch(() => console.log("Oops errors!"));
+    patchNextArrival(invoiceId);
   };
 
   const actionCancelConfirm = () => {
     showConfirm();
   };
 
-  const showModalPrint = () => {
-    setVisibleConfirmPrint(!visibleConfirmPrint);
-  };
-
-  const actionConfirmPrint = () => {
-    showModalPrint();
-    notifCreateReceipt();
-  };
-
-  const actionCancelPrint = () => {
-    showModalPrint();
-    notifCreateReceipt();
-  };
-
-  const handleCreateReceipt = invoiceId => {
-    console.log(invoiceId);
+  const handleNextAction = () => {
     showConfirm();
   };
 
-  const notifCreateReceipt = () => {
-    contentNotification(
-      "New Order has moved to the next process.",
-      "Continue responding the order you have selected in Need Purchased Tabs.",
-      "check-circle",
-      "#52C41A"
-    );
-  };
-
   const actionSubmitUndo = payload => {
-    console.log(payload);
-    actionUndo();
-    contentNotification(
-      "Order Undo.",
-      "The Order is being undo, you can see the history in activity log",
-      "info-circle",
-      "#1890FF"
-    );
+    patchUndoPurchased(payload);
   };
 
   const actionUndo = () => {
@@ -141,134 +153,131 @@ const ListDelivered = () => {
     { value: "101", name: "Wrong Press" },
     { value: "102", name: "Others" }
   ];
-  
+
   return (
     <React.Fragment>
       <HeaderOrder
         onChangeFilter={actionFilter}
         onSearch={actionSearch}
-        totalRecord={80}
+        totalRecord={props.total}
       />
-      {orders.map(order => (
-        <Card key={order.invoiceId}>
-          {order.indexes.map(index => (
-            <Row key={index.id}>
-              <Col md={2}>
-                <img
-                  src={index.productImage}
-                  alt=""
-                  className="img-order-product"
-                />
-              </Col>
-              <Col md={22}>
-                <Row>
-                  <Col md={12}>
-                    <TextInvoiceNumber invoiceNumber={order.invoiceNumber} />
-                    <table border={0}>
-                      <tbody>
-                        <tr>
-                          <td style={{ paddingRight: 20 }}>
-                            <span>Delivered Time </span>
-                          </td>
-                          <td>:</td>
-                          <td>
-                            <span>28-02-2019 13:20</span>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
+      {props.loading && (
+        <Card>
+          <Row type="flex" justify="center">
+            <LoaderItem size={10} loading={props.loading} />
+          </Row>
+        </Card>
+      )}
+      {props.invoices && !props.loading
+        ? props.invoices.map(invoice => (
+            <Card key={invoice.id}>
+              {invoice.items.map(item => (
+                <Row key={item.id}>
+                  <Col md={2}>
+                    <img
+                      src={item.productSnapshot.image}
+                      alt=""
+                      className="img-order-product"
+                    />
                   </Col>
-                  <Col md={12}>
-                    <div className="wrap-button">
-                      <Button
-                        type="white"
-                        onClick={() => handleCreateReceipt(order.invoiceId)}
-                      >
-                        See Detail
-                      </Button>
-                    </div>
+                  <Col md={22}>
+                    <Row>
+                      <Col md={12}>
+                        <TextInvoiceNumber invoiceNumber={invoice.number} />
+                        <table border={0}>
+                          <tbody>
+                            <tr>
+                              <td style={{ paddingRight: 20 }}>
+                                <span>Delivered Time </span>
+                              </td>
+                              <td>:</td>
+                              <td>
+                                <span>28-02-2019 13:20</span>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </Col>
+                      <Col md={12}>
+                        <div className="wrap-button">
+                          <Button type="white" onClick={() => handleNextAction()}>
+                            Picked Up
+                          </Button>
+                        </div>
+                      </Col>
+                    </Row>
+                    <Row style={{ marginTop: 16 }}>
+                      <Col md={12}>
+                        <div className="wrap-variant">
+                          <span className="delivered-text">Delivered</span>
+                        </div>
+                      </Col>
+                      <Col offset={3} md={9}>
+                        <div className="wrap-button-text-icon">
+                          <ButtonTextIcon
+                            icon="rollback"
+                            label="Undo"
+                            onClick={actionUndo}
+                          />
+                          <ButtonTextIcon
+                            icon="message"
+                            label="Add Admin Notes"
+                            onClick={actionAddNotes}
+                          />
+                        </div>
+                        <div className="wrap-button-text-icon">
+                          <ButtonTextIcon
+                            icon="file-exclamation"
+                            label="Show Logs"
+                            onClick={actionShowLog}
+                          />
+                          <ButtonTextIcon
+                            icon="file-text"
+                            label="Show Admin Notes"
+                            onClick={actionShowNote}
+                          />
+                        </div>
+                      </Col>
+                    </Row>
                   </Col>
                 </Row>
-                <Row style={{ marginTop: 16 }}>
-                  <Col md={12}>
-                    <div className="wrap-variant">
-                      <span className="delivered-text">Delivered</span>
-                    </div>
-                  </Col>
-                  <Col offset={3} md={9}>
-                    <div className="wrap-button-text-icon">
-                      <ButtonTextIcon
-                        icon="rollback"
-                        label="Undo"
-                        onClick={actionUndo}
-                      />
-                      <ButtonTextIcon
-                        icon="message"
-                        label="Add Admin Notes"
-                        onClick={actionAddNotes}
-                      />
-                    </div>
-                    <div className="wrap-button-text-icon">
-                      <ButtonTextIcon
-                        icon="file-exclamation"
-                        label="Show Logs"
-                        onClick={actionShowLog}
-                      />
-                      <ButtonTextIcon
-                        icon="file-text"
-                        label="Show Admin Notes"
-                        onClick={actionShowNote}
-                      />
-                    </div>
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
-          ))}
-          <ModalConfirm
-            visible={visibleConfirm}
-            loading={loadingConfirm}
-            onOk={actionConfirm}
-            onCancel={actionCancelConfirm}
-            title={"Makes Sure that the package is ready to be delivered."}
-            description={
-              "Before creating the receipt, please make sure that the product is already checked and being re-packed"
-            }
-          />
-          <ModalConfirmPrint
-            visible={visibleConfirmPrint}
-            loading={false}
-            onOk={actionConfirmPrint}
-            onCancel={actionCancelPrint}
-            title={
-              "The order has moved to the next process, you can print the label now or you can print it later."
-            }
-            description={""}
-          />
-          <ModalReason
-            visible={visibleUndo}
-            onSubmit={actionSubmitUndo}
-            onCancel={actionUndo}
-            invoiceId={order.invoiceId}
-            options={optionsUndo}
-            title={"Are you going back / undo to previous process?"}
-            buttonTitle={"Undo"}
-          />
-          <ModalAddNote
-            visible={visibleAddNote}
-            onSubmit={actionSubmitAddNote}
-            onCancel={actionAddNotes}
-            invoiceId={order.invoiceId}
-          />
-          <ModalHistory
+              ))}
+              <ModalConfirm
+                visible={visibleConfirm}
+                value={invoice.id}
+                loading={loadingConfirm}
+                onOk={actionConfirm}
+                onCancel={actionCancelConfirm}
+                title={"Makes Sure that the package is picked up by courier."}
+                description={
+                  "This action button only used if the status update of delivery is not working properly"
+                }
+              />
+              <ModalReason
+                visible={visibleUndo}
+                onSubmit={actionSubmitUndo}
+                onCancel={actionUndo}
+                invoiceId={invoice.id}
+                options={optionsUndo}
+                title={"Are you going back / undo to previous process?"}
+                buttonTitle={"Undo"}
+              />
+              <ModalAddNote
+                visible={visibleAddNote}
+                onSubmit={actionSubmitAddNote}
+                onCancel={actionAddNotes}
+                invoiceId={invoice.id}
+              />
+              {/* <ModalHistory
             title="Activity Logs"
-            list={order.activityLogs}
+            list={invoice}
             visible={visibleLog}
             onOk={actionShowLog}
             onCancel={actionShowLog}
-          />
-        </Card>
-      ))}
+          /> */}
+            </Card>
+          ))
+        : null}
     </React.Fragment>
   );
 };

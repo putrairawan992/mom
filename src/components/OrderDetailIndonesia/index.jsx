@@ -1,8 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 import "./style.sass";
+import convertTimesTime from "../../helpers/convertTimestime";
 
-const OrderDetailIndonesia = ({ prevStatus, index }) => {
+const OrderDetailIndonesia = ({ prevStatus, item }) => {
   return (
     <table border={0}>
       <tbody>
@@ -12,7 +13,7 @@ const OrderDetailIndonesia = ({ prevStatus, index }) => {
           </td>
           <td>:</td>
           <td>
-            <span>{index.note}</span>
+            <span>{item.supplierSnapshot.name}</span>
           </td>
         </tr>
         <tr>
@@ -21,7 +22,7 @@ const OrderDetailIndonesia = ({ prevStatus, index }) => {
           </td>
           <td>:</td>
           <td>
-            <span>{index.note}</span>
+            <span>{item.note}</span>
           </td>
         </tr>
         <tr>
@@ -30,7 +31,7 @@ const OrderDetailIndonesia = ({ prevStatus, index }) => {
           </td>
           <td>:</td>
           <td>
-            <span>28-02-2019 13:20</span>
+            <span>{convertTimesTime.millisecond(item.orderDate)}</span>
           </td>
         </tr>
       </tbody>
@@ -40,7 +41,7 @@ const OrderDetailIndonesia = ({ prevStatus, index }) => {
 
 OrderDetailIndonesia.propTypes = {
   prevStatus: PropTypes.string,
-  index: PropTypes.object
+  item: PropTypes.object
 };
 
 export default OrderDetailIndonesia;

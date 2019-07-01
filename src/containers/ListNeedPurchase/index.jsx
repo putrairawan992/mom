@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Row, Col, Card, notification, Icon } from "antd";
-import HeaderOrder from "../../components/HeaderOrder";
 import OrderVariant from "../../components/OrderVariant";
 import ModalSupplier from "../../containers/ModalSupplier";
 import ModalAddNote from "../../components/ModalAddNote";
@@ -10,7 +9,7 @@ import TextInvoiceNumber from "../../components/TextInvoiceNumber";
 import TextProductName from "../../components/TextProductName";
 import ModalReason from "../../containers/ModalReason";
 import ModalHistory from "../ModalHistory";
-import { apiPatchWithToken } from "../../services/api";
+import { apiPatchWithToken, apiPostWithToken } from "../../services/api";
 import { PATH_ORDER } from "../../services/path/order";
 import ImageShipping from "../../components/ImageShipping";
 import convertTimesTime from "../../helpers/convertTimestime";
@@ -18,6 +17,7 @@ import strings from '../../localization';
 
 import "../../sass/style.sass";
 import "./style.sass";
+import LoaderItem from "../../components/LoaderItem";
 
 const ListNeedPurchased = (props) => {
   const [visibleSupplier, setVisibleSupplier] = useState(false);
@@ -31,8 +31,8 @@ const ListNeedPurchased = (props) => {
     try {
       if(update){
         if(action === "UNDO"){
-          await props.onLoad();
           actionUndo();
+          await props.onLoad();
           contentNotification(
             "Order Undo.",
             "The Order is being undo, you can see the history in activity log",
@@ -40,8 +40,8 @@ const ListNeedPurchased = (props) => {
             "#1890FF"
           );
         }else if(action === "CANCEL"){
-          await props.onLoad();
           actionCancel();
+          await props.onLoad();
           contentNotification(
             "Order Canceled.",
             "The Order is being canceled, you can see the history in activity log or canceled order tab",
@@ -74,9 +74,15 @@ const ListNeedPurchased = (props) => {
     }
   }
 
-  const patchUndoNeedPurchase = async (payload) => {
+  const patchUndoNeedPurchase = async (value) => {
+    const payload = {
+      invoiceId: value.invoiceId,
+      subCode: value.reason,
+      note: value.note
+    }
+
     try {
-      const response = await apiPatchWithToken(`${PATH_ORDER.UNDO}/${payload.invoiceId}`);
+      const response = await apiPostWithToken(`${PATH_ORDER.UNDO}`,payload);
       if(response){
         getListNeedPurchase(true, "UNDO");
       }
@@ -95,14 +101,6 @@ const ListNeedPurchased = (props) => {
       console.log(error);
     }
   }
-
-  const actionSearch = payload => {
-    console.log(payload);
-  };
-
-  const actionFilter = payload => {
-    console.log(payload);
-  };
 
   const contentNotification = (message, description, icon, colorIcon) => {
     notification.open({
@@ -133,6 +131,8 @@ const ListNeedPurchased = (props) => {
   };
 
   const actionSubmitUndo = payload => {
+    console.log(payload);
+    
     patchUndoNeedPurchase(payload);
   };
 
@@ -179,12 +179,14 @@ const ListNeedPurchased = (props) => {
 
   return (
     <React.Fragment>
-      <HeaderOrder
-        onChangeFilter={actionFilter}
-        onSearch={actionSearch}
-        totalRecord={props.total}
-      />
-      {props.invoices ? props.invoices.map(invoice => (
+      {props.loading && (
+        <Card>
+          <Row type="flex" justify="center">
+            <LoaderItem size={10} loading={props.loading} />
+          </Row>
+        </Card>
+      )}
+      {props.invoices && !props.loading ? props.invoices.map(invoice => (
         <Card key={invoice.id}>
         {invoice.items.map(item => (
             <Row key={item.id}>

@@ -45,7 +45,8 @@ const Modal = ({visible, onSubmit, onCancel, invoiceId, options, title,buttonTit
 				<Formik
 					initialValues={{reason: options ? options[0].value : "default", note: ""}}
 					onSubmit={values => {
-						onSubmit({ ...values, invoiceId})
+						//onSubmit({ ...values, invoiceId})
+						console.log({values, invoiceId});
 					}}
 					validationSchema={schema}
 				>

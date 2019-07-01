@@ -1,7 +1,6 @@
 import React from "react";
 import { Row, Col, Card, notification, Icon } from "antd";
 import "./style.sass";
-import HeaderOrder from "../../components/HeaderOrder";
 import OrderVariant from "../../components/OrderVariant";
 import Button from "../../components/Button";
 import TextInvoiceNumber from "../../components/TextInvoiceNumber";
@@ -11,6 +10,7 @@ import { PATH_ORDER } from "../../services/path/order";
 import convertTimesTime from "../../helpers/convertTimestime";
 import ImageShipping from "../../components/ImageShipping";
 import strings from '../../localization';
+import LoaderItem from "../../components/LoaderItem";
 
 const ListNeedResponse = (props) => {
   const getListNeedResponse = async (update=false) => {
@@ -40,18 +40,6 @@ const ListNeedResponse = (props) => {
     }
   }
 
-  // useEffect(() => {
-  //   getListNeedResponse();
-  // }, []);
-
-  const actionSearch = payload => {
-    console.log(payload);
-  };
-
-  const actionFilter = payload => {
-    console.log(payload);
-  };
-
   const contentNotification = (message, description, icon, colorIcon) => {
     notification.open({
       message: message,
@@ -70,12 +58,14 @@ const ListNeedResponse = (props) => {
 
   return (
     <React.Fragment>
-      <HeaderOrder
-        onChangeFilter={actionFilter}
-        onSearch={actionSearch}
-        totalRecord={props.total}
-      />
-      {props.invoices ? props.invoices.map(invoice => (
+      {props.loading && (
+        <Card>
+          <Row type="flex" justify="center">
+            <LoaderItem size={10} loading={props.loading} />
+          </Row>
+        </Card>
+      )}
+      {props.invoices && !props.loading ? props.invoices.map(invoice => (
         <Card key={invoice.id}>
           {invoice.items.map(item => (
             <Row key={item.id}>
