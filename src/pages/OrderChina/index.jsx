@@ -8,6 +8,8 @@ import ListShipped from "../../containers/ListShipped";
 import { apiGetWithToken } from "../../services/api";
 import { PATH_ORDER } from "../../services/path/order";
 import HeaderOrder from "../../components/HeaderOrder";
+import NotFoundOrder from "../../components/NotFoundOrder";
+import NotFoundSearch from "../../components/NotFoundSearch";
 
 const TabPane = Tabs.TabPane;
 const OrderChina = () => {
@@ -18,13 +20,13 @@ const OrderChina = () => {
   const [resListShipped, setResListShipped] = useState([]);
   const [totalInvoice, setTotalInvoice] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [searching, setSearching] = useState(false);
   const [filter, setFilter] = useState("sea");
   const [query, setQuery] = useState("");
   const [categorySearch, setCategorySearch] = useState("invoice_number");
   const [keyTab, setKeyTab] = useState("NRP");
 
   const initTabActive = (tab) => {
-    //document.getElementById("text-search").value = "";
     switch (tab) {
       case "NRP":
         getListNeedResponse();
@@ -47,18 +49,15 @@ const OrderChina = () => {
   }
 
   const changeTab = key => {
+    setSearching(false);
     setKeyTab(key);
-    initTabActive(key)
+    initTabActive(key);
   };
 
   useEffect(() => {
+    setSearching(false);
     getListNeedResponse();
   }, []);
-
-  // useEffect(() => {
-  //   query !== "" &&
-  //   initTabActive(keyTab);
-  // }, [query]);
 
   const actionFilter = value => {
     setFilter(value);
@@ -69,6 +68,7 @@ const OrderChina = () => {
   }
 
   const actionSearch = (value) => {
+    setSearching(true);
     initTabActive(keyTab);
   };
 
@@ -97,7 +97,7 @@ const OrderChina = () => {
       setResListNeedResponse(response.data.data.invoices);
     } catch (error) {
       revertState("", false, 0);
-      setResListNeedResponse([]);
+      setResListNeedResponse(false);
     }
   };
 
@@ -112,7 +112,7 @@ const OrderChina = () => {
       setResListNeedPurchase(response.data.data.invoices);
     } catch (error) {
       revertState("", false, 0);
-      setResListNeedPurchase([]);
+      setResListNeedPurchase(false);
     }
   };
 
@@ -127,7 +127,7 @@ const OrderChina = () => {
       setResListPurchased(response.data.data.invoices);
     } catch (error) {
       revertState("", false, 0);
-      setResListPurchased([]);
+      setResListPurchased(false);
     }
   };
 
@@ -142,7 +142,7 @@ const OrderChina = () => {
       setResListReadyToShip(response.data.data.invoices);
     } catch (error) {
       revertState("", false, 0);
-      setResListReadyToShip([]);
+      setResListReadyToShip(false);
     }
   };
 
@@ -157,9 +157,15 @@ const OrderChina = () => {
       setResListShipped(response.data.data.invoices);
     } catch (error) {
       revertState("", false, 0);
-      setResListShipped([]);
+      setResListShipped(false);
     }
   };
+
+  const notFound = (searching) => {
+    return searching ? 
+    <NotFoundSearch />
+    : <NotFoundOrder />
+  }
 
   const header = () => (
     <HeaderOrder
@@ -171,7 +177,6 @@ const OrderChina = () => {
       valueSearch={query}
     />
   );
-
   return (
     <React.Fragment>
       <Tabs defaultActiveKey="NRP" type="itable-card" onChange={changeTab}>
@@ -182,7 +187,9 @@ const OrderChina = () => {
             total={totalInvoice}
             loading={loading}
             onLoad={() => getListNeedResponse()}
-          />
+          >
+            {notFound(searching)}
+          </ListNeedResponse>
         </TabPane>
         <TabPane tab="Need Purchase" key="NPR">
           {header()}
@@ -191,7 +198,9 @@ const OrderChina = () => {
             total={totalInvoice}
             loading={loading}
             onLoad={() => getListNeedPurchase()}
-          />
+          >
+            {notFound(searching)}
+          </ListNeedPurchased>
         </TabPane>
         <TabPane tab="Purchased" key="PRC">
           {header()}
@@ -200,7 +209,9 @@ const OrderChina = () => {
             total={totalInvoice}
             loading={loading}
             onLoad={() => getListPurchased()}
-          />
+          >
+            {notFound(searching)}
+          </ListPurchased>
         </TabPane>
         <TabPane tab="Ready To Ship" key="RTS">
           {header()}
@@ -209,7 +220,9 @@ const OrderChina = () => {
             total={totalInvoice}
             loading={loading}
             onLoad={() => getListReadyToShip()}
-          />
+          >
+            {notFound(searching)}
+          </ListReadyToShip>
         </TabPane>
         <TabPane tab="Shipped" key="SHP">
           {header()}
@@ -218,7 +231,9 @@ const OrderChina = () => {
             total={totalInvoice}
             loading={loading}
             onLoad={() => getListShipped()}
-          />
+          >
+            {notFound(searching)}
+          </ListShipped>
         </TabPane>
       </Tabs>
     </React.Fragment>

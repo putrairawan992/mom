@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState} from "react";
 import PropTypes from "prop-types";
 import { Row, Col, Card, Select, Input } from "antd";
 import "./style.sass";
@@ -8,6 +8,7 @@ const Search = Input.Search;
 const Option = Select.Option;
 
 const HeaderOrder = props => {
+  const [searchKeyword, setSearchKeyword] = useState("");
   return (<Card>
     <Row type="flex" justify="space-between">
       <Col>
@@ -30,13 +31,20 @@ const HeaderOrder = props => {
           </Select>
           <Search
             placeholder="input search text"
-            onSearch={(value,event) => {props.onSearch(value)
-            console.log(event.target)
-            }}
+            onSearch={value => {
+                setSearchKeyword("");
+                props.onSearch(value)
+              }
+            }
             id="text-search"
             style={{ width: 500 }}
             size="large"
-            onChange={event => props.onChangeQuery(event.target.value)}
+            value={searchKeyword}
+            onChange={event => {
+              setSearchKeyword(event.target.value);
+              props.onChangeQuery(event.target.value)
+              }
+            }
           />
         </InputGroup>
       </Col>

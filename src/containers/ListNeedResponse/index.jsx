@@ -11,6 +11,7 @@ import convertTimesTime from "../../helpers/convertTimestime";
 import ImageShipping from "../../components/ImageShipping";
 import strings from '../../localization';
 import LoaderItem from "../../components/LoaderItem";
+import NotFoundOrder from "../../components/NotFoundOrder";
 
 const ListNeedResponse = (props) => {
   const getListNeedResponse = async (update=false) => {
@@ -59,7 +60,7 @@ const ListNeedResponse = (props) => {
   return (
     <React.Fragment>
       {props.loading && (
-        <Card>
+        <Card className="card-loading">
           <Row type="flex" justify="center">
             <LoaderItem size={10} loading={props.loading} />
           </Row>
@@ -67,11 +68,11 @@ const ListNeedResponse = (props) => {
       )}
       {props.invoices && !props.loading ? props.invoices.map(invoice => (
         <Card key={invoice.id}>
-          {invoice.items.map(item => (
+          {invoice.order.orderItems.map(item => (
             <Row key={item.id}>
               <Col md={2}>
                 <img
-                  src={item.productSnapshot.image}
+                  src={item.productSnapshot.image.defaultImage}
                   alt=""
                   className="img-order-product"
                 />
@@ -79,7 +80,7 @@ const ListNeedResponse = (props) => {
               <Col md={22}>
                 <Row>
                   <Col md={12}>
-                    <TextInvoiceNumber invoiceNumber={invoice.number} />
+                    <TextInvoiceNumber invoiceNumber={invoice.invoiceNumber} />
                     <TextProductName
                       productTextChina={item.productSnapshot.nameChina}
                       productTextIndonesia={item.productSnapshot.name}
@@ -92,7 +93,7 @@ const ListNeedResponse = (props) => {
                           </td>
                           <td>:</td>
                           <td>
-                            <span>{convertTimesTime.millisecond(item.orderDate)}</span>
+                            <span>{invoice.order.orderActivityDate.orderDate}</span>
                           </td>
                         </tr>
                         <tr>
@@ -123,7 +124,7 @@ const ListNeedResponse = (props) => {
                     <div className="wrap-variant">
                       <ImageShipping shipping={item.shipping} />
                       <OrderVariant
-                        variant={item.productSnapshot.variant}
+                        variants={item.productSnapshot.informations}
                         quantity={item.productSnapshot.quantity}
                         price={item.productSnapshot.price}
                         withPrice={true}
@@ -135,7 +136,7 @@ const ListNeedResponse = (props) => {
             </Row>
           ))}
         </Card>
-      )):null}
+      )) : props.children}
     </React.Fragment>
   );
 };
