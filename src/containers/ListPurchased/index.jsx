@@ -82,7 +82,7 @@ const ListPurchased = props => {
     try {
       const response = await apiPatchWithToken(`${PATH_ORDER.NEXT}/${invoiceId}`);
       if (response) {
-        setLoading(!loading);
+        setLoading(false);
         setVisibleConfirm(!visibleConfirm);
         setVisibleConfirmPrint(!visibleConfirmPrint);
         

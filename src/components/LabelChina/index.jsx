@@ -8,16 +8,16 @@ class LabelChina extends React.Component {
     return variants.map(variant => `${variant.value}`).join(", ");
   };
   render() {
-    const { noInvoice, order, item } = this.props;
+    const {noInvoice, order } = this.props;
     return (
       <div className="label-body">
         <div className="label-china">
           <div className="label-invoice">
             <p>{noInvoice}</p>
           </div>
-          {/* {order.orderItems.map(item => {
-            return ( */}
-              <div className="label-info">
+          {order.orderItems.map(item => {
+            return (
+              <div key={item.id} className="label-info">
                 <div className="label-items-info">
                   <Row>
                     <Col md={4} className="label-item">
@@ -82,7 +82,7 @@ class LabelChina extends React.Component {
                 </Row>
               </div>
             );
-        //  })}
+          })}
           <div className="label-logo-bottom">
             <img
               src={monggopesen_logo}
