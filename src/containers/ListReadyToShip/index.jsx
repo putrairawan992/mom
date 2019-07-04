@@ -30,7 +30,6 @@ const ListReadyToShip = props => {
   const [visibleLogActivities, setVisibleLogActivities] = useState(false);
   const [visibleLogNoteAdmin, setVisibleLogNoteAdmin] = useState(false);
   const [visibleConfirm, setVisibleConfirm] = useState(false);
-  const [visibleConfirmPrint, setVisibleConfirmPrint] = useState(false);
   const [listLogActivity, setListLogActivity] = useState([]);
   const [listLogNote, setListLogNote] = useState([]);
   const [invoiceById, setInvoiceById] = useState(null);
@@ -38,6 +37,7 @@ const ListReadyToShip = props => {
   const [loading, setLoading] = useState(false);
 
   const componentRef = useRef();
+
   const updateList = async (update = false, action) => {
     try {
       if (update) {
@@ -75,7 +75,7 @@ const ListReadyToShip = props => {
       if (response) {
         setLoading(false);
         setVisibleConfirm(!visibleConfirm);
-        setVisibleConfirmPrint(!visibleConfirmPrint);
+        updateList(true, "NEXT");
       }
     } catch (error) {
       console.log(error);
@@ -191,6 +191,8 @@ const ListReadyToShip = props => {
   };
 
   const handlePrint = (invoiceId) => {
+    console.log(invoiceId);
+    
     const getInvoice = props.invoices.find(invoice => invoice.id === invoiceId);
     setInvoiceById(getInvoice);
   }
@@ -334,6 +336,7 @@ const ListReadyToShip = props => {
             </Card>
           ))
         : props.children}
+        
         <ModalConfirm
           visible={visibleConfirm}
           value={refInvoice}
@@ -374,20 +377,6 @@ const ListReadyToShip = props => {
         onOk={actionShowLogNoteAdmin}
         onCancel={actionShowLogNoteAdmin}
       />
-      {/* {invoiceById &&
-        <ModalConfirmPrint
-          visible={visibleConfirmPrint}
-          loading={false}
-          onOk={actionConfirmPrint}
-          onCancel={actionCancelPrint}
-          title={
-            "The order has moved to the next process, you can print the label now or you can print it later."
-          }
-          description={""}
-        >
-          <LabelChina noInvoice={invoiceById.invoiceNumber} order={invoiceById.order} />
-        </ModalConfirmPrint>
-      } */}
     </React.Fragment>
   );
 };
