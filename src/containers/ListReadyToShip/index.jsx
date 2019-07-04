@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 import { Row, Col, Card, notification, Icon } from "antd";
 import OrderVariant from "../../components/OrderVariant";
 import ModalAddNote from "../../components/ModalAddNote";
@@ -36,7 +36,7 @@ const ListReadyToShip = props => {
   const [refInvoice, setRefInvoice] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const componentRef = useRef();
+  const componentRef = [];
 
   const updateList = async (update = false, action) => {
     try {
@@ -262,11 +262,9 @@ const ListReadyToShip = props => {
                         <div className="wrap-button">
                           <ReactToPrint
                             trigger={() => (
-                              <Button type="secondary" onClick={()=>handlePrint(invoice.id)}>
-                                Print Label
-                              </Button>
+                              <Button type="secondary">Print Label</Button>
                             )}
-                            content={() => componentRef.current}
+                            content={() => componentRef[invoice.id]}
                             closeAfterPrint={true}
                           />
                           <Button
@@ -331,7 +329,7 @@ const ListReadyToShip = props => {
                 </Row>
               ))}
               <div style={{ display: "none" }}>
-                <LabelChina ref={componentRef} noInvoice={invoice.invoiceNumber} order={invoice.order} />
+                <LabelChina ref={(el)=>componentRef[invoice.id]=el} noInvoice={invoice.invoiceNumber} order={invoice.order} />
               </div>
             </Card>
           ))

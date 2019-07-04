@@ -77,7 +77,10 @@ const OrderChina = () => {
   }
 
   const paramGetListInvoice = (categorySearch, query) => {
-    return `?searchBy=${categorySearch}&keyword=${query}`;
+    return {
+      searchBy: categorySearch,
+      keyword: query
+    }
   };
 
   const revertState = (query, loading, total) => {
@@ -91,7 +94,7 @@ const OrderChina = () => {
     setTotalInvoice(0);
     try {
       const response = await apiGetWithToken(
-        `${PATH_ORDER.MANAGE_ORDER}/status/NRP${paramGetListInvoice(categorySearch, query)}`
+        `${PATH_ORDER.STATUS}/NRP`,paramGetListInvoice(categorySearch, query)
       );
       revertState("", false, response.data.data.total);
       setResListNeedResponse(response.data.data.invoices);
@@ -106,7 +109,7 @@ const OrderChina = () => {
     setTotalInvoice(0);
     try {
       const response = await apiGetWithToken(
-        `${PATH_ORDER.MANAGE_ORDER}/status/NPR${paramGetListInvoice(categorySearch, query)}`
+        `${PATH_ORDER.STATUS}/NPR`,paramGetListInvoice(categorySearch, query)
       );
       revertState("", false, response.data.data.total);
       setResListNeedPurchase(response.data.data.invoices);
@@ -121,7 +124,7 @@ const OrderChina = () => {
     setTotalInvoice(0);
     try {
       const response = await apiGetWithToken(
-        `${PATH_ORDER.MANAGE_ORDER}/status/PRC${paramGetListInvoice(categorySearch, query)}`
+        `${PATH_ORDER.STATUS}/PRC`,paramGetListInvoice(categorySearch, query)
       );
       revertState("", false, response.data.data.total);
       setResListPurchased(response.data.data.invoices);
@@ -136,7 +139,7 @@ const OrderChina = () => {
     setTotalInvoice(0);
     try {
       const response = await apiGetWithToken(
-        `${PATH_ORDER.MANAGE_ORDER}/status/RTS${paramGetListInvoice(categorySearch, query)}`
+        `${PATH_ORDER.STATUS}/RTS`, paramGetListInvoice(categorySearch, query)
       );
       revertState("", false, response.data.data.total);
       setResListReadyToShip(response.data.data.invoices);
@@ -151,7 +154,7 @@ const OrderChina = () => {
     setTotalInvoice(0);
     try {
       const response = await apiGetWithToken(
-        `${PATH_ORDER.MANAGE_ORDER}/status/SHP${paramGetListInvoice(categorySearch, query)}`
+        `${PATH_ORDER.STATUS}/SHP`, paramGetListInvoice(categorySearch, query)
       );
       revertState("", false, response.data.data.total);
       setResListShipped(response.data.data.invoices);
@@ -177,6 +180,7 @@ const OrderChina = () => {
       valueSearch={query}
     />
   );
+
   return (
     <React.Fragment>
       <Tabs defaultActiveKey="NRP" type="itable-card" onChange={changeTab}>
