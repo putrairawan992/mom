@@ -21,7 +21,7 @@ const OrderIndonesia = () => {
   const [searching, setSearching] = useState(false);
   const [query, setQuery] = useState("");
   const [categorySearch, setCategorySearch] = useState("invoice_number");
-  const [keyTab, setKeyTab] = useState("NRP");
+  const [keyTab, setKeyTab] = useState("ARV");
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState("air");
 
@@ -96,7 +96,7 @@ const OrderIndonesia = () => {
       setResListArrival(response.data.data.invoices);
     } catch (error) {
       revertState("", false, 0);
-      setResListArrival([]);
+      setResListArrival(null);
     }
   };
 
@@ -104,12 +104,12 @@ const OrderIndonesia = () => {
     setLoading(true);
     setTotalInvoice(0);
     try {
-      const response = await apiGetWithToken(`${PATH_ORDER.STATUS}/ARV`,paramGetListInvoice(categorySearch, query));
+      const response = await apiGetWithToken(`${PATH_ORDER.STATUS}/RCP`,paramGetListInvoice(categorySearch, query));
       revertState("", false, response.data.data.total);
       setResListReadyPickUp(response.data.data.invoices);
     } catch (error) {
       revertState("", false, 0);
-      setResListReadyPickUp([]);
+      setResListReadyPickUp(null);
     }
   };
 
@@ -117,12 +117,12 @@ const OrderIndonesia = () => {
     setLoading(true);
     setTotalInvoice(0);
     try {
-      const response = await apiGetWithToken(`${PATH_ORDER.STATUS}/RCP`,paramGetListInvoice(categorySearch, query));
+      const response = await apiGetWithToken(`${PATH_ORDER.STATUS}/PBC`,paramGetListInvoice(categorySearch, query));
       revertState("", false, response.data.data.total);
       setResListPickedUp(response.data.data.invoices);
     } catch (error) {
       revertState("", false, 0);
-      setResListPickedUp([]);
+      setResListPickedUp(null);
     }
   };
 
@@ -130,12 +130,12 @@ const OrderIndonesia = () => {
     setLoading(true);
     setTotalInvoice(0);
     try {
-      const response = await apiGetWithToken(`${PATH_ORDER.STATUS}/PBC`,paramGetListInvoice(categorySearch, query));
+      const response = await apiGetWithToken(`${PATH_ORDER.STATUS}/DTC`,paramGetListInvoice(categorySearch, query));
       revertState("", false, response.data.data.total);
       setResListDelivered(response.data.data.invoices);
     } catch (error) {
       revertState("", false, 0);
-      setResListDelivered([]);
+      setResListDelivered(null);
     }
   };
 

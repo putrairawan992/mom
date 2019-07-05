@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import "./style.sass";
 import convertTimesTime from "../../helpers/convertTimestime";
 
-const OrderDetailIndonesia = ({ prevStatus, item }) => {
+const OrderDetailIndonesia = ({ prevStatus, item, time }) => {
   return (
     <table border={0}>
       <tbody>
@@ -31,7 +31,7 @@ const OrderDetailIndonesia = ({ prevStatus, item }) => {
           </td>
           <td>:</td>
           <td>
-            <span>{convertTimesTime.millisecond(item.orderDate)}</span>
+            <span>{time}</span>
           </td>
         </tr>
       </tbody>

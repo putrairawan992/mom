@@ -100,7 +100,7 @@ const OrderChina = () => {
       setResListNeedResponse(response.data.data.invoices);
     } catch (error) {
       revertState("", false, 0);
-      setResListNeedResponse(false);
+      setResListNeedResponse(null);
     }
   };
 
@@ -115,7 +115,7 @@ const OrderChina = () => {
       setResListNeedPurchase(response.data.data.invoices);
     } catch (error) {
       revertState("", false, 0);
-      setResListNeedPurchase(false);
+      setResListNeedPurchase(null);
     }
   };
 
@@ -130,7 +130,7 @@ const OrderChina = () => {
       setResListPurchased(response.data.data.invoices);
     } catch (error) {
       revertState("", false, 0);
-      setResListPurchased(false);
+      setResListPurchased(null);
     }
   };
 
@@ -145,7 +145,7 @@ const OrderChina = () => {
       setResListReadyToShip(response.data.data.invoices);
     } catch (error) {
       revertState("", false, 0);
-      setResListReadyToShip(false);
+      setResListReadyToShip(null);
     }
   };
 
@@ -160,7 +160,7 @@ const OrderChina = () => {
       setResListShipped(response.data.data.invoices);
     } catch (error) {
       revertState("", false, 0);
-      setResListShipped(false);
+      setResListShipped(null);
     }
   };
 

@@ -6,11 +6,9 @@ import ModalConfirmPrint from "../../components/ModalConfirmPrint";
 import ButtonTextIcon from "../../components/ButtonTextIcon";
 import Button from "../../components/Button";
 import LoaderItem from "../../components/LoaderItem";
-import LabelChina from "../../components/LabelChina";
 import ModalConfirm from "../../components/ModalConfirm";
 import TextInvoiceNumber from "../../components/TextInvoiceNumber";
 import TextProductName from "../../components/TextProductName";
-import ModalReason from "../../containers/ModalReason";
 import ModalHistory from "../ModalHistory";
 import {
   apiPatchWithToken,
@@ -23,6 +21,8 @@ import strings from "../../localization";
 
 import "../../sass/style.sass";
 import "./style.sass";
+import OrderDetailIndonesia from "../../components/OrderDetailIndonesia";
+import LabelIndonesia from "../../components/LabelIndonesia";
 
 const ListArrival = props => {
   const [visibleAddNote, setVisibleAddNote] = useState(false);
@@ -198,30 +198,11 @@ const ListArrival = props => {
                           productTextChina={item.productSnapshot.nameChina}
                           productTextIndonesia={item.productSnapshot.name}
                         />
-                        <table border={0}>
-                          <tbody>
-                            <tr>
-                              <td style={{ paddingRight: 20 }}>
-                                <span>{strings.purchased_time}</span>
-                              </td>
-                              <td>:</td>
-                              <td>
-                                <span>
-                                  {invoice.order.orderActivityDate.orderDate}
-                                </span>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <span>{strings.customer_note}</span>
-                              </td>
-                              <td>:</td>
-                              <td>
-                                <span>{item.note}</span>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
+                        <OrderDetailIndonesia
+                          prevStatus="Shipped Time"
+                          item={item}
+                          time={invoice.order.orderActivityDate.orderDate}
+                        />
                       </Col>
                       <Col md={12}>
                         <div className="wrap-button">
@@ -323,7 +304,7 @@ const ListArrival = props => {
           }
           description={""}
         >
-          <LabelChina noInvoice={invoiceById.invoiceNumber} order={invoiceById.order} />
+          <LabelIndonesia invoice={invoiceById}/>
         </ModalConfirmPrint>
       }
     </React.Fragment>
