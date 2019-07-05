@@ -1,0 +1,9 @@
+const ALL_CATEGORY = "category"
+const CATEGORY_BY_LEVEL = `category/level/`
+const CATEGORY_BY_PARENT = 'category/parent/'
+
+export const PATH_CATEGORY = {
+  ALL_CATEGORY: ALL_CATEGORY,
+  CATEGORY_BY_LEVEL: CATEGORY_BY_LEVEL,
+  CATEGORY_BY_PARENT: CATEGORY_BY_PARENT
+}
