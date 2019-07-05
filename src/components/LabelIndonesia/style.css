@@ -1,0 +1,103 @@
+.label-indonesia {
+  display: flex;
+  justify-content: center;
+  font-family: arial;
+  margin: 24px;
+}
+
+.label-indonesia .ant-divider {
+  margin: 0;
+  background: #cccccc;
+}
+
+.label-indonesia .ant-row {
+  width: 100%;
+}
+
+.label-box {
+  width: 388px;
+  border: 1px solid #cccccc;
+}
+
+.title-image {
+  display: flex;
+  justify-content: center;
+  margin: 14px 0 10px 0;
+}
+
+.title-image img {
+  height: 12px;
+}
+
+.label-from {
+  padding: 8px 16px;
+  font-size: 8px;
+  width: 100%;
+}
+
+.colon {
+  text-align: end;
+  padding-right: 2px;
+}
+
+.label-form-row {
+  width: 100%;
+}
+
+.label-form-content {
+  font-weight: bold;
+  margin-left: 4px;
+  color: #000000;
+}
+
+.label-form-address {
+  color: #000000;
+  margin-left: 4px;
+}
+
+.label-indo-invoice {
+  margin-left: 4px;
+}
+
+.label-box-date {
+  margin: 8px 16px;
+}
+
+.label-box-detail {
+  margin: 8px 16px;
+  border: 1px solid #cccccc;
+  text-align: center;
+}
+
+.label-detail-title {
+  font-size: 8px;
+  color: #4a4a4a;
+}
+
+.label-detail-content {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.label-yes {
+  text-align: end;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.box-variant {
+  border: 1px solid #cccccc;
+  text-align: center;
+}
+
+.label-date {
+  text-align: start;
+  font-size: 12px;
+}
+
+.label-box-bottom {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 16px;
+}

@@ -1,7 +1,8 @@
-import axios from "axios";
+import axios from 'axios';
+//const ngrok = 'http://a2206ca1.ngrok.io/api/v1/';
 const REACT_APP_API_SERVICE = process.env.REACT_APP_API_DUMMY_SERVICE;
-
-function getToken() {
+//const REACT_APP_API_SERVICE = ngrok;
+const getToken = () => {
   return localStorage.getItem("accessToken");
 }
 
@@ -9,7 +10,8 @@ export const serviceWithToken = (token = getToken()) => axios.create({
   baseURL: REACT_APP_API_SERVICE,
   timeout: 60 * 4 * 1000,
   headers: {
-    Authorization: "Bearer " + token
+    Authorization: "Bearer " + token,
+    "Content-Type": `application/json`
   }
 });
 

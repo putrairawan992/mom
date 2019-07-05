@@ -69,7 +69,7 @@ No detail
          <>
             <ModalHistory
             title="Modal Logs"
-            lists={listData}
+            list={listData}
             visible={visible}
             onOk={actionShow}
             />

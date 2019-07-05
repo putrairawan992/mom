@@ -1,21 +1,25 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Row, Col, Card, notification, Icon } from "antd";
-import "../../sass/style.sass";
-import OrderDetail from "../../components/OrderDetail";
 import HeaderOrder from "../../components/HeaderOrder";
 import OrderVariant from "../../components/OrderVariant";
-import OrderAction from "../../components/OrderAction";
 import ModalAddNote from "../../components/ModalAddNote";
-import { needPurchased } from "../../dataSource/need_purchased";
-import OrderNote from "../../components/OrderNote";
 import ModalConfirm from "../../components/ModalConfirm";
 import ModalConfirmPrint from "../../components/ModalConfirmPrint";
+import ButtonTextIcon from "../../components/ButtonTextIcon";
+import Button from "../../components/Button";
+import TextInvoiceNumber from "../../components/TextInvoiceNumber";
+import TextProductName from "../../components/TextProductName";
 import ModalHistory from "../ModalHistory";
-import Button from "../../components/Button"
-import ModalReason from "../../containers/ModalReason"
+import ModalReason from "../../containers/ModalReason";
+import { apiPatchWithToken } from "../../services/api";
+import { PATH_ORDER } from "../../services/path/order";
+import ImageShipping from "../../components/ImageShipping";
+import convertTimesTime from "../../helpers/convertTimestime";
+import strings from '../../localization';
 
-const ListPurchased = () => {
-  const [orders, setOrders] = useState([]);
+import "../../sass/style.sass";
+
+const ListPurchased = (props) => {
   const [visibleConfirm, setVisibleConfirm] = useState(false);
   const [visibleConfirmPrint, setVisibleConfirmPrint] = useState(false);
   const [visibleUndo, setVisibleUndo] = useState(false);
@@ -25,10 +29,78 @@ const ListPurchased = () => {
   const [visibleNote, setVisibleNote] = useState(false);
   const [loadingConfirm, setLoadingConfirm] = useState(false);
 
-  useEffect(() => {
-    const data = needPurchased.data;
-    setOrders(data);
-  }, []);
+  const getListPurchased = async (update=false, action) => {
+    try {
+      if(update){
+        if(action === "UNDO"){
+          await props.onLoad();
+          actionUndo();
+          contentNotification(
+            "Order Undo.",
+            "The Order is being undo, you can see the history in activity log",
+            "info-circle",
+            "#1890FF"
+          );
+        }else if(action === "CANCEL"){
+          await props.onLoad();
+          actionCancel();
+          contentNotification(
+            "Order Canceled.",
+            "The Order is being canceled, you can see the history in activity log or canceled order tab",
+            "info-circle",
+            "#1890FF"
+          );
+        }
+        else if(action === "NEXT"){
+          await props.onLoad();
+          contentNotification(
+            "New Order has moved to the next process.",
+            "Continue responding the order you have selected in Need Purchased Tabs.",
+            "check-circle",
+            "#52C41A"
+          );
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const patchNextPurchased = async (invoiceId) => {
+    try {
+      const response = await apiPatchWithToken(`${PATH_ORDER.NEXT}/${invoiceId}`);
+      if(response){
+        showConfirm();
+        setLoadingConfirm(false);
+        actionConfirmPrint();
+        getListPurchased(true, "NEXT");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const patchUndoPurchased = async (payload) => {
+    try {
+      const response = await apiPatchWithToken(`${PATH_ORDER.UNDO}/${payload.invoiceId}`);
+      if(response){
+        getListPurchased(true, "UNDO");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const patchCanclePurchased = async (payload) => {
+    try {
+      const response = await apiPatchWithToken(`${PATH_ORDER.CANCEL}/${payload.invoiceId}`);
+      if(response){
+        getListPurchased(true, "CANCEL");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   const actionSearch = payload => {
     console.log(payload);
@@ -51,8 +123,7 @@ const ListPurchased = () => {
   };
 
   const handlePurchased = invoiceId => {
-    console.log(invoiceId);
-    showConfirm();
+    showConfirm(invoiceId);
   };
 
   const actionUndo = () => {
@@ -60,14 +131,7 @@ const ListPurchased = () => {
   };
 
   const actionSubmitUndo = payload => {
-    console.log(payload);
-    actionUndo();
-    contentNotification(
-      "Order Undo.",
-      "The Order is being undo, you can see the history in activity log",
-      "info-circle",
-      "#1890FF"
-    );
+    patchUndoPurchased(payload);
   };
 
   const actionCancel = () => {
@@ -75,14 +139,7 @@ const ListPurchased = () => {
   };
 
   const actionSubmitCancel = payload => {
-    console.log(payload);
-    actionCancel();
-    contentNotification(
-      "Order Canceled.",
-      "The Order is being canceled, you can see the history in activity log or canceled order tab",
-      "info-circle",
-      "#1890FF"
-    );
+    patchCanclePurchased(payload);
   };
 
   const actionAddNotes = () => {
@@ -104,10 +161,6 @@ const ListPurchased = () => {
     setVisibleLog(!visibleLog);
   };
 
-  const actionShowNotes = () => {
-    setVisibleNote(!visibleNote);
-  };
-
   const actionShowNote = () => {
     setVisibleNote(!visibleNote);
   };
@@ -116,18 +169,9 @@ const ListPurchased = () => {
     setVisibleConfirm(!visibleConfirm);
   };
 
-  const actionConfirm = () => {
+  const actionConfirm = (invoiceId) => {
     setLoadingConfirm(!loadingConfirm);
-    return new Promise((resolve, reject) => {
-      setTimeout(2 > 0.5 ? resolve : reject, 2000);
-    })
-      .then(() => {
-        showConfirm();
-      }).then(()=>{
-        setLoadingConfirm(false);
-        actionConfirmPrint();
-      })
-      .catch(() => console.log("Oops errors!"));
+    patchNextPurchased(invoiceId);
   };
 
   const actionCancelConfirm = () => {
@@ -135,145 +179,185 @@ const ListPurchased = () => {
   };
 
   const actionConfirmPrint = () => {
-    setVisibleConfirmPrint(!visibleConfirmPrint)
-  }
+    setVisibleConfirmPrint(!visibleConfirmPrint);
+  };
 
   const actionCancelPrint = () => {
-    setVisibleConfirmPrint(!visibleConfirmPrint)
-  }
+    setVisibleConfirmPrint(!visibleConfirmPrint);
+  };
 
   const optionsCancel = [
     { value: "C01", name: "Out of Stock" },
     { value: "C02", name: "Product Discontinued" },
     { value: "C03", name: "Others" }
-  ]
+  ];
 
   const optionsUndo = [
     { value: "101", name: "Wrong Press" },
     { value: "102", name: "Others" }
-  ]
+  ];
 
   return (
     <React.Fragment>
       <HeaderOrder
         onChangeFilter={actionFilter}
         onSearch={actionSearch}
-        totalRecord={80}
+        totalRecord={props.total}
       />
-      {orders.map(order => (
-        <Card key={order.invoiceId}>
-          <Row type="flex" justify="space-between">
-            <Col span={11}>
-              <OrderDetail order={order} />
-            </Col>
-            <Col>
-              <Button
-                type="primary"
-                // className="button-primary"
-                onClick={() => handlePurchased(order.invoiceId)}
-              >
-                Ready to Ship
-              </Button>
-            </Col>
-          </Row>
-          <Row type="flex" justify="space-between">
-            <Col span={11}>
-              <Row>
-                <Col span={5} />
-                <Col>
-                  <Row>
-                    <Col span={5}>
-                      <img
-                        src="https://cdn2.iconfinder.com/data/icons/vacation-landmarks/512/45-512.png"
-                        alt=""
-                        className="image-shipping"
+      {props.invoices ? props.invoices.map(invoice => (
+        <Card key={invoice.id}>
+        {invoice.items.map(item => (
+            <Row key={item.id}>
+              <Col md={2}>
+              <img
+                  src={item.productSnapshot.image}
+                  alt=""
+                  className="img-order-product"
+                />
+              </Col>
+              <Col md={22}>
+                <Row>
+                  <Col md={12}>
+                    <TextInvoiceNumber invoiceNumber={invoice.number} />
+                    <TextProductName
+                      productTextChina={item.productSnapshot.nameChina}
+                      productTextIndonesia={item.productSnapshot.name}
+                    />
+                    <table border={0}>
+                      <tbody>
+                        <tr>
+                          <td style={{ paddingRight: 20 }}>
+                            <span>{strings.purchased_time}</span>
+                          </td>
+                          <td>:</td>
+                          <td>
+                            <span>{convertTimesTime.millisecond(item.orderDate)}</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <span>{strings.customer_note}</span>
+                          </td>
+                          <td>:</td>
+                          <td>
+                            <span>{item.note}</span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </Col>
+                  <Col md={12}>
+                    <div className="wrap-button">
+                      <Button
+                        type="primary"
+                        onClick={() => handlePurchased(invoice.id)}
+                      >
+                        Ready To Ship
+                      </Button>
+                    </div>
+                  </Col>
+                </Row>
+                <Row style={{ marginTop: 16 }}>
+                  <Col md={12}>
+                    <div className="wrap-variant">
+                    <ImageShipping shipping={item.shipping} />
+                      <OrderVariant
+                        variant={item.productSnapshot.variant}
+                        quantity={item.productSnapshot.quantity}
+                        price={item.productSnapshot.price}
+                        withPrice={true}
                       />
-                    </Col>
-                    <Col>
-                      {order.indexes.map(index => (
-                        <OrderVariant
-                          key={index.id}
-                          variants={index.variants}
-                          quantity={index.productQuantity}
-                          price={index.price}
-                        />
-                      ))}
-                    </Col>
-                  </Row>
-                </Col>
-              </Row>
-            </Col>
-            <Col>
-              <OrderAction
-                onClickUndo={() => actionUndo()}
-                onClickCancel={() => actionCancel()}
-                onClickAddNotes={() => actionAddNotes()}
-              />
-              <OrderNote
-                onClickLog={() => actionShowLog()}
-                onClickNotes={() => actionShowNotes()}
-              />
-              {/* <ModalUndo
-                visible={visibleUndo}
-                onSubmit={actionSubmitUndo}
-                onCancel={actionUndo}
-                invoiceId={order.invoiceId}
-              />
-              <ModalCancel
-                visible={visibleCancel}
-                onSubmit={actionSubmitCancel}
-                onCancel={actionCancel}
-                invoiceId={order.invoiceId}
-              /> */}
-              <ModalReason
-                visible={visibleUndo}
-                onSubmit={actionSubmitUndo}
-                onCancel={actionUndo}
-                invoiceId={order.invoiceId}
-                options={optionsUndo}
-                title={"Are you going back / undo to previous process?"}
-                buttonTitle={"Undo"}
-                max={255}
-              />
-              <ModalReason
-                options={optionsCancel}
-                visible={visibleCancel}
-                onCancel={actionCancel}
-                onSubmit={actionSubmitCancel}
-                invoiceId={order.invoiceId}
-                title={"Cancel Order"}
-                buttonTitle={"Cancel Order"}
-                max={255}
-              />
-              <ModalAddNote
-                visible={visibleAddNote}
-                onSubmit={actionSubmitAddNote}
-                onCancel={actionAddNotes}
-                invoiceId={order.invoiceId}
-              />
-              <ModalHistory lists={order.activityLogs} visible={visibleLog} onOk={actionShowLog} onCancel={actionShowLog} logs={[]} />
-              <ModalConfirm
-                visible={visibleConfirm}
-                loading={loadingConfirm}
-                onOk={actionConfirm}
-                onCancel={actionCancelConfirm}
-                title={"Makes Sure that the package is ready to be shipped."}
-                description={
-                  "Please check if the package is neatly wrapped and the label is already patched to the package"
-                }
-              />
-              <ModalConfirmPrint
-                visible={visibleConfirmPrint}
-                loading={false}
-                onOk={actionConfirmPrint}
-                onCancel={actionCancelPrint}
-                title={"The order has moved to the next process, you can print the label now or you can print it later."}
-                description={""}
-              />
-            </Col>
-          </Row>
+                    </div>
+                  </Col>
+                  <Col offset={3} md={9}>
+                    <div className="wrap-button-text-icon">
+                      <ButtonTextIcon
+                        icon="rollback"
+                        label="Undo"
+                        onClick={actionUndo}
+                      />
+                      <ButtonTextIcon
+                        icon="close-circle"
+                        label="Cancel Order"
+                        onClick={actionCancel}
+                      />
+                      <ButtonTextIcon
+                        icon="message"
+                        label="Add Admin Notes"
+                        onClick={actionAddNotes}
+                      />
+                    </div>
+                    <div className="wrap-button-text-icon">
+                      <ButtonTextIcon
+                        icon="file-exclamation"
+                        label="Show Logs"
+                        onClick={actionShowLog}
+                      />
+                      <ButtonTextIcon
+                        icon="file-text"
+                        label="Show Admin Notes"
+                        onClick={actionShowNote}
+                      />
+                    </div>
+                  </Col>
+                </Row>
+              </Col>
+            </Row>
+          ))}
+          <ModalReason
+            visible={visibleUndo}
+            onSubmit={actionSubmitUndo}
+            onCancel={actionUndo}
+            invoiceId={invoice.id}
+            options={optionsUndo}
+            title={"Are you going back / undo to previous process?"}
+            buttonTitle={"Undo"}
+          />
+          <ModalReason
+            options={optionsCancel}
+            visible={visibleCancel}
+            onCancel={actionCancel}
+            onSubmit={actionSubmitCancel}
+            invoiceId={invoice.id}
+            title={"Cancel Order"}
+            buttonTitle={"Cancel Order"}
+          />
+          <ModalAddNote
+            visible={visibleAddNote}
+            onSubmit={actionSubmitAddNote}
+            onCancel={actionAddNotes}
+            invoiceId={invoice.id}
+          />
+          {/* <ModalHistory
+            title="Activity Logs"
+            list={order.activityLogs}
+            visible={visibleLog}
+            onOk={actionShowLog}
+            onCancel={actionShowLog}
+          /> */}
+          <ModalConfirm
+            visible={visibleConfirm}
+            value={invoice.id}
+            loading={loadingConfirm}
+            onOk={actionConfirm}
+            onCancel={actionCancelConfirm}
+            title={"Makes Sure that the package is ready to be shipped."}
+            description={
+              "Please check if the package is neatly wrapped and the label is already patched to the package"
+            }
+          />
+          <ModalConfirmPrint
+            visible={visibleConfirmPrint}
+            loading={false}
+            onOk={actionConfirmPrint}
+            onCancel={actionCancelPrint}
+            title={
+              "The order has moved to the next process, you can print the label now or you can print it later."
+            }
+            description={""}
+          />
         </Card>
-      ))}
+      )):null}
     </React.Fragment>
   );
 };

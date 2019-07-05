@@ -6,7 +6,7 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 import { Row, Col, Divider, Icon, Modal, notification } from "antd";
 import OrderVariant from "../../components/OrderVariant";
 
-const ModalSupplier = ({ order, visible, onOk }) => {
+const ModalSupplier = ({ invoice, visible, onOk }) => {
   const copyDetailOrder = () => {
     notification.info({
       message: "Copied to Clipboard",
@@ -35,26 +35,26 @@ const ModalSupplier = ({ order, visible, onOk }) => {
       footer={null}
       closable={false}
     >
-      {order.indexes.map(index => (
-        <div key={index.id}>
+      {invoice.items.map(item => (
+        <div key={item.id}>
           <Row className="supplier__modal__detail-order">
             <Col md={4} className="supplier__modal__detail-order__image-box">
               <div>
-                <img src={index.productImage} alt="" />
+                <img src={item.productSnapshot.image} alt="" />
               </div>
             </Col>
             <Col md={20} className="supplier__modal__detail-order__variant">
               <Row>
                 <Col md={14}>
                   <p>
-                    Invoice No. <span>{order.invoiceNumber}</span>
+                    Invoice No. <span>{invoice.number}</span>
                   </p>
-                  <b>{index.productNameChina}</b>
-                  <p>{index.productName}</p>
+                  <b>{item.productSnapshot.nameChina}</b>
+                  <p>{item.productSnapshot.name}</p>
                 </Col>
                 <Col md={10} className="supplier__modal__copy-detail">
                   <CopyToClipboard
-                    text={index.productName}
+                    text={item.productSnapshot.name}
                     onCopy={copyDetailOrder}
                   >
                     <span>Copy Detail</span>
@@ -64,15 +64,16 @@ const ModalSupplier = ({ order, visible, onOk }) => {
               <Row>
                 <Col md={14}>
                   <OrderVariant
-                    key={index.id}
-                    variants={index.variants}
-                    quantity={index.productQuantity}
+                    variant={item.productSnapshot.variant}
+                    quantity={item.productSnapshot.quantity}
+                    price={item.productSnapshot.price}
+                    withPrice={true}
                   />
                 </Col>
                 <Col md={10} className="supplier__modal__customer-note">
                   <span>Customer Note :</span>
                   <br />
-                  {index.note}
+                  {item.note}
                 </Col>
               </Row>
             </Col>
@@ -82,10 +83,10 @@ const ModalSupplier = ({ order, visible, onOk }) => {
             <Row>
               <Col span={24}>
                 <span className="supplier__modal__detail-address__important">
-                  {index.supplier.name}
+                  {item.supplierSnapshot.name}
                 </span>
                 <br />
-                <span>{index.supplier.address}</span>
+                <span>{item.supplierSnapshot.address}</span>
               </Col>
             </Row>
             <Row className="supplier__modal__detail-address__row-separator">
@@ -97,7 +98,7 @@ const ModalSupplier = ({ order, visible, onOk }) => {
                     type="phone"
                     className="supplier__modal__detail-address__icon-style"
                   />
-                  {index.supplier.contact.phone}
+                  {item.supplierSnapshot.phone1}
                 </span>
               </Col>
               <Col>
@@ -108,9 +109,9 @@ const ModalSupplier = ({ order, visible, onOk }) => {
                     type="mail"
                     className="supplier__modal__detail-address__icon-style"
                   />
-                  {index.supplier.contact.email}
+                  {item.supplierSnapshot.email}
                   <CopyToClipboard
-                    text={index.supplier.contact.email}
+                    text={item.supplierSnapshot.email}
                     onCopy={copyEmailAddress}
                   >
                     <span>
@@ -133,7 +134,7 @@ const ModalSupplier = ({ order, visible, onOk }) => {
                     type="phone"
                     className="supplier__modal__detail-address__icon-style"
                   />
-                  {index.supplier.contact.phone1}
+                  {item.supplierSnapshot.phone1}
                 </span>
                 <br />
                 <span className="supplier__modal__detail-address__important">
@@ -141,7 +142,7 @@ const ModalSupplier = ({ order, visible, onOk }) => {
                     type="phone"
                     className="supplier__modal__detail-address__icon-style"
                   />
-                  {index.supplier.contact.phone2}
+                  {item.supplierSnapshot.phone2}
                 </span>
               </Col>
               <Col span={8}>
@@ -152,7 +153,7 @@ const ModalSupplier = ({ order, visible, onOk }) => {
                     type="wechat"
                     className="supplier__modal__detail-address__icon-style"
                   />
-                  {index.supplier.contact.wechatId}
+                  {item.supplierSnapshot.weChat}
                 </span>
               </Col>
               <Col span={8}>
@@ -163,7 +164,7 @@ const ModalSupplier = ({ order, visible, onOk }) => {
                     type="wechat"
                     className="supplier__modal__detail-address__icon-style"
                   />
-                  {index.supplier.contact.qqId}
+                  {item.supplierSnapshot.qq}
                 </span>
               </Col>
             </Row>
@@ -172,7 +173,7 @@ const ModalSupplier = ({ order, visible, onOk }) => {
                 <span>Supplier Note :</span>
                 <br />
                 <span className="supplier__modal__detail-address__important">
-                  {index.supplier.note}
+                  {item.supplierSnapshot.notes}
                 </span>
               </Col>
             </Row>

@@ -1,29 +1,56 @@
-import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
+import React from "react";
 import { Row, Col, Card, notification, Icon } from "antd";
 import "./style.sass";
-import OrderDetail from "../../components/OrderDetail";
 import HeaderOrder from "../../components/HeaderOrder";
 import OrderVariant from "../../components/OrderVariant";
 import Button from "../../components/Button";
+import TextInvoiceNumber from "../../components/TextInvoiceNumber";
+import TextProductName from "../../components/TextProductName";
+import { apiPatchWithToken } from "../../services/api";
+import { PATH_ORDER } from "../../services/path/order";
+import convertTimesTime from "../../helpers/convertTimestime";
+import ImageShipping from "../../components/ImageShipping";
+import strings from '../../localization';
 
 const ListNeedResponse = (props) => {
-  const [orders, setOrders] = useState([]);
-
-  useEffect(() => {
-    const {data} = {...props};
-    setOrders(data);
-  }, []);
-
-  const actionSearch = (payload) => {
-    console.log(payload);
-    
+  const getListNeedResponse = async (update=false) => {
+    try {
+      if(update) {
+        await props.onLoad();
+        contentNotification(
+        "New Order has moved to the next process.",
+        "Continue responding the order you have selected in Need Purchased Tabs.",
+        "check-circle",
+        "#52C41A"
+      );
+        }
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  const actionFilter = (payload) => {
-    console.log(payload);
-    
+  const patchNextNeedResponse = async (invoiceId) => {
+    try {
+      const response = await apiPatchWithToken(`${PATH_ORDER.NEXT}/${invoiceId}`);
+      if(response){
+        getListNeedResponse(true);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
+
+  // useEffect(() => {
+  //   getListNeedResponse();
+  // }, []);
+
+  const actionSearch = payload => {
+    console.log(payload);
+  };
+
+  const actionFilter = payload => {
+    console.log(payload);
+  };
 
   const contentNotification = (message, description, icon, colorIcon) => {
     notification.open({
@@ -38,69 +65,89 @@ const ListNeedResponse = (props) => {
   };
 
   const handleResponse = invoiceId => {
-    console.log(invoiceId);
-    contentNotification(
-      "New Order has moved to the next process.",
-      "Continue responding the order you have selected in Need Purchased Tabs.",
-      "check-circle",
-      "#52C41A"
-    );
+    patchNextNeedResponse(invoiceId)
   };
 
   return (
     <React.Fragment>
-      <HeaderOrder onChangeFilter = {actionFilter} onSearch = {actionSearch} totalRecord={80}/>
-      {orders.map(order => (
-        <Card key={order.invoiceId}>
-          <Row type="flex" justify="space-between">
-            <Col span={11}>
-              <OrderDetail order={order} />
-            </Col>
-            <Col>
-              <Button
-                type="primary"
-                onClick={() => handleResponse(order.invoiceId)}
-              >
-                Response
-              </Button>
-            </Col>
-          </Row>
-          <Row type="flex" justify="space-between">
-            <Col span={11}>
-              <Row>
-                <Col span={5} />
-                <Col>
-                  <Row>
-                    <Col span={5}>
-                      <img
-                        src="https://cdn2.iconfinder.com/data/icons/vacation-landmarks/512/45-512.png"
-                        alt=""
-                        className="image-shipping"
+      <HeaderOrder
+        onChangeFilter={actionFilter}
+        onSearch={actionSearch}
+        totalRecord={props.total}
+      />
+      {props.invoices ? props.invoices.map(invoice => (
+        <Card key={invoice.id}>
+          {invoice.items.map(item => (
+            <Row key={item.id}>
+              <Col md={2}>
+                <img
+                  src={item.productSnapshot.image}
+                  alt=""
+                  className="img-order-product"
+                />
+              </Col>
+              <Col md={22}>
+                <Row>
+                  <Col md={12}>
+                    <TextInvoiceNumber invoiceNumber={invoice.number} />
+                    <TextProductName
+                      productTextChina={item.productSnapshot.nameChina}
+                      productTextIndonesia={item.productSnapshot.name}
+                    />
+                    <table border={0}>
+                      <tbody>
+                        <tr>
+                          <td style={{ paddingRight: 20 }}>
+                            <span>{strings.order_time}</span>
+                          </td>
+                          <td>:</td>
+                          <td>
+                            <span>{convertTimesTime.millisecond(item.orderDate)}</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <span>{strings.customer_note}</span>
+                          </td>
+                          <td>:</td>
+                          <td>
+                            <span>{item.note}</span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </Col>
+                  <Col md={12}>
+                    <div className="wrap-button">
+                      <Button
+                        type="primary"
+                        onClick={() => handleResponse(invoice.id)}
+                      >
+                        {strings.respond}
+                      </Button>
+                    </div>
+                  </Col>
+                </Row>
+                <Row style={{ marginTop: 16 }}>
+                  <Col md={12}>
+                    <div className="wrap-variant">
+                      <ImageShipping shipping={item.shipping} />
+                      <OrderVariant
+                        variant={item.productSnapshot.variant}
+                        quantity={item.productSnapshot.quantity}
+                        price={item.productSnapshot.price}
+                        withPrice={true}
                       />
-                    </Col>
-                    <Col>
-                      {order.indexes.map(index => (
-                        <OrderVariant
-                          key={index.id}
-                          variants={index.variants}
-                          quantity={index.productQuantity}
-                          price={index.price}
-                        />
-                      ))}
-                    </Col>
-                  </Row>
-                </Col>
-              </Row>
-            </Col>
-          </Row>
+                    </div>
+                  </Col>
+                </Row>
+              </Col>
+            </Row>
+          ))}
         </Card>
-      ))}
+      )):null}
     </React.Fragment>
   );
-};
-
-ListNeedResponse.propTypes = {
-  data: PropTypes.arrayOf(Object)
 };
 
 export default ListNeedResponse;

@@ -2,14 +2,14 @@ import React ,{ useState } from 'react'
 import propTypes from 'prop-types'
 import { Formik } from 'formik'
 import Button from '../../components/Button'
-import { Modal as ModalAnt, Row, Col, Select, Form, Input } from 'antd'
+import { Modal as ModalAnt, Row, Col, Form } from 'antd'
 import * as yup from 'yup'
 import TextArea from '../../components/TextArea'
 import './style.sass'
+import Select from '../../components/Select'
+import strings from '../../localization'
 
-const Option = Select.Option;
-
-const Modal = ({visible, onSubmit, onCancel, loading, invoiceId, options, title,buttonTitle, max}) => {
+const Modal = ({visible, onSubmit, onCancel, invoiceId, options, title,buttonTitle}) => {
     const [schema, SetSchema] = useState(
 			yup.object().shape({
 					reason: yup.string(),
@@ -22,7 +22,7 @@ const Modal = ({visible, onSubmit, onCancel, loading, invoiceId, options, title,
 			? SetSchema(
 				yup.object().shape({
 					reason: yup.string(),
-					note: yup.string().required("Please write the detail of cancelation")
+					note: yup.string().required(`${strings.detail_cancel_quote}`)
 				})
 			)
 			: SetSchema(
@@ -61,24 +61,17 @@ const Modal = ({visible, onSubmit, onCancel, loading, invoiceId, options, title,
 						<Form onSubmit={handleSubmit}>
 							<Row>
 								<Col>
-									<span className="label-reason">Cancellation Category</span>
+									<span className="label-reason">{strings.cancellation_category}</span>
 										<Select
+											name="reason"
+											value={values.reason}
 											onChange={value => {
 												updateSchema(value)
 												setFieldValue("reason",value)
 											}}
-											name="reason"
-											value={values.reason}
-											className="select-reason-undo"
 											size="large"
+											options={options}
 										>
-											{options.map((option,index) => {
-												return (
-													<Option key={index} value={option.value}>
-														{option.name}
-													</Option>
-												)
-											})}
 										</Select>
 								</Col>
 							</Row>
@@ -86,13 +79,12 @@ const Modal = ({visible, onSubmit, onCancel, loading, invoiceId, options, title,
 								<Col>
 									<TextArea
 										name="note"
-										placeholder="Write some notes here"
+										placeholder={strings.textarea_quote}
 										autosize={{ minRows: 6, maxRows: 6}}
 										onChange={handleChange}
 										value={values.note}
-										maxLength={max}
+										maxLength={255}
 										type={errors.note && touched.note ? "error" : "default"}
-										// className={errors.note && touched.note && "input-error"}
 									/>
 								</Col>
 							</Row>
@@ -107,7 +99,7 @@ const Modal = ({visible, onSubmit, onCancel, loading, invoiceId, options, title,
 									<Button
 										onClick={onCancel}
 										type="link"
-									>Cancel</Button>
+									>{strings.cancel}</Button>
 									<Button
 										htmlType="submit"
 										type="danger"
@@ -131,7 +123,6 @@ Modal.propTypes = {
 	invoiceId : propTypes.string,
 	title : propTypes.string,
 	buttonTitle: propTypes.string,
-	max: propTypes.number
 
 }
 
