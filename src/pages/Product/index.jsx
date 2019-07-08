@@ -15,9 +15,9 @@ import './style.sass'
 const schema = Yup.object().shape({
   variants: Yup.array().of(Yup.object().shape({
     variantType: Yup.string().required(),
-    // variantItems: Yup.array().of(Yup.object().shape({
-    //   name: Yup.string().required('You have to fill the variant information befor creating product.')
-    // }))
+    variantItems: Yup.array().of(Yup.object().shape({
+      name: Yup.string().required('You have to fill the variant information befor creating product.')
+    }))
   })),
   supplier: Yup.array().required('Supplier is required'),
   productNameOriginal: Yup.string().required('Product name is required'),
