@@ -1,17 +1,14 @@
-import React, {useEffect, useState} from 'react';
+import React, { useState} from 'react';
 import UploadImages from '../../containers/UploadImages';
-import {PATH_CATEGORY} from '../../services/path/category';
-import { PATH_SUPPLIER} from '../../services/path/supplier';
-import {apiGetWithoutToken, apiGetWithToken} from '../../services/api';
-import Cascader from '../../components/Cascader';
 import Variants from '../../containers/Variants';
-import { Formik, } from 'formik';
+import { Formik } from 'formik';
 import { Form } from 'antd';
 import Button from '../../components/Button';
 import * as Yup from 'yup';
 import ProductPrice from '../../containers/ProductPrice';
-import Select from '../../components/Select';
-import Supplier from '../../containers/AllSupplier'
+import ProductInfo from '../../containers/ProductInfo';
+import Supplier from '../../containers/AllSupplier';
+import {message} from 'antd'
 import './style.sass'
 
 
@@ -22,17 +19,18 @@ const schema = Yup.object().shape({
     //   name: Yup.string().required('You have to fill the variant information befor creating product.')
     // }))
   })),
-  // basePrice: Yup.string().required('Base price is required.'),
-  // domesticFee: Yup.string().required('domesticFee price is required.'),
-  // feeBySea: Yup.string().required('Shipment fee by sea is required.'),
-  // feeByAir: Yup.string().required('Shipment fee by air is required'),
-  // images:Yup.array().required("You have to upload at least one image to create product.")
+  supplier: Yup.array().required('Supplier is required'),
+  productNameOriginal: Yup.string().required('Product name is required'),
+  productName:  Yup.string().required('Product name is required'),
+  basePrice: Yup.string().required('Base price is required.'),
+  domesticFee: Yup.string().required('domesticFee price is required.'),
+  feeBySea: Yup.string().required('Shipment fee by sea is required.'),
+  feeByAir: Yup.string().required('Shipment fee by air is required'),
+  images:Yup.array().required("You have to upload at least one image to create product."),
+
 });
 
 const Product = () => {
-
-  const [allSupplier, setAllSupplier] = useState([])
-  const [allCategory,setAllCategory] = useState([])
   const [payloadImage, setPayloadImage] = useState([])
   const [errorVariant, setErrorVariant] = useState([])
   const [totalVariants, setTotalVariants] = useState([])
@@ -50,16 +48,11 @@ const Product = () => {
   }]
 
 
-  useEffect(() => {
-    getAllCategory()
-    getSupplier()
-    // setTotalVariants(totalVariants)
-  },[])
-
   // useEffect(() => {
-    
+  //   getAllCategory()
+  //   getSupplier()
+   
   // },[])
-
 
   const addVariant = () => {
     
@@ -97,87 +90,38 @@ const Product = () => {
     setTotalVariants(arrTemp)
   }
 
-  const getAllCategory = async() =>{
-    try {
-      const response = await apiGetWithoutToken(PATH_CATEGORY.ALL_CATEGORY)
-      const arrResponseCategory = response.data.data
-      const arrCategory = converter(arrResponseCategory)
-      setAllCategory([...arrCategory])
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  const converter = (response) => {
-    response.forEach((respSub,index) => {
-      if(respSub.categorySubResponses){
-        respSub.children = respSub.categorySubResponses
-        respSub.categorySubResponses.forEach((resp) => {
-          resp.children = resp.categorySubChildResponses
-        })
-      }
-    })
-    return response
-  }
-
   const getPayloadImage = (dataImage) => {
     setPayloadImage(dataImage)
   }
 
-  const onChange = async(value,selected) => {
-    console.log(value,selected)
-    
-  }
-
-  const filter = (inputValue, path) => {
-    return path.some(option => option.name.toLowerCase().indexOf(inputValue.toLowerCase()) > -1);
-  }
-
-  
   const handleSubmit = (values) => {
     console.log("===>",payloadImage)
     // let payloadimages = payload
     let variants = values.variants
     console.log("ini values",values)
+    message.success("Success")
   }
-
-
-
-  const getSupplier = async() => {
-    try {
-      const response  = await apiGetWithToken(PATH_SUPPLIER.ALL_SUPPLIER)
-      const dataAllSuppler = response.data.data
-      setAllSupplier([...dataAllSuppler])
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
 
   return (
     <div className="containerProduct">
-      <Select
-       options={allSupplier}/>
-       <Supplier/>
-       <br/><br/>
+      {/* <Select
+       options={allSupplier}/> */}
      
-      <Cascader
-        options={allCategory}
-        fieldNames={{label: 'name', value :'id'}}
-        expandTrigger="hover"
-        placeholder="Choose Category"
-        onChange={(value,selected)=>onChange(value,selected)}
-        showSearch={{filter}}
-      />
+       <br/><br/>
+      
+     
       <br/><br/>
       <Formik
           initialValues={{
             variants: [],
             images: [],
+            supplier: [],
             basePrice: "",
             domesticFee: "",
             feeBySea: "",
-            feeByAir: ""
+            feeByAir: "",
+            productNameOriginal: "",
+            productName: ""
           }}
           onSubmit={values => {
             handleSubmit(values)
@@ -197,6 +141,21 @@ const Product = () => {
           }) => (
             
             <Form onSubmit={handleSubmit}>
+            <Form.Item>
+              <Supplier
+                setFieldValue={setFieldValue}
+                errors={errors}
+              />
+            </Form.Item>
+            <Form.Item>
+              <ProductInfo
+                handleChange={handleChange}
+                handleBlur={handleBlur}
+                errors={errors}
+                setFieldValue={setFieldValue}
+                touched={touched}
+              />
+            </Form.Item>
             <Form.Item>
               <UploadImages
                 maxImage={5}
@@ -234,9 +193,7 @@ const Product = () => {
               <Button
                 type="primary"
                 size="large"
-                // width="full"
                 htmlType="submit"
-                // disabled={isSubmitting}
               >
                 Add Product
               </Button>    

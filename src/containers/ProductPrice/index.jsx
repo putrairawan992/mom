@@ -26,10 +26,10 @@ const ProductPrice = (props) => {
   return(
     <Card title="Product Price">
       <Row type="flex" align="middle">
-        <Col span={6}>
+        <Col span={7}>
            Base Price
         </Col>
-        <Col span={18}>
+        <Col span={15}>
           <Input 
             onChange={e => {
               setBasePrice(e.target.value)
@@ -50,10 +50,10 @@ const ProductPrice = (props) => {
       </Row>
       <br/><br/>
       <Row type="flex" align="middle">
-        <Col md={6}>
+        <Col md={7}>
           Domestic Fee
         </Col>
-        <Col md={18}>
+        <Col md={15}>
           <Input
             value={domesticFee}
             name="domesticFee"
@@ -72,19 +72,19 @@ const ProductPrice = (props) => {
       </Row>
       <br/><br/>
       <Row type="flex" align="middle">
-        <Col md={6}>
+        <Col md={7}>
           Shipment Fee
         </Col>
-        <Col md={18}>
+        <Col md={15}>
           Delivery fee (BR) from China to Indonesia
         </Col>
       </Row>
       <br/>
       <Row type="flex" align="middle">
-        <Col md={6}>
+        <Col md={7}>
           By Sea
         </Col>
-        <Col md={18}>
+        <Col md={15}>
           <Input
             addonBefore="Rp"
             value={feeBySea}
@@ -105,10 +105,10 @@ const ProductPrice = (props) => {
       </Row>
       <br/><br/>
       <Row type="flex" align="middle">
-        <Col md={6}>
+        <Col md={7}>
           By Air
         </Col>
-        <Col md={18}>
+        <Col md={15}>
           <Input
             addonBefore="Rp"
             value={feeByAir}
@@ -129,10 +129,10 @@ const ProductPrice = (props) => {
       </Row>
       <br/><br/>
       <Row type="flex" align="middle">
-        <Col md={6}>
+        <Col md={7}>
           Administration
         </Col>
-        <Col md={18}>
+        <Col md={15}>
           <Input
             addonBefore="Rp"
             type="number" 
@@ -143,7 +143,7 @@ const ProductPrice = (props) => {
       </Row>
       <br/><br/>
       <Row type="flex" align="middle">
-        <Col md={6}>
+        <Col md={7}>
           Exchange Rate
         </Col>
         <Col md={4}>
@@ -152,16 +152,16 @@ const ProductPrice = (props) => {
         <Col md={1}>
           =
         </Col>
-        <Col md={13}>
+        <Col md={10}>
           <Input  value={exchangeRate} ></Input>
         </Col>
       </Row>
       <br/><br/>
       <Row type="flex" align="middle">
-        <Col md={6}>
+        <Col md={7}>
           Price By Sea
         </Col>
-        <Col md={18}>
+        <Col md={15}>
           <Input
             value={priceBySea}
           />
@@ -170,10 +170,10 @@ const ProductPrice = (props) => {
       </Row>
       <br/><br/>
       <Row type="flex" align="middle">
-        <Col md={6}>
+        <Col md={7}>
           Price By Air
         </Col>
-        <Col md={18}>
+        <Col md={15}>
           <Input
             value={priceByAir}
           />

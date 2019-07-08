@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {Spin} from 'antd'
+import {Row, Col,Spin,Card} from 'antd'
 import debounce from 'lodash/debounce'
 import Select from '../../components/Select'
 import { PATH_SUPPLIER} from '../../services/path/supplier';
@@ -34,24 +34,45 @@ const AllSupplier = (props) => {
   }
 
   // getAllSuppplier = debounce(getAllSuppplier, 800)
-  const handleChange = (value) => {
+  const change = (value,setFieldValue) => {
+    setFieldValue("supplier",value)
     console.log(value)
     setFetching(false)
-    setValue(value)
-    setOptions([])
+    // setValue(value)
+    // setOptions([])
   }
 
+  console.log(props.errors)
+
   return(
-    <Select
-      mode="multiple"
-      onChange={handleChange}
-      onSearch={getAllSuppplier}
-      // value={value}
-      notFoundContent={fetching ? <Spin size="small" /> : null}
-      filterOption={false}
-      labelInvalue
-      options={options}
-      />
+    <React.Fragment>
+      <Card title={<div className="card-title">Supplier Info</div>}>
+        <Row>
+          <Col md={7}>
+            <div className="card-content">Supplier</div>
+          </Col>
+          <Col md={15}>
+          <Select
+            mode="multiple"
+            onChange={(value) => change(value, props.setFieldValue)}
+            onSearch={getAllSuppplier}
+            name="supplier"
+            // value={value}
+            notFoundContent={fetching ? <Spin size="small" /> : null}
+            filterOption={false}
+            labelInvalue
+            options={options}
+            />
+            {
+            typeof props.errors.supplier === 'string' ? 
+            (<div className="text-error-message">{props.errors.supplier }</div>) :
+            null
+          }
+          </Col>
+        </Row>
+      </Card>
+    </React.Fragment>
+   
   )
 } 
 
