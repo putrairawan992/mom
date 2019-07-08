@@ -18,7 +18,7 @@ const Select = props => {
       <SelectAnt className={cssClasses} {...props}>
         {props.options.map((option,index) => {
             return (
-              <Option className={cssClasses} key={index} value={option.value}>
+              <Option className={cssClasses} key={index} value={option.id}>
                 {option.name}
               </Option>
             )

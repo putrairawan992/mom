@@ -9,7 +9,6 @@ import Button from "../../components/Button";
 import TextInvoiceNumber from "../../components/TextInvoiceNumber";
 import TextProductName from "../../components/TextProductName";
 import ModalReason from "../../containers/ModalReason";
-import ModalHistory from "../ModalHistory";
 import { apiPatchWithToken } from "../../services/api";
 import { PATH_ORDER } from "../../services/path/order";
 import ImageShipping from "../../components/ImageShipping";
@@ -167,14 +166,14 @@ const ListNeedPurchased = (props) => {
   };
 
   const optionsCancel = [
-    { value: "C01", name: "Out of Stock" },
-    { value: "C02", name: "Product Discontinued" },
+    { id: "C01", name: "Out of Stock" },
+    { id: "C02", name: "Product Discontinued" },
     { value: "C03", name: "Others" }
   ];
 
   const optionsUndo = [
-    { value: "101", name: "Wrong Press" },
-    { value: "102", name: "Others" }
+    { id: "101", name: "Wrong Press" },
+    { id: "102", name: "Others" }
   ];
 
   return (

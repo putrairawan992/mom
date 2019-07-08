@@ -13,15 +13,25 @@ const Upload = props => {
 
   const imageUpload = (
     <div className="containerUpload">
-      <img src={props.imageUrl}  alt="avatar"/>
-      <Icon type="camera" className="cameraIcon"/>
-      <Icon onClick={() => props.remove(props.index)} type="delete" className="deleteIcon"/>
-      <Button width="full"
-        onClick={() => props.changeDefault(props.index,props)} 
-        className={props.type === 'default' ? 'mp-btn-upload' : 'mp-btn-upload-non-default'}
-        >
-        {props.type === 'default' ? 'Default' : 'Set Default' }
-      </Button>
+      {
+        props.type === 'no-style' ? 
+        <img src={props.imageUrl}  alt="avatar"/> :
+        <>
+        <img src={props.imageUrl}  alt="avatar"/>
+        <div className="top-icon">
+        <Icon type="camera" className="cameraIcon"/>
+        <Icon onClick={() => props.remove(props.index)} type="delete" className="deleteIcon"/>
+
+        </div>
+        <Button width="full"
+          onClick={() => props.changeDefault(props.index,props)} 
+          className={props.type === 'default' ? 'mp-btn-upload' : 'mp-btn-upload-non-default'}
+          >
+          {props.type === 'default' ? 'Default' : 'Set Default' }
+        </Button>
+        </>
+      }
+     
     </div>
   )
 
@@ -30,7 +40,6 @@ const Upload = props => {
       {...props}
       name="avatar"
       listType="picture-card"
-      // showUploadList={{showRemoveIcon : true,showPreviewIcon:false}}
       showUploadList={false}
       >
       {props.imageUrl ? imageUpload : uploadButton}
@@ -43,7 +52,7 @@ Upload.propTypes = {
   action :propTypes.string,
   changeDefault: propTypes.func,
   remove: propTypes.func,
-  type: propTypes.string,
+  type: propTypes.oneOf(['default', 'non-default','no-style']),
   disabled: propTypes.bool,
   imageUrl: propTypes.string,
   onChange: propTypes.func
