@@ -18,6 +18,14 @@
     flex-wrap: wrap;
 }
 
+.wrap-button > button:first-child {
+    margin-left: 0px!important;
+}
+
+.wrap-button > button:last-child {
+    margin-right: 0px!important;
+}
+
 .img-order-product{
     height: 80px;
     width: 80px;
