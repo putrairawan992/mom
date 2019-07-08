@@ -4,11 +4,8 @@ import "./style.css";
 import { Row, Col, Divider } from "antd";
 
 class LabelIndonesia extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
   render() {
+    const {invoiceNumber, order} = this.props.invoice;
     return (
       <div className="label-indonesia">
         <div className="label-box">
@@ -19,13 +16,13 @@ class LabelIndonesia extends Component {
           <div className="label-from">
             <Row className="label-form-row">
               <Col md={3}>
-                <span>From</span>
+                <span>Pengirim</span>
               </Col>
               <Col md={1} className="colon">
                 <span>:</span>
               </Col>
               <Col md={18} className="label-form-content">
-                <span>monggopesen.com</span>
+                <span>{order.customer.name}</span>
               </Col>
             </Row>
             <Row className="label-form-row">
@@ -36,7 +33,7 @@ class LabelIndonesia extends Component {
                 <span>:</span>
               </Col>
               <Col md={18} className="label-indo-invoice">
-                <span>#INV123454321</span>
+                <span>{invoiceNumber}</span>
               </Col>
             </Row>
           </div>
@@ -50,7 +47,7 @@ class LabelIndonesia extends Component {
                 <span>:</span>
               </Col>
               <Col md={18} className="label-form-content">
-                <span>Bowo</span>
+                <span>{order.orderAddress.receiverName}</span>
               </Col>
             </Row>
             <Row className="label-form-row">
@@ -62,9 +59,7 @@ class LabelIndonesia extends Component {
               </Col>
               <Col md={18} className="label-form-address">
                 <span>
-                  Jl. Mangga Besar VIII RT.11/RW.1, RT.11/RW.1, Taman Sari, Kec.
-                  Taman Sari, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta
-                  11150
+                  {`${order.orderAddress.labelName}, ${order.orderAddress.fullAddress} ${order.orderAddress.subdistict} ${order.orderAddress.city} ${order.orderAddress.province} ${order.orderAddress.zipcode}` }
                 </span>
               </Col>
             </Row>
@@ -76,7 +71,21 @@ class LabelIndonesia extends Component {
                 <span>:</span>
               </Col>
               <Col md={18} className="label-form-content">
-                <span>+62 8123456789</span>
+                <span>{order.orderAddress.phoneNumber}</span>
+              </Col>
+            </Row>
+          </div>
+          <Divider />
+          <div className="label-from">
+            <Row className="label-form-row">
+              <Col md={3}>
+                <span>Deskripsi</span>
+              </Col>
+              <Col md={1} className="colon">
+                <span>:</span>
+              </Col>
+              <Col md={18} className="label-form-content">
+                <span>{order.orderItems[0].supplierSnapshot.name}</span>
               </Col>
             </Row>
           </div>
@@ -87,7 +96,7 @@ class LabelIndonesia extends Component {
                 <span>23-05-2019 14:20</span>
               </Col>
               <Col md={12} className="label-yes">
-                <span>YES</span>
+                <span>{order.courier.service}</span>
               </Col>
             </Row>
           </div>

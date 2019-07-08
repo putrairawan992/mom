@@ -1,9 +1,8 @@
-import React, { useRef } from "react";
+import React, { useRef, cloneElement } from "react";
 import { Modal, Button, Row, Col, Icon } from "antd";
 import PropTypes from "prop-types";
 import "./style.sass";
 import ReactToPrint from "react-to-print";
-import LabelChina from "../LabelChina";
 
 const ModalConfirmPrint = ({
   title,
@@ -11,7 +10,8 @@ const ModalConfirmPrint = ({
   visible,
   onOk,
   onCancel,
-  loading
+  loading,
+  children
 }) => {
   const componentRef = useRef();
   return (
@@ -60,7 +60,7 @@ const ModalConfirmPrint = ({
                 closeAfterPrint={true}
               />
               <div style={{display: "none"}}>
-                <LabelChina ref={componentRef} />
+                {cloneElement(children,{ref: componentRef})}
               </div>
             </Col>
           </Row>

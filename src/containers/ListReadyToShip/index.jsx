@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Row, Col, Card, notification, Icon } from "antd";
 import OrderVariant from "../../components/OrderVariant";
 import ModalAddNote from "../../components/ModalAddNote";
-import ModalConfirmPrint from "../../components/ModalConfirmPrint";
+import ReactToPrint from "react-to-print";
 import ButtonTextIcon from "../../components/ButtonTextIcon";
 import Button from "../../components/Button";
 import LoaderItem from "../../components/LoaderItem";
@@ -24,19 +24,19 @@ import strings from "../../localization";
 import "../../sass/style.sass";
 import "./style.sass";
 
-const ListPurchased = props => {
+const ListReadyToShip = props => {
   const [visibleUndo, setVisibleUndo] = useState(false);
-  const [visibleCancel, setVisibleCancel] = useState(false);
   const [visibleAddNote, setVisibleAddNote] = useState(false);
   const [visibleLogActivities, setVisibleLogActivities] = useState(false);
   const [visibleLogNoteAdmin, setVisibleLogNoteAdmin] = useState(false);
   const [visibleConfirm, setVisibleConfirm] = useState(false);
-  const [visibleConfirmPrint, setVisibleConfirmPrint] = useState(false);
   const [listLogActivity, setListLogActivity] = useState([]);
   const [listLogNote, setListLogNote] = useState([]);
   const [invoiceById, setInvoiceById] = useState(null);
   const [refInvoice, setRefInvoice] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  const componentRef = [];
 
   const updateList = async (update = false, action) => {
     try {
@@ -47,15 +47,6 @@ const ListPurchased = props => {
           contentNotification(
             "Order Undo.",
             "The Order is being undo, you can see the history in activity log",
-            "info-circle",
-            "#1890FF"
-          );
-        } else if (action === "CANCEL") {
-          actionCancel();
-          await props.onLoad();
-          contentNotification(
-            "Order Canceled.",
-            "The Order is being canceled, you can see the history in activity log or canceled order tab",
             "info-circle",
             "#1890FF"
           );
@@ -84,8 +75,7 @@ const ListPurchased = props => {
       if (response) {
         setLoading(false);
         setVisibleConfirm(!visibleConfirm);
-        setVisibleConfirmPrint(!visibleConfirmPrint);
-        
+        updateList(true, "NEXT");
       }
     } catch (error) {
       console.log(error);
@@ -102,22 +92,6 @@ const ListPurchased = props => {
       const response = await apiPostWithToken(`${PATH_ORDER.UNDO}`, request);
       if (response) {
         updateList(true, "UNDO");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const postCancle = async value => {
-    const request = {
-      invoiceId: value.invoiceId,
-      subCode: value.reason,
-      note: value.note
-    };
-    try {
-      const response = await apiPostWithToken(`${PATH_ORDER.CANCEL}`, request);
-      if (response) {
-        updateList(true, "CANCEL");
       }
     } catch (error) {
       console.log(error);
@@ -188,11 +162,8 @@ const ListPurchased = props => {
   };
 
   const handleNextOrder = invoiceId => {
-    const getInvoice = props.invoices.find(invoice => invoice.id === invoiceId);
-    setInvoiceById(getInvoice);
     setRefInvoice(invoiceId);
     setVisibleConfirm(!visibleConfirm);
-    //setVisibleConfirmPrint(!visibleConfirmPrint);
   };
 
   const actionUndo = () => {
@@ -201,14 +172,6 @@ const ListPurchased = props => {
 
   const actionSubmitUndo = payload => {
     postUndo(payload);
-  };
-
-  const actionCancel = () => {
-    setVisibleCancel(!visibleCancel);
-  };
-
-  const actionSubmitCancel = payload => {
-    postCancle(payload);
   };
 
   const actionAddNotes = () => {
@@ -227,25 +190,16 @@ const ListPurchased = props => {
     setVisibleLogNoteAdmin(!visibleLogNoteAdmin);
   };
 
-  const actionConfirmPrint = () => {
-    updateList(true, "NEXT");
-    setVisibleConfirmPrint(!visibleConfirmPrint);
-  };
-
-  const actionCancelPrint = () => {
-    updateList(true, "NEXT");
-    setVisibleConfirmPrint(!visibleConfirmPrint);
-  };
-
-  const optionsCancel = [
-    { id: "C01", name: "Out of Stock" },
-    { id: "C02", name: "Product Discontinued" },
-    { id: "C03", name: "Others" }
-  ];
+  const handlePrint = (invoiceId) => {
+    console.log(invoiceId);
+    
+    const getInvoice = props.invoices.find(invoice => invoice.id === invoiceId);
+    setInvoiceById(getInvoice);
+  }
 
   const optionsUndo = [
-    { id: "101", name: "Wrong Press" },
-    { id: "102", name: "Others" }
+    { value: "101", name: "Wrong Press" },
+    { value: "102", name: "Others" }
   ];
 
   return (
@@ -283,7 +237,7 @@ const ListPurchased = props => {
                           <tbody>
                             <tr>
                               <td style={{ paddingRight: 20 }}>
-                                <span>{strings.purchased_time}</span>
+                                <span>{strings.ready_time}</span>
                               </td>
                               <td>:</td>
                               <td>
@@ -306,12 +260,19 @@ const ListPurchased = props => {
                       </Col>
                       <Col md={12}>
                         <div className="wrap-button">
-                        <Button
-                          type="primary"
-                          onClick={() => handleNextOrder(invoice.id)}
-                        >
-                          Ready To Ship
-                        </Button>
+                          <ReactToPrint
+                            trigger={() => (
+                              <Button type="secondary">Print Label</Button>
+                            )}
+                            content={() => componentRef[invoice.id]}
+                            closeAfterPrint={true}
+                          />
+                          <Button
+                            type="primary"
+                            onClick={() => handleNextOrder(invoice.id)}
+                          >
+                            Purchased
+                          </Button>
                         </div>
                       </Col>
                     </Row>
@@ -335,14 +296,6 @@ const ListPurchased = props => {
                             onClick={() => {
                               setRefInvoice(invoice.id);
                               actionUndo();
-                            }}
-                          />
-                          <ButtonTextIcon
-                            icon="close-circle"
-                            label={strings.cancel_order}
-                            onClick={() => {
-                              setRefInvoice(invoice.id);
-                              actionCancel();
                             }}
                           />
                           <ButtonTextIcon
@@ -375,9 +328,13 @@ const ListPurchased = props => {
                   </Col>
                 </Row>
               ))}
+              <div style={{ display: "none" }}>
+                <LabelChina ref={(el)=>componentRef[invoice.id]=el} noInvoice={invoice.invoiceNumber} order={invoice.order} />
+              </div>
             </Card>
           ))
         : props.children}
+        
         <ModalConfirm
           visible={visibleConfirm}
           value={refInvoice}
@@ -404,15 +361,6 @@ const ListPurchased = props => {
         title={"Are you going back / undo to previous process?"}
         buttonTitle={"Undo"}
       />
-      <ModalReason
-        visible={visibleCancel}
-        onSubmit={actionSubmitCancel}
-        onCancel={actionCancel}
-        invoiceId={refInvoice}
-        options={optionsCancel}
-        title={"Cancel Order"}
-        buttonTitle={"Cancel Order"}
-      />
       <ModalHistory
         title="Activity Logs"
         logs={listLogActivity}
@@ -427,22 +375,8 @@ const ListPurchased = props => {
         onOk={actionShowLogNoteAdmin}
         onCancel={actionShowLogNoteAdmin}
       />
-      {invoiceById &&
-        <ModalConfirmPrint
-          visible={visibleConfirmPrint}
-          loading={false}
-          onOk={actionConfirmPrint}
-          onCancel={actionCancelPrint}
-          title={
-            "The order has moved to the next process, you can print the label now or you can print it later."
-          }
-          description={""}
-        >
-          <LabelChina noInvoice={invoiceById.invoiceNumber} order={invoiceById.order} />
-        </ModalConfirmPrint>
-      }
     </React.Fragment>
   );
 };
 
-export default ListPurchased;
+export default ListReadyToShip;
