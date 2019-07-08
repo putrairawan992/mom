@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Row, Col, Card, notification, Icon } from "antd";
-import HeaderOrder from "../../components/HeaderOrder";
 import OrderVariant from "../../components/OrderVariant";
 import ModalSupplier from "../../containers/ModalSupplier";
 import ModalAddNote from "../../components/ModalAddNote";
@@ -9,49 +8,66 @@ import Button from "../../components/Button";
 import TextInvoiceNumber from "../../components/TextInvoiceNumber";
 import TextProductName from "../../components/TextProductName";
 import ModalReason from "../../containers/ModalReason";
-import { apiPatchWithToken } from "../../services/api";
+import ModalHistory from "../ModalHistory";
+import {
+  apiPatchWithToken,
+  apiPostWithToken,
+  apiGetWithToken
+} from "../../services/api";
 import { PATH_ORDER } from "../../services/path/order";
 import ImageShipping from "../../components/ImageShipping";
-import convertTimesTime from "../../helpers/convertTimestime";
-import strings from '../../localization';
+import strings from "../../localization";
+
+import LoaderItem from "../../components/LoaderItem";
+import ModalConfirm from "../../components/ModalConfirm";
 
 import "../../sass/style.sass";
 import "./style.sass";
 
-const ListNeedPurchased = (props) => {
+const ListNeedPurchased = props => {
   const [visibleSupplier, setVisibleSupplier] = useState(false);
   const [visibleUndo, setVisibleUndo] = useState(false);
   const [visibleCancel, setVisibleCancel] = useState(false);
   const [visibleAddNote, setVisibleAddNote] = useState(false);
-  const [visibleLog, setVisibleLog] = useState(false);
-  const [visibleNote, setVisibleNote] = useState(false);
+  const [visibleLogActivities, setVisibleLogActivities] = useState(false);
+  const [visibleLogNoteAdmin, setVisibleLogNoteAdmin] = useState(false);
+  const [visibleConfirm, setVisibleConfirm] = useState(false);
+  const [listLogActivity, setListLogActivity] = useState([]);
+  const [listLogNote, setListLogNote] = useState([]);
+  const [invoiceById, setInvoiceById] = useState(null);
+  const [refInvoice, setRefInvoice] = useState(null);
+  const [loadingConfirm, setLoadingConfirm] = useState(false);
 
-  const getListNeedPurchase = async (update=false, action) => {
+  const updateList = async (update = false, action) => {
     try {
-      if(update){
-        if(action === "UNDO"){
-          await props.onLoad();
+      if (update) {
+        if (action === "UNDO") {
           actionUndo();
+          await props.onLoad();
           contentNotification(
             "Order Undo.",
             "The Order is being undo, you can see the history in activity log",
             "info-circle",
             "#1890FF"
           );
-        }else if(action === "CANCEL"){
-          await props.onLoad();
+        } else if (action === "CANCEL") {
           actionCancel();
+          await props.onLoad();
           contentNotification(
             "Order Canceled.",
             "The Order is being canceled, you can see the history in activity log or canceled order tab",
             "info-circle",
             "#1890FF"
           );
-        }else if(action === "NEXT"){
+        } else if (action === "NEXT") {
+          setVisibleConfirm(!visibleConfirm);
+          await props.onLoad();
+        } else {
+          actionAddNotes();
           await props.onLoad();
           contentNotification(
-            "New Order has moved to the next process.",
-            "Continue responding the order you have selected in Need Purchased Tabs.",
+            "Admin note created.",
+            "Admin note has created, you can see full list by clicking the 'Show Admin Notes' button.",
             "check-circle",
             "#52C41A"
           );
@@ -60,48 +76,103 @@ const ListNeedPurchased = (props) => {
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
-  const patchNextNeedPurchase = async (invoiceId) => {
+  const patchNext = async invoiceId => {
+    setLoadingConfirm(!loadingConfirm);
     try {
       const response = await apiPatchWithToken(`${PATH_ORDER.NEXT}/${invoiceId}`);
-      if(response){
-        getListNeedPurchase(true, "NEXT");
+      if (response) {
+        setLoadingConfirm(false);
+        updateList(true, "NEXT");
       }
     } catch (error) {
       console.log(error);
     }
-  }
-
-  const patchUndoNeedPurchase = async (payload) => {
-    try {
-      const response = await apiPatchWithToken(`${PATH_ORDER.UNDO}/${payload.invoiceId}`);
-      if(response){
-        getListNeedPurchase(true, "UNDO");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  const patchCancleNeedPurchase = async (payload) => {
-    try {
-      const response = await apiPatchWithToken(`${PATH_ORDER.CANCEL}/${payload.invoiceId}`);
-      if(response){
-        getListNeedPurchase(true, "CANCEL");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  const actionSearch = payload => {
-    console.log(payload);
   };
 
-  const actionFilter = payload => {
-    console.log(payload);
+  const postUndo = async value => {
+    const request = {
+      invoiceId: value.invoiceId,
+      subCode: value.reason,
+      note: value.note
+    };
+    try {
+      const response = await apiPostWithToken(`${PATH_ORDER.UNDO}`, request);
+      if (response) {
+        updateList(true, "UNDO");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
+
+  const postCancle = async value => {
+    const request = {
+      invoiceId: value.invoiceId,
+      subCode: value.reason,
+      note: value.note
+    };
+    try {
+      const response = await apiPostWithToken(`${PATH_ORDER.CANCEL}`, request);
+      if (response) {
+        updateList(true, "CANCEL");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const postNote = async value => {
+    const request = {
+      id: value.invoiceId,
+      note: value.note
+    };
+    try {
+      const response = await apiPostWithToken(`${PATH_ORDER.NOTE}`, request);
+      if (response) {
+        updateList(true, "NOTE");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getLogActivity = async value => {
+    const invoiceId = value;
+    try {
+      const response = await apiGetWithToken(
+        `${PATH_ORDER.LOG_ACTIVITY}/${invoiceId}`
+      );
+      if (response) {
+        setListLogActivity(response.data.data);
+        actionShowLogActivity();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getLogNotes = async value => {
+    const invoiceId = value;
+    try {
+      const response = await apiGetWithToken(`${PATH_ORDER.NOTE}/${invoiceId}`);
+      if (response) {
+        setListLogNote(response.data.data);
+        actionShowLogNoteAdmin();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const actionConfirm = (invoiceId) => {
+    patchNext(invoiceId);
+  }
+
+  const actionCancelConfirm = () => {
+    setVisibleConfirm(!visibleConfirm);
+  }
 
   const contentNotification = (message, description, icon, colorIcon) => {
     notification.open({
@@ -116,11 +187,14 @@ const ListNeedPurchased = (props) => {
   };
 
   const handlePurchased = invoiceId => {
-    patchNextNeedPurchase(invoiceId);
+    setRefInvoice(invoiceId);
+    setVisibleConfirm(!visibleConfirm);
   };
 
   const handleSupplierInfo = invoiceId => {
-    setVisibleSupplier(true);
+    const getInvoice = props.invoices.find(invoice => invoice.id === invoiceId);
+    setInvoiceById(getInvoice);
+    setVisibleSupplier(!visibleSupplier);
   };
 
   const actionOk = () => {
@@ -132,7 +206,7 @@ const ListNeedPurchased = (props) => {
   };
 
   const actionSubmitUndo = payload => {
-    patchUndoNeedPurchase(payload);
+    postUndo(payload);
   };
 
   const actionCancel = () => {
@@ -140,7 +214,7 @@ const ListNeedPurchased = (props) => {
   };
 
   const actionSubmitCancel = payload => {
-    patchCancleNeedPurchase(payload);
+    postCancle(payload);
   };
 
   const actionAddNotes = () => {
@@ -148,21 +222,15 @@ const ListNeedPurchased = (props) => {
   };
 
   const actionSubmitAddNote = payload => {
-    actionAddNotes();
-    contentNotification(
-      "A note has been added.",
-      "You can see the history in activity notes",
-      "info-circle",
-      "#1890FF"
-    );
+    postNote(payload);
   };
 
-  const actionShowLog = () => {
-    setVisibleLog(!visibleLog);
+  const actionShowLogActivity = () => {
+    setVisibleLogActivities(!visibleLogActivities);
   };
 
-  const actionShowNote = () => {
-    setVisibleNote(!visibleNote);
+  const actionShowLogNoteAdmin = () => {
+    setVisibleLogNoteAdmin(!visibleLogNoteAdmin);
   };
 
   const optionsCancel = [
@@ -178,155 +246,196 @@ const ListNeedPurchased = (props) => {
 
   return (
     <React.Fragment>
-      <HeaderOrder
-        onChangeFilter={actionFilter}
-        onSearch={actionSearch}
-        totalRecord={props.total}
-      />
-      {props.invoices ? props.invoices.map(invoice => (
-        <Card key={invoice.id}>
-        {invoice.items.map(item => (
-            <Row key={item.id}>
-              <Col md={2}>
-              <img
-                  src={item.productSnapshot.image}
-                  alt=""
-                  className="img-order-product"
-                />
-              </Col>
-              <Col md={22}>
-                <Row>
-                  <Col md={12}>
-                    <TextInvoiceNumber invoiceNumber={invoice.number} />
-                    <TextProductName
-                      productTextChina={item.productSnapshot.nameChina}
-                      productTextIndonesia={item.productSnapshot.name}
-                    />
-                    <table border={0}>
-                      <tbody>
-                        <tr>
-                          <td style={{ paddingRight: 20 }}>
-                            <span>Respond Time </span>
-                          </td>
-                          <td>:</td>
-                          <td>
-                            <span>{convertTimesTime.millisecond(item.orderDate)}</span>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <span>{strings.customer_note}</span>
-                          </td>
-                          <td>:</td>
-                          <td>
-                            <span>{item.note}</span>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </Col>
-                  <Col md={12}>
-                    <div className="wrap-button">
-                      <Button
-                        type="secondary"
-                        onClick={() => handleSupplierInfo(invoice.id)}
-                      >
-                        Supplier Info
-                      </Button>
-                      <Button
-                        type="primary"
-                        onClick={() => handlePurchased(invoice.id)}
-                      >
-                        Purchased
-                      </Button>
-                    </div>
-                  </Col>
-                </Row>
-                <Row style={{ marginTop: 16 }}>
-                  <Col md={12}>
-                    <div className="wrap-variant">
-                    <ImageShipping shipping={item.shipping} />
-                      <OrderVariant
-                        variant={item.productSnapshot.variant}
-                        quantity={item.productSnapshot.quantity}
-                        price={item.productSnapshot.price}
-                        withPrice={true}
-                      />
-                    </div>
-                  </Col>
-                  <Col offset={3} md={9}>
-                    <div className="wrap-button-text-icon">
-                      <ButtonTextIcon
-                        icon="rollback"
-                        label={strings.undo}
-                        onClick={actionUndo}
-                      />
-                      <ButtonTextIcon
-                        icon="close-circle"
-                        label={strings.cancel_order}
-                        onClick={actionCancel}
-                      />
-                      <ButtonTextIcon
-                        icon="message"
-                        label="Add Admin Notes"
-                        onClick={actionAddNotes}
-                      />
-                    </div>
-                    <div className="wrap-button-text-icon">
-                      <ButtonTextIcon
-                        icon="file-exclamation"
-                        label={strings.show_logs}
-                        onClick={actionShowLog}
-                      />
-                      <ButtonTextIcon
-                        icon="file-text"
-                        label="Show Admin Notes"
-                        onClick={actionShowNote}
-                      />
-                    </div>
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
-          ))}
-          <ModalSupplier
-            invoice={invoice}
-            visible={visibleSupplier}
-            onOk={actionOk}
-          />
-          <ModalReason
-            visible={visibleUndo}
-            onSubmit={actionSubmitUndo}
-            onCancel={actionUndo}
-            invoiceId={invoice.id}
-            options={optionsUndo}
-            title={"Are you going back / undo to previous process?"}
-            buttonTitle={"Undo"}
-          />
-          <ModalReason
-            options={optionsCancel}
-            visible={visibleCancel}
-            onCancel={actionCancel}
-            onSubmit={actionSubmitCancel}
-            invoiceId={invoice.id}
-            title={"Cancel Order"}
-            buttonTitle={"Cancel Order"}
-          />
-          <ModalAddNote
-            visible={visibleAddNote}
-            onSubmit={actionSubmitAddNote}
-            onCancel={actionAddNotes}
-            invoiceId={invoice.id}
-          />
-          {/* <ModalHistory
-            title="Activity Logs"
-            list={order.activityLogs}
-            visible={visibleLog}
-            onOk={actionShowLog}
-            onCancel={actionShowLog}
-          /> */}
+      {props.loading && (
+        <Card className="card-loading">
+          <Row type="flex" justify="center">
+            <LoaderItem size={10} loading={props.loading} />
+          </Row>
         </Card>
-      )):null}
+      )}
+      {props.invoices && !props.loading
+        ? props.invoices.map(invoice => (
+            <Card key={invoice.id}>
+              {invoice.order.orderItems.map(item => (
+                <Row key={item.id}>
+                  <Col md={2}>
+                    <img
+                      src={item.productSnapshot.image.defaultImage}
+                      alt=""
+                      className="img-order-product"
+                    />
+                  </Col>
+                  <Col md={22}>
+                    <Row>
+                      <Col md={12}>
+                        <TextInvoiceNumber
+                          invoiceNumber={invoice.invoiceNumber}
+                        />
+                        <TextProductName
+                          productTextChina={item.productSnapshot.nameChina}
+                          productTextIndonesia={item.productSnapshot.name}
+                        />
+                        <table border={0}>
+                          <tbody>
+                            <tr>
+                              <td style={{ paddingRight: 20 }}>
+                                <span>Respond Time </span>
+                              </td>
+                              <td>:</td>
+                              <td>
+                                <span>
+                                  {invoice.order.orderActivityDate.orderDate}
+                                </span>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <span>{strings.customer_note}</span>
+                              </td>
+                              <td>:</td>
+                              <td>
+                                <span>{item.note}</span>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </Col>
+                      <Col md={12}>
+                        <div className="wrap-button">
+                          <Button
+                            type="secondary"
+                            onClick={() => handleSupplierInfo(invoice.id)}
+                          >
+                            Supplier Info
+                          </Button>
+                          <Button
+                            type="primary"
+                            onClick={() => handlePurchased(invoice.id)}
+                          >
+                            Purchased
+                          </Button>
+                        </div>
+                      </Col>
+                    </Row>
+                    <Row style={{ marginTop: 16 }}>
+                      <Col md={12}>
+                        <div className="wrap-variant">
+                          <ImageShipping shipping={item.shipping} />
+                          <OrderVariant
+                            variants={item.productSnapshot.informations}
+                            quantity={item.productSnapshot.quantity}
+                            price={item.productSnapshot.price}
+                            withPrice={true}
+                          />
+                        </div>
+                      </Col>
+                      <Col offset={3} md={9}>
+                        <div className="wrap-button-text-icon">
+                          <ButtonTextIcon
+                            icon="rollback"
+                            label={strings.undo}
+                            onClick={() => {
+                              setRefInvoice(invoice.id);
+                              actionUndo();
+                            }}
+                          />
+                          <ButtonTextIcon
+                            icon="close-circle"
+                            label={strings.cancel_order}
+                            onClick={() => {
+                              setRefInvoice(invoice.id);
+                              actionCancel();
+                            }}
+                          />
+                          <ButtonTextIcon
+                            icon="message"
+                            label="Add Admin Notes"
+                            onClick={() => {
+                              setRefInvoice(invoice.id);
+                              actionAddNotes();
+                            }}
+                          />
+                        </div>
+                        <div className="wrap-button-text-icon">
+                          <ButtonTextIcon
+                            icon="file-exclamation"
+                            label={strings.show_logs}
+                            onClick={() => {
+                              getLogActivity(invoice.id);
+                            }}
+                          />
+                          <ButtonTextIcon
+                            icon="file-text"
+                            label="Show Admin Notes"
+                            onClick={() => {
+                              getLogNotes(invoice.id);
+                            }}
+                          />
+                        </div>
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
+              ))}
+            </Card>
+          ))
+        : props.children}
+        <ModalConfirm
+          visible={visibleConfirm}
+          value={refInvoice}
+          loading={loadingConfirm}
+          onOk={actionConfirm}
+          onCancel={actionCancelConfirm}
+          title={"Makes Sure that the product is already purchased."}
+          description={
+            "Before continue to the next step, you have to makes sure that the product is already purchased and waiting to be delivered to BR warehouse."
+          }
+        />
+      {invoiceById && (
+        <ModalSupplier
+          invoice={invoiceById}
+          visible={visibleSupplier}
+          onOk={actionOk}
+        />
+      )}
+      <ModalAddNote
+        visible={visibleAddNote}
+        onSubmit={actionSubmitAddNote}
+        onCancel={actionAddNotes}
+        invoiceId={refInvoice}
+      />
+      <ModalReason
+        visible={visibleUndo}
+        onSubmit={actionSubmitUndo}
+        onCancel={actionUndo}
+        invoiceId={refInvoice}
+        options={optionsUndo}
+        title={"Are you going back / undo to previous process?"}
+        buttonTitle={"Undo"}
+      />
+      <ModalReason
+        visible={visibleCancel}
+        onSubmit={actionSubmitCancel}
+        onCancel={actionCancel}
+        invoiceId={refInvoice}
+        options={optionsCancel}
+        title={"Cancel Order"}
+        buttonTitle={"Cancel Order"}
+      />
+      <ModalHistory
+        title="Activity Logs"
+        logs={listLogActivity}
+        visible={visibleLogActivities}
+        onOk={actionShowLogActivity}
+        onCancel={actionShowLogActivity}
+      />
+      <ModalHistory
+        title="Admin Notes"
+        logs={listLogNote}
+        visible={visibleLogNoteAdmin}
+        onOk={actionShowLogNoteAdmin}
+        onCancel={actionShowLogNoteAdmin}
+      />
     </React.Fragment>
   );
 };
