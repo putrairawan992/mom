@@ -39,7 +39,8 @@ const strings = new LocalizedStrings({
     purchased_time: 'Purchased Time',
     ready_time: 'Ready Time',
     shipped_time: 'Shipped Time',
-    its_way_to_indonesia: 'On its way to Indonesia'
+    its_way_to_indonesia: 'On its way to Indonesia',
+    arrived_in_indonesia: 'Arrived in Indonesia'
 
   }
 })

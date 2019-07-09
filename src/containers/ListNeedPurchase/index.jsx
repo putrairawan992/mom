@@ -20,6 +20,9 @@ import strings from "../../localization";
 
 import LoaderItem from "../../components/LoaderItem";
 import ModalConfirm from "../../components/ModalConfirm";
+import convertTimesTime from "../../helpers/convertTimestime";
+import { optionsCancel } from "../../dataSource/option_cancle";
+import { optionsUndo } from "../../dataSource/option_undo";
 
 import "../../sass/style.sass";
 import "./style.sass";
@@ -81,7 +84,9 @@ const ListNeedPurchased = props => {
   const patchNext = async invoiceId => {
     setLoadingConfirm(!loadingConfirm);
     try {
-      const response = await apiPatchWithToken(`${PATH_ORDER.NEXT}/${invoiceId}`);
+      const response = await apiPatchWithToken(
+        `${PATH_ORDER.NEXT}/${invoiceId}`
+      );
       if (response) {
         setLoadingConfirm(false);
         updateList(true, "NEXT");
@@ -166,13 +171,13 @@ const ListNeedPurchased = props => {
     }
   };
 
-  const actionConfirm = (invoiceId) => {
+  const actionConfirm = invoiceId => {
     patchNext(invoiceId);
-  }
+  };
 
   const actionCancelConfirm = () => {
     setVisibleConfirm(!visibleConfirm);
-  }
+  };
 
   const contentNotification = (message, description, icon, colorIcon) => {
     notification.open({
@@ -233,164 +238,154 @@ const ListNeedPurchased = props => {
     setVisibleLogNoteAdmin(!visibleLogNoteAdmin);
   };
 
-  const optionsCancel = [
-    { id: "C01", name: "Out of Stock" },
-    { id: "C02", name: "Product Discontinued" },
-    { value: "C03", name: "Others" }
-  ];
-
-  const optionsUndo = [
-    { id: "101", name: "Wrong Press" },
-    { id: "102", name: "Others" }
-  ];
-
   return (
     <React.Fragment>
-      {props.loading && (
+      {props.loading ? (
         <Card className="card-loading">
           <Row type="flex" justify="center">
             <LoaderItem size={10} loading={props.loading} />
           </Row>
         </Card>
+      ) : props.invoices ? (
+        props.invoices.map(invoice => (
+          <Card key={invoice.id}>
+            {invoice.order.orderItems.map(item => (
+              <Row key={item.id}>
+                <Col md={2}>
+                  <img
+                    src={item.productSnapshot.image.defaultImage}
+                    alt=""
+                    className="img-order-product"
+                  />
+                </Col>
+                <Col md={22}>
+                  <Row>
+                    <Col md={12}>
+                      <TextInvoiceNumber
+                        invoiceNumber={invoice.invoiceNumber}
+                      />
+                      <TextProductName
+                        productTextChina={item.productSnapshot.nameChina}
+                        productTextIndonesia={item.productSnapshot.name}
+                      />
+                      <table border={0}>
+                        <tbody>
+                          <tr>
+                            <td width="130px">
+                              <span>Respond Time </span>
+                            </td>
+                            <td>:</td>
+                            <td>
+                              <span>
+                                {convertTimesTime.millisecond(invoice.order.orderActivityDate.orderDate)}
+                              </span>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td width="130px">
+                              <span>{strings.customer_note}</span>
+                            </td>
+                            <td>:</td>
+                            <td>
+                              <span>{item.note}</span>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </Col>
+                    <Col md={12}>
+                      <div className="wrap-button">
+                        <Button
+                          type="secondary"
+                          onClick={() => handleSupplierInfo(invoice.id)}
+                        >
+                          Supplier Info
+                        </Button>
+                        <Button
+                          type="primary"
+                          onClick={() => handlePurchased(invoice.id)}
+                        >
+                          Purchased
+                        </Button>
+                      </div>
+                    </Col>
+                  </Row>
+                  <Row style={{ marginTop: 16 }}>
+                    <Col md={12}>
+                      <div className="wrap-variant">
+                        <ImageShipping shipping={item.shipping} />
+                        <OrderVariant
+                          variants={item.productSnapshot.informations}
+                          quantity={item.productSnapshot.quantity}
+                          price={item.productSnapshot.price}
+                          withPrice={true}
+                        />
+                      </div>
+                    </Col>
+                    <Col offset={3} md={9}>
+                      <div className="wrap-button-text-icon">
+                        <ButtonTextIcon
+                          icon="rollback"
+                          label={strings.undo}
+                          onClick={() => {
+                            setRefInvoice(invoice.id);
+                            actionUndo();
+                          }}
+                        />
+                        <ButtonTextIcon
+                          icon="close-circle"
+                          label={strings.cancel_order}
+                          onClick={() => {
+                            setRefInvoice(invoice.id);
+                            actionCancel();
+                          }}
+                        />
+                        <ButtonTextIcon
+                          icon="message"
+                          label="Add Admin Notes"
+                          onClick={() => {
+                            setRefInvoice(invoice.id);
+                            actionAddNotes();
+                          }}
+                        />
+                      </div>
+                      <div className="wrap-button-text-icon">
+                        <ButtonTextIcon
+                          icon="file-exclamation"
+                          label={strings.show_logs}
+                          onClick={() => {
+                            getLogActivity(invoice.id);
+                          }}
+                        />
+                        <ButtonTextIcon
+                          icon="file-text"
+                          label="Show Admin Notes"
+                          onClick={() => {
+                            getLogNotes(invoice.id);
+                          }}
+                        />
+                      </div>
+                    </Col>
+                  </Row>
+                </Col>
+              </Row>
+            ))}
+          </Card>
+        ))
+      ) : (
+        props.children
       )}
-      {props.invoices && !props.loading
-        ? props.invoices.map(invoice => (
-            <Card key={invoice.id}>
-              {invoice.order.orderItems.map(item => (
-                <Row key={item.id}>
-                  <Col md={2}>
-                    <img
-                      src={item.productSnapshot.image.defaultImage}
-                      alt=""
-                      className="img-order-product"
-                    />
-                  </Col>
-                  <Col md={22}>
-                    <Row>
-                      <Col md={12}>
-                        <TextInvoiceNumber
-                          invoiceNumber={invoice.invoiceNumber}
-                        />
-                        <TextProductName
-                          productTextChina={item.productSnapshot.nameChina}
-                          productTextIndonesia={item.productSnapshot.name}
-                        />
-                        <table border={0}>
-                          <tbody>
-                            <tr>
-                              <td style={{ paddingRight: 20 }}>
-                                <span>Respond Time </span>
-                              </td>
-                              <td>:</td>
-                              <td>
-                                <span>
-                                  {invoice.order.orderActivityDate.orderDate}
-                                </span>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <span>{strings.customer_note}</span>
-                              </td>
-                              <td>:</td>
-                              <td>
-                                <span>{item.note}</span>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </Col>
-                      <Col md={12}>
-                        <div className="wrap-button">
-                          <Button
-                            type="secondary"
-                            onClick={() => handleSupplierInfo(invoice.id)}
-                          >
-                            Supplier Info
-                          </Button>
-                          <Button
-                            type="primary"
-                            onClick={() => handlePurchased(invoice.id)}
-                          >
-                            Purchased
-                          </Button>
-                        </div>
-                      </Col>
-                    </Row>
-                    <Row style={{ marginTop: 16 }}>
-                      <Col md={12}>
-                        <div className="wrap-variant">
-                          <ImageShipping shipping={item.shipping} />
-                          <OrderVariant
-                            variants={item.productSnapshot.informations}
-                            quantity={item.productSnapshot.quantity}
-                            price={item.productSnapshot.price}
-                            withPrice={true}
-                          />
-                        </div>
-                      </Col>
-                      <Col offset={3} md={9}>
-                        <div className="wrap-button-text-icon">
-                          <ButtonTextIcon
-                            icon="rollback"
-                            label={strings.undo}
-                            onClick={() => {
-                              setRefInvoice(invoice.id);
-                              actionUndo();
-                            }}
-                          />
-                          <ButtonTextIcon
-                            icon="close-circle"
-                            label={strings.cancel_order}
-                            onClick={() => {
-                              setRefInvoice(invoice.id);
-                              actionCancel();
-                            }}
-                          />
-                          <ButtonTextIcon
-                            icon="message"
-                            label="Add Admin Notes"
-                            onClick={() => {
-                              setRefInvoice(invoice.id);
-                              actionAddNotes();
-                            }}
-                          />
-                        </div>
-                        <div className="wrap-button-text-icon">
-                          <ButtonTextIcon
-                            icon="file-exclamation"
-                            label={strings.show_logs}
-                            onClick={() => {
-                              getLogActivity(invoice.id);
-                            }}
-                          />
-                          <ButtonTextIcon
-                            icon="file-text"
-                            label="Show Admin Notes"
-                            onClick={() => {
-                              getLogNotes(invoice.id);
-                            }}
-                          />
-                        </div>
-                      </Col>
-                    </Row>
-                  </Col>
-                </Row>
-              ))}
-            </Card>
-          ))
-        : props.children}
-        <ModalConfirm
-          visible={visibleConfirm}
-          value={refInvoice}
-          loading={loadingConfirm}
-          onOk={actionConfirm}
-          onCancel={actionCancelConfirm}
-          title={"Makes Sure that the product is already purchased."}
-          description={
-            "Before continue to the next step, you have to makes sure that the product is already purchased and waiting to be delivered to BR warehouse."
-          }
-        />
+      <ModalConfirm
+        visible={visibleConfirm}
+        value={refInvoice}
+        loading={loadingConfirm}
+        onOk={actionConfirm}
+        onCancel={actionCancelConfirm}
+        title={"Makes Sure that the product is already purchased."}
+        description={
+          "Before continue to the next step, you have to makes sure that the product is already purchased and waiting to be delivered to BR warehouse."
+        }
+      />
       {invoiceById && (
         <ModalSupplier
           invoice={invoiceById}

@@ -8,12 +8,12 @@ import TextInvoiceNumber from "../../components/TextInvoiceNumber";
 import ModalReason from "../../containers/ModalReason";
 import ModalHistory from "../ModalHistory";
 import {
-  apiPatchWithToken,
   apiPostWithToken,
   apiGetWithToken
 } from "../../services/api";
 import { PATH_ORDER } from "../../services/path/order";
 import strings from "../../localization";
+import { optionsUndo } from "../../dataSource/option_undo";
 
 import "../../sass/style.sass";
 import "./style.sass";
@@ -25,9 +25,7 @@ const ListDelivered = props => {
   const [visibleLogNoteAdmin, setVisibleLogNoteAdmin] = useState(false);
   const [listLogActivity, setListLogActivity] = useState([]);
   const [listLogNote, setListLogNote] = useState([]);
-  const [invoiceById, setInvoiceById] = useState(null);
   const [refInvoice, setRefInvoice] = useState(null);
-  const [loading, setLoading] = useState(false);
 
   const updateList = async (update = false, action) => {
     try {
@@ -132,7 +130,6 @@ const ListDelivered = props => {
 
   const handleNextOrder = invoiceId => {
     setRefInvoice(invoiceId);
-
   };
 
   const actionUndo = () => {
@@ -159,109 +156,107 @@ const ListDelivered = props => {
     setVisibleLogNoteAdmin(!visibleLogNoteAdmin);
   };
 
-  const optionsUndo = [
-    { value: "101", name: "Wrong Press" },
-    { value: "102", name: "Others" }
-  ];
-
   return (
     <React.Fragment>
-      {props.loading && (
+      {props.loading ? (
         <Card className="card-loading">
           <Row type="flex" justify="center">
             <LoaderItem size={10} loading={props.loading} />
           </Row>
         </Card>
-      )}
-      {props.invoices && !props.loading
-        ? props.invoices.map(invoice => (
-            <Card key={invoice.id}>
-              {invoice.order.orderItems.map(item => (
-                <Row key={item.id}>
-                  <Col md={2}>
-                    <img
-                      src={item.productSnapshot.image.defaultImage}
-                      alt=""
-                      className="img-order-product"
-                    />
-                  </Col>
-                  <Col md={22}>
-                    <Row>
-                      <Col md={12}>
-                        <TextInvoiceNumber
-                          invoiceNumber={invoice.invoiceNumber}
+      ) : props.invoices ? (
+        props.invoices.map(invoice => (
+          <Card key={invoice.id}>
+            {invoice.order.orderItems.map(item => (
+              <Row key={item.id}>
+                <Col md={2}>
+                  <img
+                    src={item.productSnapshot.image.defaultImage}
+                    alt=""
+                    className="img-order-product"
+                  />
+                </Col>
+                <Col md={22}>
+                  <Row>
+                    <Col md={12}>
+                      <TextInvoiceNumber
+                        invoiceNumber={invoice.invoiceNumber}
+                      />
+                      <table border={0}>
+                        <tbody>
+                          <tr>
+                            <td style={{ paddingRight: 20 }}>
+                              <span>Delivered Time </span>
+                            </td>
+                            <td>:</td>
+                            <td>
+                              <span>
+                                {invoice.order.orderActivityDate.orderDate}
+                              </span>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </Col>
+                    <Col md={12}>
+                      <div className="wrap-button">
+                        <Button type="white" onClick={() => handleNextOrder()}>
+                          See Detail
+                        </Button>
+                      </div>
+                    </Col>
+                  </Row>
+                  <Row style={{ marginTop: 16 }}>
+                    <Col md={12}>
+                      <div className="wrap-variant">
+                        <span className="delivered-text">Delivered</span>
+                      </div>
+                    </Col>
+                    <Col offset={3} md={9}>
+                      <div className="wrap-button-text-icon">
+                        <ButtonTextIcon
+                          icon="rollback"
+                          label={strings.undo}
+                          onClick={() => {
+                            setRefInvoice(invoice.id);
+                            actionUndo();
+                          }}
                         />
-                        <table border={0}>
-                          <tbody>
-                            <tr>
-                              <td style={{ paddingRight: 20 }}>
-                                <span>Delivered Time </span>
-                              </td>
-                              <td>:</td>
-                              <td>
-                                <span>{invoice.order.orderActivityDate.orderDate}</span>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </Col>
-                      <Col md={12}>
-                        <div className="wrap-button">
-                          <Button type="white" onClick={() => handleNextOrder()}>
-                            See Detail
-                          </Button>
-                        </div>
-                      </Col>
-                    </Row>
-                    <Row style={{ marginTop: 16 }}>
-                      <Col md={12}>
-                        <div className="wrap-variant">
-                          <span className="delivered-text">Delivered</span>
-                        </div>
-                      </Col>
-                      <Col offset={3} md={9}>
-                        <div className="wrap-button-text-icon">
-                          <ButtonTextIcon
-                            icon="rollback"
-                            label={strings.undo}
-                            onClick={() => {
-                              setRefInvoice(invoice.id);
-                              actionUndo();
-                            }}
-                          />
-                          <ButtonTextIcon
-                            icon="message"
-                            label="Add Admin Notes"
-                            onClick={() => {
-                              setRefInvoice(invoice.id);
-                              actionAddNotes();
-                            }}
-                          />
-                        </div>
-                        <div className="wrap-button-text-icon">
-                          <ButtonTextIcon
-                            icon="file-exclamation"
-                            label={strings.show_logs}
-                            onClick={() => {
-                              getLogActivity(invoice.id);
-                            }}
-                          />
-                          <ButtonTextIcon
-                            icon="file-text"
-                            label="Show Admin Notes"
-                            onClick={() => {
-                              getLogNotes(invoice.id);
-                            }}
-                          />
-                        </div>
-                      </Col>
-                    </Row>
-                  </Col>
-                </Row>
-              ))}
-            </Card>
-          ))
-        : props.children}
+                        <ButtonTextIcon
+                          icon="message"
+                          label="Add Admin Notes"
+                          onClick={() => {
+                            setRefInvoice(invoice.id);
+                            actionAddNotes();
+                          }}
+                        />
+                      </div>
+                      <div className="wrap-button-text-icon">
+                        <ButtonTextIcon
+                          icon="file-exclamation"
+                          label={strings.show_logs}
+                          onClick={() => {
+                            getLogActivity(invoice.id);
+                          }}
+                        />
+                        <ButtonTextIcon
+                          icon="file-text"
+                          label="Show Admin Notes"
+                          onClick={() => {
+                            getLogNotes(invoice.id);
+                          }}
+                        />
+                      </div>
+                    </Col>
+                  </Row>
+                </Col>
+              </Row>
+            ))}
+          </Card>
+        ))
+      ) : (
+        props.children
+      )}
       <ModalAddNote
         visible={visibleAddNote}
         onSubmit={actionSubmitAddNote}

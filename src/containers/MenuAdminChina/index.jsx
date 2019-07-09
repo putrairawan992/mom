@@ -27,7 +27,7 @@ const MenuAdminChina = props => {
         props.logout();
       break;
       default:
-        props.onChange(<Product />);
+      props.onChange(<OrderChina />);
     }
   };
 
