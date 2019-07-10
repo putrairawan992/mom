@@ -271,9 +271,9 @@ const ListArrival = props => {
         loading={loading}
         onOk={actionConfirm}
         onCancel={actionCancelConfirm}
-        title={"Makes Sure that the package is ready to be shipped."}
+        title={"Makes Sure that the package is ready to be delivered."}
         description={
-          "Please check if the package is neatly wrapped and the label is already patched to the package."
+          "Before creating the receipt, please make sure that the product is already checked and being re-packed."
         }
       />
       <ModalAddNote

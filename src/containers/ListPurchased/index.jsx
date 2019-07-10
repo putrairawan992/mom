@@ -395,8 +395,10 @@ const ListPurchased = props => {
         onCancel={actionUndo}
         invoiceId={refInvoice}
         options={optionsUndo}
-        title={"Are you going back / undo to previous process?"}
-        buttonTitle={"Undo"}
+        title={strings.modal_undo_title}
+        buttonTitle={strings.undo}
+        labelReason={strings.reason}
+        warningNote={strings.warning_undo_quote}
       />
       <ModalReason
         visible={visibleCancel}
@@ -404,8 +406,10 @@ const ListPurchased = props => {
         onCancel={actionCancel}
         invoiceId={refInvoice}
         options={optionsCancel}
-        title={"Cancel Order"}
-        buttonTitle={"Cancel Order"}
+        title={strings.modal_cancle_tittle}
+        buttonTitle={strings.cancel_order}
+        labelReason={strings.cancellation_category}
+        warningNote={strings.warning_cancel_quote}
       />
       <ModalHistory
         title="Activity Logs"

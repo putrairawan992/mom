@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import propTypes from "prop-types";
 import { Formik } from "formik";
 import Button from "../../components/Button";
-import { Modal as ModalAnt, Row, Col, Form } from "antd";
+import { Modal as ModalAnt, Row, Col, Form, Icon } from "antd";
 import * as yup from "yup";
 import TextArea from "../../components/TextArea";
 import "./style.sass";
@@ -16,7 +16,9 @@ const Modal = ({
   invoiceId,
   options,
   title,
-  buttonTitle
+  buttonTitle,
+  warningNote,
+  labelReason
 }) => {
   const [schema, SetSchema] = useState(
     yup.object().shape({
@@ -31,7 +33,7 @@ const Modal = ({
       ? SetSchema(
           yup.object().shape({
             reason: yup.string().required(),
-            note: yup.string().required(`${strings.detail_cancel_quote}`)
+            note: yup.string().required(`${warningNote}`)
           })
         )
       : SetSchema(
@@ -73,9 +75,13 @@ const Modal = ({
           <Form onSubmit={handleSubmit}>
             <Row>
               <Col>
-                <span className="label-reason">
-                  {strings.cancellation_category}
-                </span>
+                <p className="label-reason">
+                  {labelReason}
+                </p>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
                 <Select
                   name="reason"
                   value={values.reason}
@@ -98,26 +104,16 @@ const Modal = ({
                   onChange={handleChange}
                   value={values.note}
                   maxLength={255}
-                  type={
-                    errors.note && touched.note && revertStatus
-                      ? "error"
-                      : "default"
-                  }
                 />
                 {errors.note && touched.note && revertStatus && (
-                  <span className="title-modal-danger">{errors.note}</span>
+                  <span className="message-warning">
+                    <Icon type="exclamation-circle" />
+                    {` ${errors.note}`}
+                  </span>
                 )}
               </Col>
             </Row>
-            <Row
-              className={
-                errors.note && touched.note && revertStatus
-                  ? "row-button-error"
-                  : "row-button"
-              }
-              type="flex"
-              justify="end"
-            >
+            <Row type="flex" justify="end">
               <Col>
                 <Button onClick={onCancel} type="link">
                   {strings.cancel}
@@ -147,7 +143,9 @@ Modal.propTypes = {
   onSubmit: propTypes.func,
   invoiceId: propTypes.string,
   title: propTypes.string,
-  buttonTitle: propTypes.string
+  buttonTitle: propTypes.string,
+  warningNote: propTypes.string,
+  labelReason: propTypes.string
 };
 
 export default Modal;

@@ -251,8 +251,10 @@ const ListShipped = props => {
         onCancel={actionUndo}
         invoiceId={refInvoice}
         options={optionsUndo}
-        title={"Are you going back / undo to previous process?"}
-        buttonTitle={"Undo"}
+        title={strings.modal_undo_title}
+        buttonTitle={strings.undo}
+        labelReason={strings.reason}
+        warningNote={strings.warning_undo_quote}
       />
       <ModalHistory
         title="Activity Logs"

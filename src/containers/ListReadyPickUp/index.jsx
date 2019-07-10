@@ -52,6 +52,12 @@ const ListReadyPickUp = props => {
           );
         } else if (action === "NEXT") {
           await props.onLoad();
+          contentNotification(
+            "Courier has picked up the package.",
+            "The package is already picked up by courier to be delivered to customer.",
+            "check-circle",
+            "#52C41A"
+          );
         } else {
           actionAddNotes();
           await props.onLoad();
@@ -239,7 +245,7 @@ const ListReadyPickUp = props => {
                         </Button>
                         <ReactToPrint
                           trigger={() => (
-                            <Button type="secondary">Print Label</Button>
+                            <Button type="secondary">Print Receipt</Button>
                           )}
                           content={() => componentRef[invoice.id]}
                           closeAfterPrint={true}
@@ -316,9 +322,9 @@ const ListReadyPickUp = props => {
         loading={loading}
         onOk={actionConfirm}
         onCancel={actionCancelConfirm}
-        title={"Makes Sure that the package is ready to be shipped."}
+        title={"Makes Sure that the package is picked up by courier."}
         description={
-          "Please check if the package is neatly wrapped and the label is already patched to the package."
+          "This action button only used if the status update of delivery is not working properly."
         }
       />
       <ModalAddNote
@@ -333,8 +339,10 @@ const ListReadyPickUp = props => {
         onCancel={actionUndo}
         invoiceId={refInvoice}
         options={optionsUndo}
-        title={"Are you going back / undo to previous process?"}
-        buttonTitle={"Undo"}
+        title={strings.modal_undo_title}
+        buttonTitle={strings.undo}
+        labelReason={strings.reason}
+        warningNote={strings.warning_undo_quote}
       />
       <ModalHistory
         title="Activity Logs"

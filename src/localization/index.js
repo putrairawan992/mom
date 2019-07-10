@@ -3,6 +3,7 @@ import LocalizedStrings from 'react-localization';
 const strings = new LocalizedStrings({
   id: {
     modal_undo_title: 'Are you going back / undo to previous process?',
+    modal_cancle_tittle: 'Cancle Order',
 
     // Tab China
     tab_china_need_response: 'Need Response',
@@ -18,10 +19,12 @@ const strings = new LocalizedStrings({
     tab_indo_delivered: 'Delivered To Customer',
 
     textarea_quote: 'Write some notes here',
-    detail_cancel_quote: 'Please write the detail of cancelation',
+    warning_cancel_quote: 'Please write the detail of cancelation',
+    warning_undo_quote: 'Please write the detail of undo reason',
 
     //general
     undo: 'Undo',
+    reason: "Reason",
     upload: 'Upload',
     cancel_order: 'Cancel Order',
     logout: 'Logout',

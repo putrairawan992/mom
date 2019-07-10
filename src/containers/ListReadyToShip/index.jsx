@@ -53,6 +53,12 @@ const ListReadyToShip = props => {
           );
         } else if (action === "NEXT") {
           await props.onLoad();
+          contentNotification(
+            "The package is shipped.",
+            "The order has been moved to the shipped tab, and the package is already on it's way to indonesia.",
+            "check-circle",
+            "#52C41A"
+          );
         } else {
           actionAddNotes();
           await props.onLoad();
@@ -354,8 +360,10 @@ const ListReadyToShip = props => {
         onCancel={actionUndo}
         invoiceId={refInvoice}
         options={optionsUndo}
-        title={"Are you going back / undo to previous process?"}
-        buttonTitle={"Undo"}
+        title={strings.modal_undo_title}
+        buttonTitle={strings.undo}
+        labelReason={strings.reason}
+        warningNote={strings.warning_undo_quote}
       />
       <ModalHistory
         title="Activity Logs"
