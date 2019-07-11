@@ -35,19 +35,19 @@ const ModalSupplier = ({ invoice, visible, onOk }) => {
       footer={null}
       closable={false}
     >
-      {invoice.items.map(item => (
+      {invoice.order.orderItems.map(item => (
         <div key={item.id}>
           <Row className="supplier__modal__detail-order">
             <Col md={4} className="supplier__modal__detail-order__image-box">
               <div>
-                <img src={item.productSnapshot.image} alt="" />
+                <img src={item.productSnapshot.image.defaultImage} alt="" />
               </div>
             </Col>
             <Col md={20} className="supplier__modal__detail-order__variant">
               <Row>
                 <Col md={14}>
                   <p>
-                    Invoice No. <span>{invoice.number}</span>
+                    Invoice No. <span>{invoice.invoiceNumber}</span>
                   </p>
                   <b>{item.productSnapshot.nameChina}</b>
                   <p>{item.productSnapshot.name}</p>
@@ -64,7 +64,7 @@ const ModalSupplier = ({ invoice, visible, onOk }) => {
               <Row>
                 <Col md={14}>
                   <OrderVariant
-                    variant={item.productSnapshot.variant}
+                    variants={item.productSnapshot.informations}
                     quantity={item.productSnapshot.quantity}
                     price={item.productSnapshot.price}
                     withPrice={true}

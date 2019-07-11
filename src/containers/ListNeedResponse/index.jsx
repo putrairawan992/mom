@@ -1,7 +1,6 @@
 import React from "react";
 import { Row, Col, Card, notification, Icon } from "antd";
 import "./style.sass";
-import HeaderOrder from "../../components/HeaderOrder";
 import OrderVariant from "../../components/OrderVariant";
 import Button from "../../components/Button";
 import TextInvoiceNumber from "../../components/TextInvoiceNumber";
@@ -11,6 +10,8 @@ import { PATH_ORDER } from "../../services/path/order";
 import convertTimesTime from "../../helpers/convertTimestime";
 import ImageShipping from "../../components/ImageShipping";
 import strings from '../../localization';
+import LoaderItem from "../../components/LoaderItem";
+import NotFoundOrder from "../../components/NotFoundOrder";
 
 const ListNeedResponse = (props) => {
   const getListNeedResponse = async (update=false) => {
@@ -40,18 +41,6 @@ const ListNeedResponse = (props) => {
     }
   }
 
-  // useEffect(() => {
-  //   getListNeedResponse();
-  // }, []);
-
-  const actionSearch = payload => {
-    console.log(payload);
-  };
-
-  const actionFilter = payload => {
-    console.log(payload);
-  };
-
   const contentNotification = (message, description, icon, colorIcon) => {
     notification.open({
       message: message,
@@ -70,18 +59,20 @@ const ListNeedResponse = (props) => {
 
   return (
     <React.Fragment>
-      <HeaderOrder
-        onChangeFilter={actionFilter}
-        onSearch={actionSearch}
-        totalRecord={props.total}
-      />
-      {props.invoices ? props.invoices.map(invoice => (
+      {props.loading && (
+        <Card className="card-loading">
+          <Row type="flex" justify="center">
+            <LoaderItem size={10} loading={props.loading} />
+          </Row>
+        </Card>
+      )}
+      {props.invoices && !props.loading ? props.invoices.map(invoice => (
         <Card key={invoice.id}>
-          {invoice.items.map(item => (
+          {invoice.order.orderItems.map(item => (
             <Row key={item.id}>
               <Col md={2}>
                 <img
-                  src={item.productSnapshot.image}
+                  src={item.productSnapshot.image.defaultImage}
                   alt=""
                   className="img-order-product"
                 />
@@ -89,7 +80,7 @@ const ListNeedResponse = (props) => {
               <Col md={22}>
                 <Row>
                   <Col md={12}>
-                    <TextInvoiceNumber invoiceNumber={invoice.number} />
+                    <TextInvoiceNumber invoiceNumber={invoice.invoiceNumber} />
                     <TextProductName
                       productTextChina={item.productSnapshot.nameChina}
                       productTextIndonesia={item.productSnapshot.name}
@@ -102,7 +93,7 @@ const ListNeedResponse = (props) => {
                           </td>
                           <td>:</td>
                           <td>
-                            <span>{convertTimesTime.millisecond(item.orderDate)}</span>
+                            <span>{invoice.order.orderActivityDate.orderDate}</span>
                           </td>
                         </tr>
                         <tr>
@@ -133,7 +124,7 @@ const ListNeedResponse = (props) => {
                     <div className="wrap-variant">
                       <ImageShipping shipping={item.shipping} />
                       <OrderVariant
-                        variant={item.productSnapshot.variant}
+                        variants={item.productSnapshot.informations}
                         quantity={item.productSnapshot.quantity}
                         price={item.productSnapshot.price}
                         withPrice={true}
@@ -145,7 +136,7 @@ const ListNeedResponse = (props) => {
             </Row>
           ))}
         </Card>
-      )):null}
+      )) : props.children}
     </React.Fragment>
   );
 };

@@ -5,7 +5,7 @@ import Button from "../../components/Button";
 import PropTypes, { object } from "prop-types";
 import convertTimesTime from "../../helpers/convertTimestime";
 
-const ModalHistory = ({ title, list, visible, onOk, onCancel }) => {
+const ModalHistory = ({ title, logs, visible, onOk, onCancel }) => {
   return (
     <Modal
       title={title}
@@ -15,15 +15,15 @@ const ModalHistory = ({ title, list, visible, onOk, onCancel }) => {
       onCancel={onCancel}
       footer={null}
     >
-      {list.map((list, index) => (
-        <div className="log-status" key={index}>
+      {logs.map((log) => (
+        <div className="log-status" key={log.id}>
           <div className="log-status__admin">
-            <b>{convertTimesTime.second(list.date)}</b> -{" "}
-            <span>{list.admin}</span>
+            <b>{convertTimesTime.millisecond(log.createdDate)}</b> -{" "}
+            <span>{log.createBy}</span>
             <Divider type="vertical" />
-            <span>{list.tabStatus}</span>
+            <span>{"status (need data)"}</span>
           </div>
-          <span className="log-status__admin__note">{list.note}</span>
+          <span className="log-status__admin__note">{log.note}</span>
         </div>
       ))}
       <Row type="flex" justify="end">
@@ -43,7 +43,7 @@ const ModalHistory = ({ title, list, visible, onOk, onCancel }) => {
 
 ModalHistory.propTypes = {
   title: PropTypes.string,
-  list: PropTypes.array,
+  logs: PropTypes.arrayOf(object),
   visible: PropTypes.bool,
   onOk: PropTypes.func,
   onCancel: PropTypes.func
