@@ -3,7 +3,7 @@ import Upload from '../../components/Upload'
 import { apiPostWithToken } from '../../services/api'
 import {PATH_UPLOAD} from '../../services/path/upload'
 import propTypes from 'prop-types'
-import {Card, Row, Col} from 'antd';
+import {Card, Row, Col, Tag} from 'antd';
 import {FieldArray} from 'formik'
 
 const UploadImages = (props) => {
@@ -15,19 +15,27 @@ const UploadImages = (props) => {
   const [statusFile, setStatusFile] = useState(false)
   const [statusSize, setStatusSize] = useState(false)
   
-  
-
-  
-
   useEffect(() => {
-    initImage()
-    
+    const initImage = () => {
+      const {maxImage} = props
+      let obj = {}
+      let arr = []
+      for(let i = 0; i< maxImage; i++){
+        obj.largeUrl = ''
+        obj.mediumUrl = ''
+        obj.smallUrl = ''
+        obj.isDefault = false
+        obj.count = 0
+        arr.push(obj)
+      }
+      setArrImage(arr)
+    }
+    initImage()  
   },[])
 
   useEffect(() => {
     props.getPayloadImage(arrImage)
-  },[arrImage])
-
+  },[arrImage,disable])
 
   const beforeUpload = (file) => {
     const isPng = file.type === 'image/png'
@@ -50,23 +58,7 @@ const UploadImages = (props) => {
     }
   }
 
-  const initImage = () => {
-    const {maxImage} = props
-    let obj = {}
-    let arr = []
-    for(let i = 0; i< maxImage; i++){
-      obj.large = ''
-      obj.medium = ''
-      obj.small = ''
-      obj.isDefault = false
-      obj.count = 0
-      arr.push(obj)
-     
-    }
-    setArrImage(arr)
-  }
-
-  const changeDefault = (index,props) => {
+  const changeDefault = (index) => {
     setArrImage(()=>(
       arrImage.map((image, idx)=>{
         if(idx === index){
@@ -79,15 +71,14 @@ const UploadImages = (props) => {
   }
 
   const pushImageToArray = (response,index,arrayHelpers) => {
-    arrayHelpers.push({large: response.large, medium: response.medium, small: response.small})
+    arrayHelpers.push({largeUrl: response.large, mediumUrl: response.medium, smallUrl: response.small})
     setArrImage(()=>(
       arrImage.map((image, idx)=>{
         if(idx === index){
           if(count === 0){
-            
-            return {...image, large: response.large, medium: response.medium, small: response.small, isDefault: true}
+            return {...image, largeUrl: response.large, mediumUrl: response.medium, smallUrl: response.small, isDefault: true}
           }else{
-            return {...image, large: response.large, medium: response.medium, small: response.small}
+            return {...image, largeUrl: response.large, mediumUrl: response.medium, smallUrl: response.small}
           }
         }else{
           return {...image}
@@ -95,7 +86,6 @@ const UploadImages = (props) => {
       })
     ));
     setCount(count + 1)
-    
   }
 
   const removeImageInArray = (index) => {
@@ -103,7 +93,7 @@ const UploadImages = (props) => {
     setArrImage(()=>(
       arrImage.map((image, idx)=>{
         if(idx === index){
-          return {...image, large: "", medium: "", small: ""}
+            return {...image, largeUrl: "", mediumUrl: "", smallUrl: ""}
         }else{
           return {...image}
         }
@@ -132,12 +122,12 @@ const UploadImages = (props) => {
         });
     }
   };
+
   const getBase64 = (img, callback) => {
     const reader = new FileReader();
     reader.addEventListener('load', () => callback(reader.result));
     reader.readAsDataURL(img);
   }
-
 
   const uploadImage = async ({onError, onSuccess,file},index) => {
     try {
@@ -145,9 +135,8 @@ const UploadImages = (props) => {
       formData.append("file",file);
       const response = await apiPostWithToken(PATH_UPLOAD.UPLOAD,formData);
       onSuccess(response.data.data)
-      // arrayHelpers.push(response.data.data)
+      console.log("response",response.data.data)
     } catch (error) {
-      console.log(error)
       onError(error)
       let loadingTemp = [...loading]
       loadingTemp[index] = false
@@ -156,51 +145,67 @@ const UploadImages = (props) => {
   }
 
   const remove = (index,arrayHelpers) => {
-    arrayHelpers.remove(0)
-    imageUrl[index] = ''
-    setImageUrl(imageUrl)
-    disable[index] = false
-    setDisable(disable)
-    removeImageInArray(index)
+    let tempImageUrl = [...imageUrl]
+    if(!arrImage[index].isDefault){
+      arrayHelpers.remove(0)
+      tempImageUrl[index] = ''
+      setImageUrl(tempImageUrl)
+      let statusDisable = [...disable]
+      statusDisable[index] = false
+      setDisable(statusDisable)
+      removeImageInArray(index)
+    }
+    
+  }
+
+  const editImage = (index) => {
+    console.log("jalan gk ini",index)
+    console.log(disable[index])
+    let statusDisable = [...disable]
+    statusDisable[index] = false
+    setDisable(statusDisable)
   }
   
-
-
   return (
     <React.Fragment>
-      <Card title={<div className="card-title">Product Images</div>} >
+      <Card className="card" title={<div className="card-title">Product Images</div>} >
         <Row>
           <Col md={7}>
-          <div className="card-content">Images</div>
-          <div className="card-sub-content">
-          It required at least one image to create a product, the images should be;
-          </div>
-          <ul style={{margin: 0, padding: 0, listStyleType: "none"}}>
-            <li>- Max Img Size 3 MB</li>
-            <li>- Min Frame Size 300px X 300px</li>
-            <li>- Format jpg, jpeg, png</li>
-          </ul>
+            <Row type="flex">
+            <div className="card-content">Images</div>
+              <Tag className="tag">Required</Tag>
+            </Row>
+            <div className="card-sub-content">
+              It required at least one image to create a product, the images should be;
+            </div>
+            <ul style={{margin: 0, padding: 0, listStyleType: "none"}}>
+              <li>- Max Img Size 3 MB</li>
+              <li>- Min Frame Size 300px X 300px</li>
+              <li>- Format jpg, jpeg, png</li>
+            </ul>
           </Col>
           <Col md={15}>
             <Row type="flex">
               <FieldArray
-                name="images"
+                name="listImages"
                 render={arrayHelpers => (
                   arrImage.map((image,index) => {
                     return (
                       <Upload
-                      imageUrl={imageUrl[index]}
-                      name={"images"}
-                      key={index}
-                      onChange={(info) => handleChange(info,index,arrayHelpers)}
-                      type={image.isDefault ? "default": "non-default"}
-                      loading={loading[index]}
-                      disabled={disable[index]}
-                      remove={() => remove(index,arrayHelpers)}
-                      customRequest={({onError, onSuccess,file}) => uploadImage({onError, onSuccess,file},index)}
-                      changeDefault={changeDefault}
-                      index={index}
-                      beforeUpload={beforeUpload}
+                        imageUrl={imageUrl[index]}
+                        onBlur={props.handleBlur}
+                        name={"images"}
+                        key={index}
+                        onChange={(info) => handleChange(info,index,arrayHelpers)}
+                        type={image.isDefault ? "default": "non-default"}
+                        loading={loading[index]}
+                        disabled={disable[index]}
+                        remove={() => remove(index,arrayHelpers)}
+                        customRequest={({onError, onSuccess,file}) => uploadImage({onError, onSuccess,file},index)}
+                        changeDefault={changeDefault}
+                        index={index}
+                        beforeUpload={beforeUpload}
+                        editImage={editImage}
                     />
                     )
                   })
@@ -216,8 +221,8 @@ const UploadImages = (props) => {
               <div className="text-error-message">Max Size 3MB</div> : null
             }
             {
-              props.errors.images ?
-              <div className="text-error-message">{props.errors.images}</div> : null
+              props.errors.listImages && props.touched.listImages ?
+              <div className="text-error-message">{props.errors.listImages}</div> : null
             }
           </Col>
         </Row>
@@ -228,6 +233,7 @@ const UploadImages = (props) => {
 
 Upload.propTypes = {
   maxImage: propTypes.number,
+  getPayloadImage: propTypes.func
 }
 
 export default UploadImages
