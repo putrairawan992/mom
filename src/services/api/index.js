@@ -5,13 +5,14 @@ import {
 
 /** Service With Token */
 export const apiGetWithToken = (url, params) => {
+  console.log("ini url",url)
   return serviceWithToken().get(url, {
     params: params
   });
 };
 
 export const apiPostWithToken = (url, params) => {
-  return serviceWithToken().post(url, params);
+  return serviceWithToken().post(url, params)
 };
 
 export const apiPatchWithToken = (url, params) => {
