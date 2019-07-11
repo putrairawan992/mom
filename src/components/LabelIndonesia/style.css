@@ -46,58 +46,5 @@
 
 .label-form-content {
   font-weight: bold;
-  margin-left: 4px;
   color: #000000;
-}
-
-.label-form-address {
-  color: #000000;
-  margin-left: 4px;
-}
-
-.label-indo-invoice {
-  margin-left: 4px;
-}
-
-.label-box-date {
-  margin: 8px 16px;
-}
-
-.label-box-detail {
-  margin: 8px 16px;
-  border: 1px solid #cccccc;
-  text-align: center;
-}
-
-.label-detail-title {
-  font-size: 8px;
-  color: #4a4a4a;
-}
-
-.label-detail-content {
-  font-size: 12px;
-  font-weight: bold;
-}
-
-.label-yes {
-  text-align: end;
-  font-size: 16px;
-  font-weight: bold;
-}
-
-.box-variant {
-  border: 1px solid #cccccc;
-  text-align: center;
-}
-
-.label-date {
-  text-align: start;
-  font-size: 12px;
-}
-
-.label-box-bottom {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  padding: 16px;
 }
