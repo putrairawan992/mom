@@ -14,14 +14,15 @@ import ModalHistory from "../ModalHistory";
 import {
   apiPatchWithToken,
   apiPostWithToken,
-  apiGetWithToken
+  apiGetWithToken,
+  apiGetWithoutToken
 } from "../../services/api";
 import { PATH_ORDER } from "../../services/path/order";
 import strings from "../../localization";
 import { optionsUndo } from "../../dataSource/option_undo";
 import LabelIndonesia from "../../components/LabelIndonesia";
 import OrderDetailIndonesia from "../../components/OrderDetailIndonesia";
-
+import { PATH_BARCODE } from "../../services/path/barcode";
 import "../../sass/style.sass";
 import "./style.sass";
 
@@ -35,6 +36,7 @@ const ListReadyPickUp = props => {
   const [listLogNote, setListLogNote] = useState([]);
   const [refInvoice, setRefInvoice] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [barcodeNumber, setBarcodeNumber] = useState("")
 
   const componentRef = [];
 
@@ -73,6 +75,17 @@ const ListReadyPickUp = props => {
       console.log(error);
     }
   };
+
+  const getBarcode = async() => {
+    try{
+      const response = await apiGetWithoutToken(PATH_BARCODE.BARCODE);
+      // console.log("waw", response.data);
+      const barcode = response.data.data
+      setBarcodeNumber(barcode)
+    } catch(error) {
+      console.log("error");
+    }
+  }
 
   const patchNext = async invoiceId => {
     setLoading(!loading);
@@ -308,6 +321,7 @@ const ListReadyPickUp = props => {
               <LabelIndonesia
                 ref={el => (componentRef[invoice.id] = el)}
                 invoice={invoice}
+                barcodeNumber={"02044008057151"}
               />
             </div>
           </Card>

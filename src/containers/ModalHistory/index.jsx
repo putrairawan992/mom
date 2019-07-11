@@ -8,6 +8,7 @@ import convertTimesTime from "../../helpers/convertTimestime";
 const ModalHistory = ({ title, logs, visible, onOk, onCancel }) => {
   return (
     <Modal
+      style={{marginTop:"24px"}}
       title={title}
       centered
       visible={visible}

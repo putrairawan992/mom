@@ -1,70 +1,66 @@
 import React, {useState} from 'react'
-import {Row, Col,Spin,Card} from 'antd'
-import debounce from 'lodash/debounce'
+import {Row, Col, Spin, Card, Tag} from 'antd'
+// import debounce from 'lodash/debounce'
 import Select from '../../components/Select'
 import { PATH_SUPPLIER} from '../../services/path/supplier';
-import {apiGetWithoutToken, apiGetWithToken} from '../../services/api';
+import {apiGetWithToken} from '../../services/api';
 
 const AllSupplier = (props) => {
-  const [value,setValue] = useState([])
   const [fetching, setFetching] = useState(false)
-  
   const [options,setOptions] = useState([])
-
-
   const getAllSuppplier = async(value) => {
     try {
-
-
       setFetching(true)
       const response  = await apiGetWithToken(PATH_SUPPLIER.ALL_SUPPLIER)
       const dataAllSuppler = response.data.data
-      
-      
-      console.log("sups",dataAllSuppler)
-
       const resultSupplier = dataAllSuppler.map(supplier =>({
         ...supplier, name : `${supplier.code} - ${supplier.name}`
       }))
       setOptions(resultSupplier)
-      console.log(resultSupplier)
     } catch (error) {
       console.log(error)
     }
   }
 
-  // getAllSuppplier = debounce(getAllSuppplier, 800)
   const change = (value,setFieldValue) => {
-    setFieldValue("supplier",value)
     console.log(value)
+    setFieldValue("supplier",value)
     setFetching(false)
-    // setValue(value)
-    // setOptions([])
   }
 
-  console.log(props.errors)
+  // console.log(props.errors)
 
   return(
     <React.Fragment>
-      <Card title={<div className="card-title">Supplier Info</div>}>
-        <Row>
-          <Col md={7}>
-            <div className="card-content">Supplier</div>
+      <Card className="card" title={<div className="card-title">Supplier Info</div>}>
+        <Row type="flex" align="middle">
+          <Col md={props.grid.left}>
+            <Row type="flex">
+              <div className="card-content">Supplier</div>
+              <Tag className="tag">Required</Tag>
+            </Row>
           </Col>
-          <Col md={15}>
+          <Col md={props.grid.right}>
           <Select
-            mode="multiple"
+            showSearch
             onChange={(value) => change(value, props.setFieldValue)}
             onSearch={getAllSuppplier}
             name="supplier"
             // value={value}
+            placeholder="Choose Supplier"
+            size="large"
+            onBlur={props.handleBlur}
             notFoundContent={fetching ? <Spin size="small" /> : null}
             filterOption={false}
             labelInvalue
             options={options}
-            />
+            type={
+              typeof props.errors.supplier === 'string' && props.touched.supplier ? 
+              'error' : 'default'
+            }
+          />
             {
-            typeof props.errors.supplier === 'string' ? 
+            typeof props.errors.supplier === 'string' && props.touched.supplier ? 
             (<div className="text-error-message">{props.errors.supplier }</div>) :
             null
           }

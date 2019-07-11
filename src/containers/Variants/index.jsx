@@ -6,28 +6,32 @@ import './style.sass'
 
 const Variants = (props) => {
   return(
-    <Card title="Product Variant">
+    <Card className="card" title={<div className="card-title">Product Variant</div>}>
     {
       !props.statusVariant ?
       <Row>
-        <Col span={6}>
-          Add variant for the product such as colors, size, materials etc.
+        <Col span={7}>
+          <div className="card-sub-content">
+            Add variant for the product such as colors, size, materials etc.
+          </div>
         </Col>
-        <Col span={18}>
-          <Button onClick={() => props.addVariant()}>Add Variant Type</Button>
+        <Col span={15}>
+          <Button type="grey" onClick={() => props.addVariant()}>Add Variant Type</Button>
         </Col>
       </Row> :
        <Row>
-       For better visual and performance we recomended that the images should be not out of this requirement
+        <div className="card-tittle-content"> 
+          For better visual and performance we recomended that the images should be not out of this requirement
+        </div>
        <ul>
-         <li>
-           Max Img Size 3 MB
-         </li>
-         <li>
-           Min Frame Size 300px X 300px
-         </li>
-         <li>
-           Format jpg, jpeg, png
+          <li className="card-tittle-content">
+            Max Img Size 3 MB
+          </li>
+          <li className="card-tittle-content">
+            Min Frame Size 300px X 300px
+          </li>
+          <li className="card-tittle-content">
+            Format jpg, jpeg, png
          </li>
       </ul>
       {
@@ -54,7 +58,7 @@ const Variants = (props) => {
       }
       {
       props.totalVariants.length === 1 &&
-        <Button onClick={() => props.addVariant()} style={{float: "right"}}>Add Variant Type</Button>
+        <Button type="grey" onClick={() => props.addVariant()} style={{float: "right"}}>Add Variant Type</Button>
       }
       </Row>
     }

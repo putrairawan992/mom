@@ -2,84 +2,65 @@ import React from "react";
 import "./style.css";
 import monggopesen_logo from "../../assets/img/monggopesen_logo.png";
 import { Row, Col } from "antd";
+import LabelContent from "../LabelContent";
 
 class LabelChina extends React.Component {
   variants = variants => {
     return variants.map(variant => `${variant.value}`).join(", ");
   };
+
+  productName = item => {
+    return (
+      <span>
+        {item.productSnapshot.nameChina}
+        <br />
+        <span style={{ color: "#4A4A4A" }}>{item.productSnapshot.name}</span>
+      </span>
+    );
+  };
+
   render() {
-    const {noInvoice, order } = this.props;
+    const { noInvoice, order } = this.props;
     return (
       <div className="label-body">
         <div className="label-china">
           <div className="label-invoice">
-            <p>{noInvoice}</p>
+            <p>#{noInvoice}</p>
           </div>
           {order.orderItems.map(item => {
             return (
               <div key={item.id} className="label-info">
                 <div className="label-items-info">
-                  <Row>
-                    <Col md={4} className="label-item">
-                      <span>Supplier</span>
-                    </Col>
-                    <Col md={1} className="item-colon">
-                      <span>:</span>
-                    </Col>
-                    <Col md={18} className="label-item-info">
-                      <span>{item.supplierSnapshot.name}</span>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col md={4} className="label-item">
-                      <span>Item</span>
-                    </Col>
-                    <Col md={1} className="item-colon">
-                      <span>:</span>
-                    </Col>
-                    <Col md={18} className="label-item-info">
-                      <span>{item.productSnapshot.name}</span>
-                      <hr />
-                      <span>{item.productSnapshot.nameChina}</span>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col md={4} className="label-item">
-                      <span>Variant</span>
-                    </Col>
-                    <Col md={1} className="item-colon">
-                      <span>:</span>
-                    </Col>
-                    <Col md={18} className="label-item-info">
-                      <span>
-                        {this.variants(item.productSnapshot.informations)}
-                      </span>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col md={4} className="label-item">
-                      <span>Qty</span>
-                    </Col>
-                    <Col md={1} className="item-colon">
-                      <span>:</span>
-                    </Col>
-                    <Col md={18} className="label-item-info">
-                      <span>{item.productSnapshot.quantity}</span>
-                    </Col>
-                  </Row>
+                  <LabelContent
+                    label="Supplier"
+                    content={
+                      item.supplierSnapshot.name +
+                      " - " +
+                      item.supplierSnapshot.code
+                    }
+                    styleContent="label-item-info"
+                  />
+                  <LabelContent
+                    label="Item"
+                    content={this.productName(item)}
+                    styleContent="label-item-info"
+                  />
+                  <LabelContent
+                    label="Variant"
+                    content={this.variants(item.productSnapshot.informations)}
+                    styleContent="label-item-info"
+                  />
+                  <LabelContent
+                    label="Qty"
+                    content={item.productSnapshot.quantity}
+                    styleContent="label-item-info"
+                  />
                 </div>
-
-                <Row className="label-items-cust">
-                  <Col md={4} className="item-cust">
-                    <span>Cust</span>
-                  </Col>
-                  <Col md={1} className="item-colon">
-                    <span>:</span>
-                  </Col>
-                  <Col md={18} className="item-cust-info">
-                    <span>{order.customer.name}</span>
-                  </Col>
-                </Row>
+                <LabelContent
+                  label="Cust"
+                  content={order.customer.name}
+                  styleRow="label-items-cust"
+                />
               </div>
             );
           })}

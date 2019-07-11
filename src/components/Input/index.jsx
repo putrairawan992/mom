@@ -8,7 +8,8 @@ const Input = props => {
     const classNamesStyle = classNames.bind(style)
     const cssClasses = classNamesStyle({
         'mp-input-default' : (props.status === 'default'),
-        'mp-input-error' : (props.status === 'error')
+        'mp-input-error' : (props.status === 'error'),
+        'mp-input-disabled': (props.status === 'disabled') 
     })
 
     return (
@@ -19,7 +20,7 @@ const Input = props => {
 }
 
 Input.propTypes = {
-    status: propTypes.oneOf(['default', 'error'])
+    status: propTypes.oneOf(['default', 'error', 'disabled'])
 }
 
 Input.defaultProps = {
