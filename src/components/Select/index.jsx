@@ -10,7 +10,8 @@ const Select = props => {
   const classNamesStyle = classNames.bind(style)
   const cssClasses = classNamesStyle({
     'mp-select-default' : (props.type === 'default'),
-    'mp-option-default' :(props.option === 'default')
+    'mp-option-default' :(props.option === 'default'),
+    'mp-select-error' : (props.type === 'error')
   })
   return (
     // <div >
@@ -31,7 +32,7 @@ const Select = props => {
 }
 
 Select.propTypes = {
-  type: propTypes.oneOf(['default']),
+  type: propTypes.oneOf(['default', 'error']),
   options: propTypes.array
 }
 

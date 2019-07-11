@@ -17,21 +17,19 @@ const Upload = props => {
         props.type === 'no-style' ? 
         <img src={props.imageUrl}  alt="avatar"/> :
         <>
-        <img src={props.imageUrl}  alt="avatar"/>
-        <div className="top-icon">
-        <Icon type="camera" className="cameraIcon"/>
-        <Icon onClick={() => props.remove(props.index)} type="delete" className="deleteIcon"/>
-
-        </div>
-        <Button width="full"
-          onClick={() => props.changeDefault(props.index,props)} 
-          className={props.type === 'default' ? 'mp-btn-upload' : 'mp-btn-upload-non-default'}
-          >
-          {props.type === 'default' ? 'Default' : 'Set Default' }
-        </Button>
+          <img src={props.imageUrl}  alt="avatar"/>
+          <div className="top-icon">
+          <Icon type="camera" onClick={() => props.editImage(props.index)} className="cameraIcon"/>
+          <Icon onClick={() => props.remove(props.index)} type="delete" className="deleteIcon"/>
+          </div>
+          <Button width="full"
+            onClick={() => props.changeDefault(props.index,props)} 
+            className={props.type === 'default' ? 'mp-btn-upload' : 'mp-btn-upload-non-default'}
+            >
+            {props.type === 'default' ? 'Default' : 'Set Default' }
+          </Button>
         </>
       }
-     
     </div>
   )
 
