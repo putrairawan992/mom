@@ -1,10 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Modal, Button, Input, Form, Row, Col } from "antd";
+import { Modal, Button, Form, Row, Col } from "antd";
 import * as yup from "yup";
 import "./style.sass";
 import { Formik } from "formik";
-const { TextArea } = Input;
+import TextArea from "../TextArea";
 
 const schema = yup.object().shape({
   reason: yup.string(),
@@ -48,7 +48,6 @@ const ModalAddNote = ({ visible, onSubmit, onCancel, loading, invoiceId }) => {
                   onChange={handleChange}
                   value={values.note}
                   maxLength={255}
-                  className={errors.note && touched.note && "input-error"}
                 />
                 <span className="max-length-note">
                   {values.note.length} / 255

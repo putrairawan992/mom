@@ -55,7 +55,7 @@ const ModalConfirm = ({
                 className="button-primary"
                 loading={loading}
               >
-                Yes
+                I'm Sure
               </Button>
             </Col>
           </Row>

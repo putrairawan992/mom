@@ -1,0 +1,52 @@
+.label-box-jne {
+  padding: 0 16px;
+}
+
+.label-form-address {
+  color: #000000;
+}
+
+.label-box-date {
+  color: #000000;
+  padding-top: 8px;
+}
+
+.label-box-detail {
+  margin: 8px 0;
+  border: 1px solid #cccccc;
+  text-align: center;
+}
+
+.label-detail-title {
+  font-size: 8px;
+  color: #4a4a4a;
+}
+
+.label-detail-content {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.label-yes {
+  text-align: end;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.box-variant {
+  border: 1px solid #cccccc;
+  text-align: center;
+}
+
+.label-date {
+  padding-top: 4px;
+  text-align: start;
+  font-size: 12px;
+}
+
+.label-box-bottom {
+  padding: 10px 0 24px 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}

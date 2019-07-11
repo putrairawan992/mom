@@ -8,6 +8,7 @@ import convertTimesTime from "../../helpers/convertTimestime";
 const ModalHistory = ({ title, logs, visible, onOk, onCancel }) => {
   return (
     <Modal
+      style={{marginTop:"24px"}}
       title={title}
       centered
       visible={visible}
@@ -21,7 +22,7 @@ const ModalHistory = ({ title, logs, visible, onOk, onCancel }) => {
             <b>{convertTimesTime.millisecond(log.createdDate)}</b> -{" "}
             <span>{log.createBy}</span>
             <Divider type="vertical" />
-            <span>{"status (need data)"}</span>
+            <span>{log.menuDescription}</span>
           </div>
           <span className="log-status__admin__note">{log.note}</span>
         </div>
@@ -29,7 +30,6 @@ const ModalHistory = ({ title, logs, visible, onOk, onCancel }) => {
       <Row type="flex" justify="end">
         <Col>
           <Button
-            // className="log-status__button-OK"
             type="primary"
             onClick={onOk}
           >

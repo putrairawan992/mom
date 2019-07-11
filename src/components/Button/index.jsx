@@ -15,6 +15,7 @@ class Button extends React.Component {
         'mp-btn-width-full': (this.props.width === 'full'),
         'mp-btn-size-large': (this.props.size === 'large'),
         'mp-btn-size-small': (this.props.size === 'small'),
+        'mp-btn-grey' : (this.props.type === 'grey')
     });
 
     render(){
@@ -23,7 +24,7 @@ class Button extends React.Component {
 }
 
 Button.propTypes = {
-    type: propTypes.oneOf(['primary', 'secondary','white','link','danger']),
+    type: propTypes.oneOf(['primary', 'secondary','white','link','danger','grey']),
     width: propTypes.oneOf(['default', 'full']),
     size: propTypes.oneOf(['default','large'])
 }

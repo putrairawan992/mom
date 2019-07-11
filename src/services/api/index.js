@@ -5,7 +5,6 @@ import {
 
 /** Service With Token */
 export const apiGetWithToken = (url, params) => {
-  console.log("ini url",url)
   return serviceWithToken().get(url, {
     params: params
   });

@@ -83,7 +83,7 @@ const ModalSupplier = ({ invoice, visible, onOk }) => {
             <Row>
               <Col span={24}>
                 <span className="supplier__modal__detail-address__important">
-                  {item.supplierSnapshot.name}
+                  {`${item.supplierSnapshot.name} - ${item.supplierSnapshot.code}`}
                 </span>
                 <br />
                 <span>{item.supplierSnapshot.address}</span>

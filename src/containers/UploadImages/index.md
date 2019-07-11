@@ -24,9 +24,21 @@ maxImage : Max Image for upload
 
 ## PlayGround
 <Playground>
-  <UploadImages maxImage={2}
-  getPayloadImage={() => {
-    console.log("")
-  }}
+{
+  () => {
+    const errors = {
+      images : 'errors'
+    }
+
+    return (
+    <UploadImages 
+      maxImage={2}
+      getPayloadImage={() => {
+      console.log("")
+    }}
   />
+  )
+  }
+}
+  
 </Playground>

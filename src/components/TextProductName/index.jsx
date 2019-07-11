@@ -4,9 +4,9 @@ import "./style.sass";
 
 const TextProductName = ({productTextChina, productTextIndonesia}) => {
   return (
-    <div>
-      <span className="product-name-china">{productTextChina}</span><span>({productTextIndonesia})</span>
-    </div>
+    <span>
+      <b>{productTextChina}</b><span>({productTextIndonesia})</span>
+    </span>
   );
 };
 
