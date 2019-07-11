@@ -10,21 +10,20 @@ const OrderVariant = ({ variants, quantity, price, withPrice }) => {
       <tbody>
         <tr>
           <td colSpan={2} className="row-variant">
-            <span style={{ fontSize: 16 }}>
-              {`Variant : ${names} Qty : ${quantity}`}
-            </span>
+            <span className="wrap-variant-text">Variant : <span className="variant-value">{names}</span></span>
+            <span className="wrap-variant-text">Qty : <span className="variant-value">{quantity} </span></span>
           </td>
         </tr>
         {withPrice &&
         <tr>
           <td className="row-price">
             <span>
-              Price : {currencyYuan(price)} x {quantity}
+              Price : <b>{currencyYuan(price)}</b> x {quantity}
             </span>
           </td>
           <td className="row-price">
             <span>
-              Total : {currencyYuan(price * quantity)}
+              Total : <b>{currencyYuan(price * quantity)}</b>
             </span>
           </td>
         </tr>

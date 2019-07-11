@@ -60,7 +60,9 @@ const ListArrival = props => {
   const patchNext = async invoiceId => {
     setLoading(!loading);
     try {
-      const response = await apiPatchWithToken(`${PATH_ORDER.NEXT}/${invoiceId}`);
+      const response = await apiPatchWithToken(
+        `${PATH_ORDER.NEXT}/${invoiceId}`
+      );
       if (response) {
         setLoading(false);
         setVisibleConfirm(!visibleConfirm);
@@ -114,13 +116,13 @@ const ListArrival = props => {
     }
   };
 
-  const actionConfirm = (invoiceId) => {
+  const actionConfirm = invoiceId => {
     patchNext(invoiceId);
-  }
+  };
 
   const actionCancelConfirm = () => {
     setVisibleConfirm(!visibleConfirm);
-  }
+  };
 
   const contentNotification = (message, description, icon, colorIcon) => {
     notification.open({
@@ -169,110 +171,111 @@ const ListArrival = props => {
 
   return (
     <React.Fragment>
-      {props.loading && (
+      {props.loading ? (
         <Card className="card-loading">
           <Row type="flex" justify="center">
             <LoaderItem size={10} loading={props.loading} />
           </Row>
         </Card>
-      )}
-      {props.invoices && !props.loading
-        ? props.invoices.map(invoice => (
-            <Card key={invoice.id}>
-              {invoice.order.orderItems.map(item => (
-                <Row key={item.id}>
-                  <Col md={2}>
-                    <img
-                      src={item.productSnapshot.image.defaultImage}
-                      alt=""
-                      className="img-order-product"
-                    />
-                  </Col>
-                  <Col md={22}>
-                    <Row>
-                      <Col md={12}>
-                        <TextInvoiceNumber
-                          invoiceNumber={invoice.invoiceNumber}
-                        />
-                        <TextProductName
-                          productTextChina={item.productSnapshot.nameChina}
-                          productTextIndonesia={item.productSnapshot.name}
-                        />
-                        <OrderDetailIndonesia
-                          prevStatus="Shipped Time"
-                          item={item}
-                          time={invoice.order.orderActivityDate.orderDate}
-                        />
-                      </Col>
-                      <Col md={12}>
-                        <div className="wrap-button">
+      ) : props.invoices ? (
+        props.invoices.map(invoice => (
+          <Card key={invoice.id}>
+            {invoice.order.orderItems.map(item => (
+              <Row key={item.id}>
+                <Col md={2}>
+                  <img
+                    src={item.productSnapshot.image.defaultImage}
+                    alt=""
+                    className="img-order-product"
+                  />
+                </Col>
+                <Col md={22}>
+                  <Row>
+                    <Col md={12}>
+                      <TextInvoiceNumber
+                        invoiceNumber={invoice.invoiceNumber}
+                      />
+                      <TextProductName
+                        productTextChina={item.productSnapshot.nameChina}
+                        productTextIndonesia={item.productSnapshot.name}
+                      />
+                      <OrderDetailIndonesia
+                        prevStatus="Shipped Time"
+                        supplier={item.supplierSnapshot.name}
+                        customer={invoice.order.customer.name}
+                        time={invoice.order.orderActivityDate.orderDate}
+                      />
+                    </Col>
+                    <Col md={12}>
+                      <div className="wrap-button">
                         <Button
                           type="primary"
                           onClick={() => handleNextOrder(invoice.id)}
                         >
-                          Ready To Ship
+                          Create Receipt
                         </Button>
-                        </div>
-                      </Col>
-                    </Row>
-                    <Row style={{ marginTop: 16 }}>
-                      <Col md={12}>
-                        <div className="wrap-variant">
-                          <ImageShipping shipping={item.shipping} />
-                          <OrderVariant
-                            variants={item.productSnapshot.informations}
-                            quantity={item.productSnapshot.quantity}
-                            price={item.productSnapshot.price}
-                            withPrice={true}
-                          />
-                        </div>
-                      </Col>
-                      <Col offset={3} md={9}>
-                        <div className="wrap-button-text-icon">
-                          <ButtonTextIcon
-                            icon="message"
-                            label="Add Admin Notes"
-                            onClick={() => {
-                              setRefInvoice(invoice.id);
-                              actionAddNotes();
-                            }}
-                          />
-                        </div>
-                        <div className="wrap-button-text-icon">
-                          <ButtonTextIcon
-                            icon="file-exclamation"
-                            label={strings.show_logs}
-                            onClick={() => {
-                              getLogActivity(invoice.id);
-                            }}
-                          />
-                          <ButtonTextIcon
-                            icon="file-text"
-                            label="Show Admin Notes"
-                            onClick={() => {
-                              getLogNotes(invoice.id);
-                            }}
-                          />
-                        </div>
-                      </Col>
-                    </Row>
-                  </Col>
-                </Row>
-              ))}
-            </Card>
-          ))
-        : props.children}
-        <ModalConfirm
-          visible={visibleConfirm}
-          value={refInvoice}
-          loading={loading}
-          onOk={actionConfirm}
-          onCancel={actionCancelConfirm}
-          title={"Makes Sure that the package is ready to be shipped."}
-          description={
-            "Please check if the package is neatly wrapped and the label is already patched to the package."
-          }
-        />
+                      </div>
+                    </Col>
+                  </Row>
+                  <Row style={{ marginTop: 16 }}>
+                    <Col md={12}>
+                      <div className="wrap-variant">
+                        <OrderVariant
+                          variants={item.productSnapshot.informations}
+                          quantity={item.productSnapshot.quantity}
+                          price={item.productSnapshot.price}
+                          withPrice={false}
+                        />
+                      </div>
+                    </Col>
+                    <Col offset={3} md={9}>
+                      <div className="wrap-button-text-icon">
+                        <ButtonTextIcon
+                          icon="message"
+                          label="Add Admin Notes"
+                          onClick={() => {
+                            setRefInvoice(invoice.id);
+                            actionAddNotes();
+                          }}
+                        />
+                      </div>
+                      <div className="wrap-button-text-icon">
+                        <ButtonTextIcon
+                          icon="file-exclamation"
+                          label={strings.show_logs}
+                          onClick={() => {
+                            getLogActivity(invoice.id);
+                          }}
+                        />
+                        <ButtonTextIcon
+                          icon="file-text"
+                          label="Show Admin Notes"
+                          onClick={() => {
+                            getLogNotes(invoice.id);
+                          }}
+                        />
+                      </div>
+                    </Col>
+                  </Row>
+                </Col>
+              </Row>
+            ))}
+          </Card>
+        ))
+      ) : (
+        props.children
+      )}
+      <ModalConfirm
+        visible={visibleConfirm}
+        value={refInvoice}
+        loading={loading}
+        onOk={actionConfirm}
+        onCancel={actionCancelConfirm}
+        title={"Makes Sure that the package is ready to be delivered."}
+        description={
+          "Before creating the receipt, please make sure that the product is already checked and being re-packed."
+        }
+      />
       <ModalAddNote
         visible={visibleAddNote}
         onSubmit={actionSubmitAddNote}
@@ -293,7 +296,7 @@ const ListArrival = props => {
         onOk={actionShowLogNoteAdmin}
         onCancel={actionShowLogNoteAdmin}
       />
-      {invoiceById &&
+      {invoiceById && (
         <ModalConfirmPrint
           visible={visibleConfirmPrint}
           loading={false}
@@ -304,9 +307,9 @@ const ListArrival = props => {
           }
           description={""}
         >
-          <LabelIndonesia invoice={invoiceById}/>
+          <LabelIndonesia invoice={invoiceById} />
         </ModalConfirmPrint>
-      }
+      )}
     </React.Fragment>
   );
 };

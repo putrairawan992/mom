@@ -3,35 +3,35 @@ import PropTypes from "prop-types";
 import "./style.sass";
 import convertTimesTime from "../../helpers/convertTimestime";
 
-const OrderDetailIndonesia = ({ prevStatus, item, time }) => {
+const OrderDetailIndonesia = ({ prevStatus, supplier, customer, time }) => {
   return (
     <table border={0}>
       <tbody>
         <tr>
-          <td>
+          <td width="130px">
             <span>Supplier </span>
           </td>
           <td>:</td>
           <td>
-            <span>{item.supplierSnapshot.name}</span>
+            <span>{supplier}</span>
           </td>
         </tr>
         <tr>
-          <td>
+          <td width="130px">
             <span>Customer </span>
           </td>
           <td>:</td>
           <td>
-            <span>{item.note}</span>
+            <span>{customer}</span>
           </td>
         </tr>
         <tr>
-          <td>
+          <td width="130px">
             <span>{prevStatus}</span>
           </td>
           <td>:</td>
           <td>
-            <span>{time}</span>
+            <span>{convertTimesTime.millisecond(time)}</span>
           </td>
         </tr>
       </tbody>
@@ -41,7 +41,9 @@ const OrderDetailIndonesia = ({ prevStatus, item, time }) => {
 
 OrderDetailIndonesia.propTypes = {
   prevStatus: PropTypes.string,
-  item: PropTypes.object
+  supplier: PropTypes.string,
+  customer: PropTypes.string,
+  time: PropTypes.number
 };
 
 export default OrderDetailIndonesia;

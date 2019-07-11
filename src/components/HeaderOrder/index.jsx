@@ -9,13 +9,15 @@ const Option = Select.Option;
 
 const HeaderOrder = props => {
   const [searchKeyword, setSearchKeyword] = useState("");
+  const [isAllInvoice, setIsAllInvoice] = useState(true);
+  const [placehoder, setPlaceholder] = useState("input search text");
   return (<Card>
     <Row type="flex" justify="space-between">
       <Col>
         <span className="label-filter">Filter </span>
         <Select
-          defaultValue="laut"
-          style={{ width: 120 }}
+          defaultValue="sea"
+          className="mp-select-option-default mp-select-filter"
           onChange={value => props.onChangeFilter(value)}
         >
           <Option value="air">By Air</Option>
@@ -24,20 +26,25 @@ const HeaderOrder = props => {
       </Col>
       <Col>
         <InputGroup compact>
-          <Select style={{width:150}} defaultValue="invoice_number" onChange={value => props.onChangeCategory(value)} size="large">
+          <Select className="mp-select-option-default mp-select-search" defaultValue="invoice_number" onChange={value => props.onChangeCategory(value)} size="large">
             <Option value="invoice_number">No. Invoice</Option>
             <Option value="supplier_name">Supplier Name</Option>
             <Option value="supplier_code">Supplier Code</Option>
           </Select>
           <Search
-            placeholder="input search text"
+            placeholder={placehoder}
             onSearch={value => {
+                (isAllInvoice && value? 
+                setPlaceholder("Press enter to show all order..") :
+                setPlaceholder("input search text.."))
+                setIsAllInvoice(!isAllInvoice);
                 setSearchKeyword("");
                 props.onSearch(value)
               }
             }
             id="text-search"
-            style={{ width: 500 }}
+            style={{width:500}}
+            className="mp-search-default"
             size="large"
             value={searchKeyword}
             onChange={event => {
