@@ -1,5 +1,7 @@
+@import '../../sass/variable.sass'
+    
 .label-total
-    color: #D0021B
+    color: $color-red-warning
     font-family: "Helvetica Neue"
     font-size: 14px
     line-height: 16px
@@ -9,3 +11,23 @@
     font-size: 14px
     line-height: 16px
     padding-right: 30px
+.mp-search-default .ant-input
+    background-color: $color-white
+.mp-search-default .ant-input:focus
+    border-color: $color-teal !important
+    box-shadow: $color-teal !important
+.mp-search-default .ant-input:hover
+    border-color: $color-teal !important
+
+.mp-select-option-default .ant-select-selection:hover
+  border: 1px solid $color-teal !important
+.mp-select-option-default
+  
+.mp-select-filter
+  width: 120px !important
+.mp-select-search
+  width: 150px !important
+.mp-select-option-default:hover
+  background-color: rgba(0,126,128,0.3) !important
+  // opacity: 0.2 !important
+

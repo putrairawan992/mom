@@ -1,17 +1,21 @@
 import React from "react";
+import "./style.sass";
+import { Row, Col } from "antd";
 
-const Header = props => (
-  <div
-    style={{
-      background: "white",
-      width: "100%",
-      height: "64px",
-      position: "fixed",
-      zIndex: "1000"
-    }}
-  >
-    Headerr
-  </div>
-);
+const Header = () => (
+<div className="header-container">
+  <Row type="flex" justify="space-between" align="middle">
+      <Col>
+          <img src={require("../../assets/img/monggopesen_logo_white.png")} alt="monggopesen logo" />
+      </Col>
+      <Col>
+        <div className="container-header-menu">
+          <span className="header-menu">Report Problem</span>
+          <span className="header-menu">Help</span>
+        </div>
+      </Col>
+  </Row>
+</div>
+)
 
 export default Header;
