@@ -46,14 +46,20 @@ const LabelDetailJne = props => {
           <img src="" alt="JNE" style={{ height: "32px" }} />
         </div>
         <div>
-          <Barcode
-            value={barcodeNumber}
-            width={1.5}
-            height={40}
-            margin={0}
-            fontSize={8}
-            fontOption="bold"
-          />
+          {barcodeNumber ? (
+            <Barcode
+              value={barcodeNumber}
+              width={1.5}
+              height={40}
+              margin={0}
+              fontSize={8}
+              fontOption="bold"
+            />
+          ) : (
+            <div>
+              <p>No. Resi</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
