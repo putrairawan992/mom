@@ -44,9 +44,15 @@ const Modal = ({
         );
   };
 
+  const resetForm = values => {
+    values.note = "";
+    values.reason = options[0].id;
+  };
+
   return (
     <ModalAnt
       visible={visible}
+      style={{ top: 20 }}
       title={<span className="title-modal-danger">{title}</span>}
       onOK={onSubmit}
       onCancel={onCancel}
@@ -58,7 +64,8 @@ const Modal = ({
           reason: options ? options[0].id : "default",
           note: ""
         }}
-        onSubmit={values => {
+        onSubmit={(values, { resetForm }) => {
+          resetForm({ note: "", reason: options[0].id });
           onSubmit({ ...values, invoiceId });
         }}
         validationSchema={schema}
@@ -73,11 +80,10 @@ const Modal = ({
           handleSubmit
         }) => (
           <Form onSubmit={handleSubmit}>
+            {!visible && resetForm(values)}
             <Row>
               <Col>
-                <p className="label-reason">
-                  {labelReason}
-                </p>
+                <p className="label-reason">{labelReason}</p>
               </Col>
             </Row>
             <Row>
@@ -115,7 +121,14 @@ const Modal = ({
             </Row>
             <Row type="flex" justify="end">
               <Col>
-                <Button onClick={onCancel} type="link">
+                <Button
+                  onClick={() => {
+                    values.note = "";
+                    values.reason = options[0].id;
+                    onCancel();
+                  }}
+                  type="link"
+                >
                   {strings.cancel}
                 </Button>
                 <Button

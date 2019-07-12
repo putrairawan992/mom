@@ -210,6 +210,7 @@ const ListShipped = props => {
                     </Col>
                     <Col offset={3} md={9}>
                       <div className="wrap-button-text-icon">
+                      {invoice.status === 'SHP' &&
                         <ButtonTextIcon
                           icon="rollback"
                           label={strings.undo}
@@ -218,6 +219,7 @@ const ListShipped = props => {
                             actionUndo();
                           }}
                         />
+                      }
                       </div>
                       <div className="wrap-button-text-icon">
                         <ButtonTextIcon
