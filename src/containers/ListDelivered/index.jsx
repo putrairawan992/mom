@@ -17,15 +17,18 @@ import { optionsUndo } from "../../dataSource/option_undo";
 
 import "../../sass/style.sass";
 import "./style.sass";
+import ModalDetailOrder from "../ModalDetailOrder";
 
 const ListDelivered = props => {
   const [visibleUndo, setVisibleUndo] = useState(false);
   const [visibleAddNote, setVisibleAddNote] = useState(false);
   const [visibleLogActivities, setVisibleLogActivities] = useState(false);
   const [visibleLogNoteAdmin, setVisibleLogNoteAdmin] = useState(false);
+  const [visibleDetailOrder, setVisibleDetailOrder] = useState(false);
   const [listLogActivity, setListLogActivity] = useState([]);
   const [listLogNote, setListLogNote] = useState([]);
   const [refInvoice, setRefInvoice] = useState(null);
+  const [invoiceById, setInvoiceById] = useState(null);
 
   const updateList = async (update = false, action) => {
     try {
@@ -129,7 +132,9 @@ const ListDelivered = props => {
   };
 
   const handleNextOrder = invoiceId => {
-    setRefInvoice(invoiceId);
+    const getInvoice = props.invoices.find(invoice => invoice.id === invoiceId);
+    setInvoiceById(getInvoice);
+    setVisibleDetailOrder(!visibleDetailOrder);
   };
 
   const actionUndo = () => {
@@ -155,6 +160,10 @@ const ListDelivered = props => {
   const actionShowLogNoteAdmin = () => {
     setVisibleLogNoteAdmin(!visibleLogNoteAdmin);
   };
+
+  const actionOk = () => {
+    setVisibleDetailOrder(!visibleDetailOrder)
+  }
 
   return (
     <React.Fragment>
@@ -200,7 +209,7 @@ const ListDelivered = props => {
                     </Col>
                     <Col md={12}>
                       <div className="wrap-button">
-                        <Button type="white" onClick={() => handleNextOrder()}>
+                        <Button type="white" onClick={() => handleNextOrder(invoice.id)}>
                           See Detail
                         </Button>
                       </div>
@@ -256,6 +265,13 @@ const ListDelivered = props => {
         ))
       ) : (
         props.children
+      )}
+      {invoiceById && (
+        <ModalDetailOrder
+          invoice={invoiceById}
+          visible={visibleDetailOrder}
+          onOk={actionOk}
+        />
       )}
       <ModalAddNote
         visible={visibleAddNote}
