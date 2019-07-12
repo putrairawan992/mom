@@ -2,7 +2,8 @@
 import React, { useEffect } from "react";
 import { Menu, Icon } from "antd";
 import OrderIndonesia from "../../pages/OrderIndonesia";
-import strings from '../../localization'
+import strings from "../../localization";
+import "./style.sass";
 
 const MenuAdminIndonesia = props => {
   useEffect(() => {
@@ -12,39 +13,38 @@ const MenuAdminIndonesia = props => {
   const changeMenu = menu => {
     switch (menu) {
       case 1:
-        props.onChange(<h1>Satu</h1>);
+        props.onChange(<h1>Dashboard</h1>);
         break;
       case 2:
-        props.onChange(<h1>Dua</h1>);
+        props.onChange(<h1>Product</h1>);
         break;
       case 3:
         props.onChange(<OrderIndonesia />);
         break;
-      case 4:
-        props.logout();
-      break;
       default:
         props.onChange(<OrderIndonesia />);
     }
   };
 
   return (
-    <Menu theme="dark" mode="inline" defaultSelectedKeys={['3']}>
+    <Menu theme="light" mode="inline" defaultSelectedKeys={["3"]}>
       <Menu.Item key="1" onClick={() => changeMenu(1)}>
-        <Icon type="bar-chart" />
-        <span className="nav-text">{strings.dashboard}</span>
+        <div className="menu-sidebar">
+          <Icon type="bar-chart" />
+          <span className="nav-text">{strings.dashboard}</span>
+        </div>
       </Menu.Item>
       <Menu.Item key="2" onClick={() => changeMenu(2)}>
-        <Icon type="shop" />
-        <span className="nav-text">{strings.dashboard}</span>
+        <div className="menu-sidebar">
+          <Icon type="shop" />
+          <span className="nav-text">{strings.product}</span>
+        </div>
       </Menu.Item>
       <Menu.Item key="3" onClick={() => changeMenu(3)}>
-        <Icon type="cloud-o" />
-        <span className="nav-text">{strings.order_indonesia}</span>
-      </Menu.Item>
-      <Menu.Item key="4" onClick={() => changeMenu(4)}>
-        <Icon type="cloud-o" />
-        <span className="nav-text">{strings.logout}</span>
+        <div className="menu-sidebar">
+          <Icon type="cloud-o" />
+          <span className="nav-text">{strings.order_indonesia}</span>
+        </div>
       </Menu.Item>
     </Menu>
   );
