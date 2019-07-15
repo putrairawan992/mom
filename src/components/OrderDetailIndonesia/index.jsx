@@ -31,7 +31,7 @@ const OrderDetailIndonesia = ({ prevStatus, supplier, customer, time }) => {
           </td>
           <td>:</td>
           <td>
-            <span>{convertTimesTime.millisecond(time)}</span>
+            <span>{convertTimesTime.TypeMillisecondWithoutSecond(time)}</span>
           </td>
         </tr>
       </tbody>

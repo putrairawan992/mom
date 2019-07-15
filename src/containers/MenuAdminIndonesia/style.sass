@@ -1,17 +1,19 @@
 @import "../../sass/variable.sass"
     
-.menu-sidebar 
-    font-family: "Helvetica Neue"
-    font-size: 16px
-    font-weight: 500
-.menu-sidebar:hover
-    color: $color-safety-orange-hover
-.ant-menu-item-selected 
-    color: $color-safety-orange!important
+.nav-text
+    font-family: "Helvetica Neue"!important
+    font-size: 16px!important
+    font-weight: 400!important
+.nav-text:hover
+    font-weight: 500!important
+    color: $color-safety-orange-hover!important
 .ant-menu-item:hover
+    color: $color-safety-orange-hover!important
+.ant-menu-item-selected
     color: $color-safety-orange!important
-// .ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected
-//     background-color: $color-teal!important
-//     opacity: 0.1!important
+.ant-menu-item-selected .nav-text
+    font-weight: 500!important 
+.ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected
+    background-color: #FAFAFA!important
 .ant-menu-vertical .ant-menu-item::after, .ant-menu-vertical-left .ant-menu-item::after, .ant-menu-vertical-right .ant-menu-item::after, .ant-menu-inline .ant-menu-item::after 
     border-right: 3px solid $color-teal!important

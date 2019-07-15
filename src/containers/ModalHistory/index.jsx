@@ -19,7 +19,7 @@ const ModalHistory = ({ title, logs, visible, onOk, onCancel }) => {
       {logs.map((log) => (
         <div className="log-status" key={log.id}>
           <div className="log-status__admin">
-            <b>{convertTimesTime.millisecond(log.createdDate)}</b> -{" "}
+            <b>{convertTimesTime.TypeMillisecond(log.createdDate)}</b> -{" "}
             <span>{log.createBy}</span>
             <Divider type="vertical" />
             <span>{log.menuDescription}</span>
