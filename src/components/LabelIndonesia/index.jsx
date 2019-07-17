@@ -39,9 +39,9 @@ class LabelIndonesia extends Component {
               label="Alamat"
               content={`${order.orderAddress.labelName}, ${
                 order.orderAddress.fullAddress
-              } ${order.orderAddress.subdistict} ${order.orderAddress.city} ${
-                order.orderAddress.province
-              } ${order.orderAddress.zipcode}`}
+              }, ${order.orderAddress.subdistrict}, ${
+                order.orderAddress.city
+              }, ${order.orderAddress.province}, ${order.orderAddress.zipcode}`}
             />
             <LabelContent
               label="Telp"
@@ -62,7 +62,7 @@ class LabelIndonesia extends Component {
             />
           </div>
           <Divider />
-          <LabelDetailJne order={order} barcodeNumber={barcodeNumber} />
+          <LabelDetailJne order={order} barcodeNumber={barcodeNumber} isBarcode={true} />
         </div>
       </div>
     );

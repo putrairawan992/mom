@@ -1,7 +1,5 @@
 .label-body {
-  display: flex;
-  justify-content: center;
-  margin: 24px
+  padding: 24px;
 }
 
 .label-china {
@@ -18,6 +16,7 @@
   line-height: 30px;
   text-align: center;
   font-weight: bold;
+  margin: 15px;
 }
 
 .label-info {
@@ -44,13 +43,12 @@
   font-size: 12px;
   padding: 8px 18px;
   color: #004853;
-  font-weight: bold;
 }
 
 .label-logo-bottom {
   display: flex;
   justify-content: flex-end;
-  margin: 12px;
+  margin: 20px;
 }
 
 .item-colon {

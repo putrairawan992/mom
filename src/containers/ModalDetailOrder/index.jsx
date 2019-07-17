@@ -7,7 +7,7 @@ import convertTimesTime from "../../helpers/convertTimestime";
 import LabelContent from "../../components/LabelContent";
 import LabelDetailJne from "../../components/LabelDetailJne";
 
-const ModalDetailOrder = ({ invoice, visible, onOk }) => {
+const ModalDetailOrder = ({ invoice, visible, onOk, barcodeNumber }) => {
   console.log("invoice", invoice);
   return (
     <Modal
@@ -36,8 +36,6 @@ const ModalDetailOrder = ({ invoice, visible, onOk }) => {
                   <b>{item.productSnapshot.nameChina}</b>
                   <span>({item.productSnapshot.name})</span>
                 </Col>
-              </Row>
-              <Row>
                 <LabelContent
                   label="Paid Time"
                   content={convertTimesTime.millisecond(
@@ -48,6 +46,14 @@ const ModalDetailOrder = ({ invoice, visible, onOk }) => {
                   label="Delivery"
                   content={"By " + item.shipment.via}
                 />
+              </Row>
+              <Row>
+                <Col md={24} style={{marginTop:"16px", fontSize:"16px", fontWeight:"500"}}>
+                    <span style={{marginRight:"8px"}} className="varian-label-color">Varian :</span>
+                    <span className="varian-content-color">{item.productSnapshot.variants}</span>
+                    <span style={{margin:"0 8px 0 20px"}} className="varian-label-color">Qty :</span>
+                    <span className="varian-content-color">{item.productSnapshot.quantity}</span>
+                </Col>
               </Row>
             </Col>
           </Row>
@@ -62,9 +68,11 @@ const ModalDetailOrder = ({ invoice, visible, onOk }) => {
                 label="Address"
                 content={`${invoice.order.orderAddress.labelName}, ${
                   invoice.order.orderAddress.fullAddress
-                } ${invoice.order.orderAddress.subdistict} ${invoice.order.orderAddress.city} ${
-                  invoice.order.orderAddress.province
-                } ${invoice.order.orderAddress.zipcode}`}
+                }, ${invoice.order.orderAddress.subdistrict}, ${
+                  invoice.order.orderAddress.city
+                }, ${invoice.order.orderAddress.province}, ${
+                  invoice.order.orderAddress.zipcode
+                }`}
               />
               <LabelContent
                 label="Phone"
@@ -73,7 +81,7 @@ const ModalDetailOrder = ({ invoice, visible, onOk }) => {
               <LabelContent label="Note" content={item.note} />
             </Row>
             <Row className="DetailOrder__modal__detail-address__row-separator">
-              <LabelDetailJne order={invoice.order} />
+              <LabelDetailJne order={invoice.order} barcodeNumber={barcodeNumber} />
             </Row>
             <br />
             <Row type="flex" justify="end">
