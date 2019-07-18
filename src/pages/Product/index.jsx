@@ -161,6 +161,7 @@ const Product = () => {
       console.log("payload",allDataProduct)
       // setTemp(allDataProduct)
     // let dummy = 
+    //TODO fungsi post product
       try {
         const request = await apiPostWithToken(PATH_PRODUCT.CREATE, allDataProduct)
         console.log(request)
