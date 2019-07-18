@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React, { useState, useEffect} from 'react';
 import UploadImages from '../../containers/UploadImages';
 import Variants from '../../containers/Variants';
 import { Formik } from 'formik';
@@ -11,15 +11,15 @@ import Supplier from '../../containers/AllSupplier';
 import {message} from 'antd';
 import Measurement from '../../containers/Measurement';
 import StockManagement from '../../containers/StockManagement';
-import {apiPostWithToken} from '../../services/api';
-import {PATH_PRODUCT} from '../../services/path/product';
+import {apiPostWithToken} from '../../services/api'
+import {PATH_PRODUCT} from '../../services/path/product'
 import './style.sass';
 
 const schema = Yup.object().shape({
-  variants: Yup.array().of(Yup.object().shape({
+  variants: Yup.array(Yup.object().shape({
     name: Yup.string().required(),
     variantItems: Yup.array().of(Yup.object().shape({
-      name: Yup.string().required('You have to fill the variant information befor creating product.')
+      name: Yup.string().required('You have to fill the variant information before creating product.')
     }))
   })),
   supplier: Yup.string().required('Supplier is required').nullable(),
@@ -27,20 +27,21 @@ const schema = Yup.object().shape({
   productName:  Yup.string().required('Product name is required'),
   category: Yup.string().required('Category is required'),
   basePrice: Yup.string().required('Base price is required.'),
-  domesticFee: Yup.string().required('domesticFee price is required.'),
+  domesticFee: Yup.string().required('Domestic fee price is required.'),
   feeBySea: Yup.string().required('Shipment fee by sea is required.'),
   feeByAir: Yup.string().required('Shipment fee by air is required'),
   listImages:Yup.array().required("You have to upload at least one image to create product."),
   width: Yup.string().required(),
   length: Yup.string().required(),
   height: Yup.string().required(),
+  actualWeight: Yup.string().required('Actual Weight is required')
 });
 
 const Product = () => {
   const [payloadImage, setPayloadImage] = useState([])
-  const [errorVariant, setErrorVariant] = useState([])
+  // const [temp, setTemp] = useState([])
   const [totalVariants, setTotalVariants] = useState([])
-  const [string, setString] = useState({
+  const [string] = useState({
     variantType : "",
     variantItems : [{
       name : "",
@@ -48,7 +49,7 @@ const Product = () => {
     }]
   })
   const [statusVariant, setStatusVariant] = useState(false)
-  const [stringVariantType, setNewJob] = [{
+  const [stringVariantType] = [{
     name : "",
     image: {}
   }]
@@ -76,20 +77,32 @@ const Product = () => {
     }
   }
 
-  const addVariantItems = () => {
-    const arrTemp = [...totalVariants]
-    const tempVariantItems = arrTemp.map(item => {
-      return {...item, variantItems : [...item.variantItems, stringVariantType]}
-    })
-    setTotalVariants(tempVariantItems)
+  const addVariantItems = (errors) => {
+    if(!errors.variants){
+      const arrTemp = [...totalVariants]
+      const tempVariantItems = arrTemp.map(item => {
+        return {...item, variantItems : [...item.variantItems, stringVariantType]}
+      })
+      setTotalVariants(tempVariantItems)
+    }
   }
 
-  const removeVariantItems = (index) => {
+  useEffect(() => {
+    setTotalVariants(totalVariants)
+  },[totalVariants])
+
+  const removeVariantItems = (indexType,indexVariant,values) => {
     const arrTemp = [...totalVariants]
-    arrTemp.forEach(item => {
-      item.variantItems.splice(index,1)
+    arrTemp.forEach((item,i) => {
+      if(indexVariant === i) item.variantItems.splice(indexType,1)
+    })
+    values.forEach((value,i) => {
+      if(indexVariant === i) {
+        value.variantItems.splice(indexType,1)
+      }
     })
     setTotalVariants(arrTemp)
+    // console.log(values,"===", indexType)
   }
 
   const getPayloadImage = (dataImage) => {
@@ -113,8 +126,8 @@ const Product = () => {
       measurement.weight = values.actualWeight
       measurement.dimension = dimension
     let category = {}
-      // category.id = values.category[values.category.length -1]
-      category.id = "a0413da0-2df5-4239-8f55-abf87a5ef8d2"
+      category.id = values.category[values.category.length -1]
+      // category.id = "a0413da0-2df5-4239-8f55-abf87a5ef8d2"
     let information = {}
       information.name = values.productName
       information.nameChinese = values.productNameOriginal
@@ -123,7 +136,7 @@ const Product = () => {
       information.measurement = measurement
       information.maxOrder = values.quantity
     let basePrice = {}
-      basePrice.cny = values.quantity
+      basePrice.cny = values.basePrice
     let shipmentFee = {}
       shipmentFee.air = values.feeByAir
       shipmentFee.sea = values.feeBySea
@@ -146,11 +159,13 @@ const Product = () => {
       allDataProduct.images = images
       allDataProduct.variants = values.variants
       console.log("payload",allDataProduct)
+      // setTemp(allDataProduct)
     // let dummy = 
       try {
         const request = await apiPostWithToken(PATH_PRODUCT.CREATE, allDataProduct)
         console.log(request)
         message.success(request.data.code)
+        // message.success("success")
       } catch (error) {
         message.error("error")
         console.log(error)
@@ -165,7 +180,8 @@ const Product = () => {
       <Formik
           initialValues={{
             administration: "",
-            variants: [],
+            actualWeight: "",
+            variants: totalVariants,
             listImages: [],
             supplier: "",
             basePrice: "",
@@ -186,6 +202,7 @@ const Product = () => {
           }}
           onSubmit={values => {
             handleSubmit(values)
+            
           }}
           validationSchema={schema}
         >
@@ -198,10 +215,16 @@ const Product = () => {
             handleSubmit,
             isSubmitting,
             setFieldValue,
-            handleReset
+            handleReset,
+            onReset
           }) => (
-            
             <Form onSubmit={handleSubmit}>
+            <Form.Item>
+              {
+                // console.log("ini errors",errors)
+                // JSON.stringify(temp)
+              }
+            </Form.Item>
             <Form.Item>
               <Supplier
                 handleBlur={handleBlur}
@@ -247,7 +270,6 @@ const Product = () => {
                 setFieldValue={setFieldValue}
                 handleChange={handleChange}
                 errors={errors}
-                errorVariant={errorVariant}
                 addVariant={addVariant}
                 handleBlur={handleBlur}
                 values={values.variants}
@@ -257,6 +279,8 @@ const Product = () => {
                 statusVariant={statusVariant}
                 cancelVariant={cancelVariant}
                 removeVariantItems={removeVariantItems}
+                touched={touched}
+                onReset={onReset}
               />
               </Form.Item>
               <Form.Item>

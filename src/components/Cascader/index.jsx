@@ -3,7 +3,6 @@ import {Cascader as CascaderAnt } from 'antd'
 import propTypes, { object } from 'prop-types'
 import classNames from 'classnames'
 import style from './style.sass'
-import Input from '../Input'
 
 const Cascader = props => {
   const classNamesStyle = classNames.bind(style)

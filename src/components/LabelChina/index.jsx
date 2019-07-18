@@ -1,7 +1,6 @@
 import React from "react";
 import "./style.css";
 import monggopesen_logo from "../../assets/img/monggopesen_logo.png";
-import { Row, Col } from "antd";
 import LabelContent from "../LabelContent";
 
 class LabelChina extends React.Component {

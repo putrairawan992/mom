@@ -40,7 +40,7 @@ const AllSupplier = (props) => {
               <Tag className="tag">Required</Tag>
             </Row>
           </Col>
-          <Col md={props.grid.right}>
+          <Col md={props.grid.right} className="col-height">
           <Select
             showSearch
             onChange={(value) => change(value, props.setFieldValue)}

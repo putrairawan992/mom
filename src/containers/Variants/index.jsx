@@ -8,7 +8,7 @@ const Variants = (props) => {
   return(
     <Card className="card" title={<div className="card-title">Product Variant</div>}>
     {
-      !props.statusVariant ?
+      !props.statusVariant ? 
       <Row>
         <Col span={7}>
           <div className="card-sub-content">
@@ -44,12 +44,13 @@ const Variants = (props) => {
                 index={index}
                 handleChange={props.handleChange}
                 errors={props.errors}
-                errorVariant={props.errorVariant}
                 values={props.values}
                 variant={variant}
                 addVariantItems={props.addVariantItems}
                 setFieldValue={props.setFieldValue}
                 removeVariantItems={props.removeVariantItems}
+                touched={props.touched}
+                onReset={props.onReset}
               />
               <br/>
             </div>

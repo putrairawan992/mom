@@ -56,6 +56,7 @@ const Login = (props) => {
                   onChange={handleChange}
                   value={values.username}
                   onBlur={handleBlur}
+                  size="large"
                   status={
                     errors.username && touched.username
                       ? "error"
@@ -73,6 +74,7 @@ const Login = (props) => {
                     <Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />
                   }
                   type="password"
+                  size="large"
                   placeholder="Password"
                   onChange={handleChange}
                   value={values.password}

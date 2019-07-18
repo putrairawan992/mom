@@ -8,7 +8,7 @@ import "./style.sass";
 
 const MenuAdminChina = props => {
   useEffect(() => {
-    changeMenu(0);
+    changeMenu(2);
   }, []);
 
   const changeMenu = menu => {

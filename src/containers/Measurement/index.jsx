@@ -38,7 +38,7 @@ const Measurement = (props) => {
             <Tag className="tag">Required</Tag>
           </Row>
         </Col>
-        <Col md={8}>
+        <Col md={8} className="col-height">
           <Input
             placeholder="Weight"
             name="actualWeight"
@@ -51,7 +51,16 @@ const Measurement = (props) => {
             value={actualWeight}
             size="large"
             suffix={<div style={{fontSize: "14px"}}>Kg</div>}
+            status={
+              props.errors.actualWeight && props.touched.actualWeight ?
+              "error" : "default"
+            }
           />
+            {
+            (props.errors.actualWeight && props.touched.actualWeight) ? 
+            (<div className="text-error-message">{props.errors.actualWeight}</div>) :
+            null
+          }
         </Col>
       </Row>
       <br/>
@@ -62,7 +71,7 @@ const Measurement = (props) => {
             <Tag className="tag">Required</Tag>
           </Row>
         </Col>
-        <Col md={12}>
+        <Col md={12} className="col-height">
           <Row type="flex" >
             <Col md={8} style={{paddingRight : "10px"}}>
                 <Input
