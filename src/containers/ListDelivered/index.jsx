@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Row, Col, Card, notification, Icon } from "antd";
+import { Row, Col, Card } from "antd";
 import ModalAddNote from "../../components/ModalAddNote";
 import ButtonTextIcon from "../../components/ButtonTextIcon";
 import Button from "../../components/Button";
@@ -14,10 +14,11 @@ import {
 import { PATH_ORDER } from "../../services/path/order";
 import strings from "../../localization";
 import { optionsUndo } from "../../dataSource/option_undo";
+import ModalDetailOrder from "../ModalDetailOrder";
+import contentNotification from "../../helpers/notification";
 
 import "../../sass/style.sass";
 import "./style.sass";
-import ModalDetailOrder from "../ModalDetailOrder";
 
 const ListDelivered = props => {
   const [visibleUndo, setVisibleUndo] = useState(false);
@@ -40,7 +41,7 @@ const ListDelivered = props => {
             "Order Undo.",
             "The Order is being undo, you can see the history in activity log",
             "info-circle",
-            "#1890FF"
+            "secondary"
           );
         } else if (action === "NEXT") {
           await props.onLoad();
@@ -51,7 +52,7 @@ const ListDelivered = props => {
             "Admin note created.",
             "Admin note has created, you can see full list by clicking the 'Show Admin Notes' button.",
             "check-circle",
-            "#52C41A"
+            "primary"
           );
         }
       }
@@ -117,18 +118,6 @@ const ListDelivered = props => {
     } catch (error) {
       console.log(error);
     }
-  };
-
-  const contentNotification = (message, description, icon, colorIcon) => {
-    notification.open({
-      message: message,
-      description: description,
-      icon: <Icon type={icon} theme="filled" style={{ color: colorIcon }} />,
-      style: {
-        width: 500,
-        marginLeft: 400 - 508
-      }
-    });
   };
 
   const handleNextOrder = invoiceId => {

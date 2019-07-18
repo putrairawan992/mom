@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Row, Col, Card, notification, Icon } from "antd";
+import { Row, Col, Card } from "antd";
 import OrderVariant from "../../components/OrderVariant";
 import ModalSupplier from "../../containers/ModalSupplier";
 import ModalAddNote from "../../components/ModalAddNote";
@@ -23,6 +23,7 @@ import ModalConfirm from "../../components/ModalConfirm";
 import convertTimesTime from "../../helpers/convertTimestime";
 import { optionsCancel } from "../../dataSource/option_cancle";
 import { optionsUndo } from "../../dataSource/option_undo";
+import contentNotification from '../../helpers/notification';
 
 import "../../sass/style.sass";
 import "./style.sass";
@@ -51,7 +52,7 @@ const ListNeedPurchased = props => {
             "Order Undo.",
             "The Order is being undo, you can see the history in activity log",
             "info-circle",
-            "#1890FF"
+            "secondary"
           );
         } else if (action === "CANCEL") {
           actionCancel();
@@ -60,7 +61,7 @@ const ListNeedPurchased = props => {
             "Order Canceled.",
             "The Order is being canceled, you can see the history in activity log or canceled order tab",
             "info-circle",
-            "#1890FF"
+            "secondary"
           );
         } else if (action === "NEXT") {
           setVisibleConfirm(!visibleConfirm);
@@ -69,7 +70,7 @@ const ListNeedPurchased = props => {
             "New Order has moved to the next process.",
             "Continue responding the order you have selected in Need Purchased Tabs.",
             "check-circle",
-            "#52C41A"
+            "primary"
           );
         } else {
           actionAddNotes();
@@ -78,7 +79,7 @@ const ListNeedPurchased = props => {
             "Admin note created.",
             "Admin note has created, you can see full list by clicking the 'Show Admin Notes' button.",
             "check-circle",
-            "#52C41A"
+            "primary"
           );
         }
       }
@@ -183,18 +184,6 @@ const ListNeedPurchased = props => {
 
   const actionCancelConfirm = () => {
     setVisibleConfirm(!visibleConfirm);
-  };
-
-  const contentNotification = (message, description, icon, colorIcon) => {
-    notification.open({
-      message: message,
-      description: description,
-      icon: <Icon type={icon} theme="filled" style={{ color: colorIcon }} />,
-      style: {
-        width: 500,
-        marginLeft: 400 - 508
-      }
-    });
   };
 
   const handlePurchased = invoiceId => {
