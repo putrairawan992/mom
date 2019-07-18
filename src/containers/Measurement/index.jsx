@@ -105,7 +105,7 @@ const Measurement = (props) => {
                 onBlur={props.handleBlur}
                 // value={length}
                 suffix={<div style={{fontSize: "14px"}}>cm</div>}
-                size="medium"
+                size="large"
                 status={
                   props.errors.length && props.touched.length ?
                   "error" : "default"
@@ -124,7 +124,7 @@ const Measurement = (props) => {
                 onBlur={props.handleBlur}
                 // value={height}
                 suffix={<div style={{fontSize: "14px"}}>cm</div>}
-                size="small"
+                size="large"
                 status={
                   props.errors.height && props.touched.height ?
                   "error" : "default"
