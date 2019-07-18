@@ -24,7 +24,7 @@ class LabelChina extends React.Component {
       <div className="label-body">
         <div className="label-china">
           <div className="label-invoice">
-            <p>#{noInvoice}</p>
+            <span>#{noInvoice}</span>
           </div>
           {order.orderItems.map(item => {
             return (
@@ -67,7 +67,7 @@ class LabelChina extends React.Component {
             <img
               src={monggopesen_logo}
               alt="monggopesen"
-              style={{ height: "16px" }}
+              style={{ height: "12px" }}
             />
           </div>
         </div>

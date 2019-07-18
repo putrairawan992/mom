@@ -1,29 +1,44 @@
 @import "../../sass/variable.sass"
 
-.input-text
-  padding: .5rem
-  font-size: 16px
-  width: 100%
-  display: block
-  border-radius: 4px
-  border: 1px solid #ccc
-.input-error
+.mp-login-container
+  margin: 0px 72px 0px 72px
+  font-family: "Helvetica Neue"
+.mp-login-header-container
+  display: flex
+  padding: 32px
+  justify-content: flex-end
+.mp-login-header-container > span
+  color: $color-charcoal
+  font-size: 18px
+  margin: 0px 20px 0px 20px
+.mp-login-content
+  display: flex
+  justify-content: center
+  align-items: center
+  height: 60vh
+  flex-direction: column
+.mp-login-content > img
+  height: 71px
+  width: 73px
+.mp-login-content > span
+  font-size: 20px
+  font-weight: 500
+  color: $color-teal
+  padding-top: 12px
+.mp-login-content > .mp-form-login
+  margin-top: 60px
+.mp-login-input-text
+  height: 48px
+  width: 360px!important
+.mp-login-input-error
   border-color: red
 .input-feedback 
   color: red
   margin-top: .25rem
-.loginContainer
-  display: flex
-  justify-content: center
-  height: 100vh
-  align-items: center
-.loginForm
-  display: flex
-  justify-content: center
-.admin
-  height: 24px
-  width: 117px
-  color: $color-teal
-  font-size: 20px
-  font-weight: 500
-  line-height: 25px
+.mp-login-button-submit
+  margin: 0 4px 0 -4px
+  padding-top: 40px
+
+//ant
+.ant-input-affix-wrapper .ant-input:not(:first-child)
+  padding-left: 40px

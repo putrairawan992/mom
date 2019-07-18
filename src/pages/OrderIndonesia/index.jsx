@@ -10,6 +10,7 @@ import { PATH_ORDER } from "../../services/path/order";
 import HeaderOrder from "../../components/HeaderOrder";
 import NotFoundOrder from "../../components/NotFoundOrder";
 import NotFoundSearch from "../../components/NotFoundSearch";
+import "./style.sass";
 
 const TabPane = Tabs.TabPane;
 const OrderIndonesia = () => {
@@ -75,7 +76,8 @@ const OrderIndonesia = () => {
   const paramGetListInvoice = (categorySearch, query) => {
     return {
       searchBy: categorySearch,
-      keyword: query
+      keyword: query,
+      filterBy: ""
     }
   };
 
@@ -90,7 +92,7 @@ const OrderIndonesia = () => {
     setTotalInvoice(0);
     try {
       const response = await apiGetWithToken(
-        `${PATH_ORDER.STATUS}/SHP`,paramGetListInvoice(categorySearch, query)
+        `${PATH_ORDER.STATUS}/ARV`,paramGetListInvoice(categorySearch, query)
       );
       revertState("", false, response.data.data.total);
       setResListArrival(response.data.data.invoices);

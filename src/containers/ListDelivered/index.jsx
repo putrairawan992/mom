@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Row, Col, Card, notification, Icon } from "antd";
+import { Row, Col, Card } from "antd";
 import ModalAddNote from "../../components/ModalAddNote";
 import ButtonTextIcon from "../../components/ButtonTextIcon";
 import Button from "../../components/Button";
@@ -9,11 +9,15 @@ import ModalReason from "../../containers/ModalReason";
 import ModalHistory from "../ModalHistory";
 import {
   apiPostWithToken,
-  apiGetWithToken
+  apiGetWithToken,
+  apiGetWithoutToken
 } from "../../services/api";
 import { PATH_ORDER } from "../../services/path/order";
 import strings from "../../localization";
 import { optionsUndo } from "../../dataSource/option_undo";
+import ModalDetailOrder from "../ModalDetailOrder";
+import contentNotification from "../../helpers/notification";
+import { PATH_BARCODE } from "../../services/path/barcode";
 
 import "../../sass/style.sass";
 import "./style.sass";
@@ -23,9 +27,12 @@ const ListDelivered = props => {
   const [visibleAddNote, setVisibleAddNote] = useState(false);
   const [visibleLogActivities, setVisibleLogActivities] = useState(false);
   const [visibleLogNoteAdmin, setVisibleLogNoteAdmin] = useState(false);
+  const [visibleDetailOrder, setVisibleDetailOrder] = useState(false);
   const [listLogActivity, setListLogActivity] = useState([]);
   const [listLogNote, setListLogNote] = useState([]);
   const [refInvoice, setRefInvoice] = useState(null);
+  const [invoiceById, setInvoiceById] = useState(null);
+  const [barcodeNumber, setBarcodeNumber] = useState("");
 
   const updateList = async (update = false, action) => {
     try {
@@ -37,7 +44,7 @@ const ListDelivered = props => {
             "Order Undo.",
             "The Order is being undo, you can see the history in activity log",
             "info-circle",
-            "#1890FF"
+            "secondary"
           );
         } else if (action === "NEXT") {
           await props.onLoad();
@@ -48,12 +55,23 @@ const ListDelivered = props => {
             "Admin note created.",
             "Admin note has created, you can see full list by clicking the 'Show Admin Notes' button.",
             "check-circle",
-            "#52C41A"
+            "primary"
           );
         }
       }
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const getResiNumber = async () => {
+    try {
+      const response = await apiGetWithoutToken(PATH_BARCODE.BARCODE);
+      // console.log("waw", response.data);
+      const barcode = response.data.data;
+      setBarcodeNumber(barcode);
+    } catch (error) {
+      console.log("error");
     }
   };
 
@@ -116,20 +134,11 @@ const ListDelivered = props => {
     }
   };
 
-  const contentNotification = (message, description, icon, colorIcon) => {
-    notification.open({
-      message: message,
-      description: description,
-      icon: <Icon type={icon} theme="filled" style={{ color: colorIcon }} />,
-      style: {
-        width: 500,
-        marginLeft: 400 - 508
-      }
-    });
-  };
-
   const handleNextOrder = invoiceId => {
-    setRefInvoice(invoiceId);
+    const getInvoice = props.invoices.find(invoice => invoice.id === invoiceId);
+    getResiNumber();
+    setInvoiceById(getInvoice);
+    setVisibleDetailOrder(!visibleDetailOrder);
   };
 
   const actionUndo = () => {
@@ -154,6 +163,10 @@ const ListDelivered = props => {
 
   const actionShowLogNoteAdmin = () => {
     setVisibleLogNoteAdmin(!visibleLogNoteAdmin);
+  };
+
+  const actionOk = () => {
+    setVisibleDetailOrder(!visibleDetailOrder);
   };
 
   return (
@@ -200,7 +213,10 @@ const ListDelivered = props => {
                     </Col>
                     <Col md={12}>
                       <div className="wrap-button">
-                        <Button type="white" onClick={() => handleNextOrder()}>
+                        <Button
+                          type="white"
+                          onClick={() => handleNextOrder(invoice.id)}
+                        >
                           See Detail
                         </Button>
                       </div>
@@ -256,6 +272,14 @@ const ListDelivered = props => {
         ))
       ) : (
         props.children
+      )}
+      {invoiceById && (
+        <ModalDetailOrder
+          invoice={invoiceById}
+          barcodeNumber={barcodeNumber}
+          visible={visibleDetailOrder}
+          onOk={actionOk}
+        />
       )}
       <ModalAddNote
         visible={visibleAddNote}

@@ -1,5 +1,5 @@
 import React from "react";
-import { Row, Col, Card, notification, Icon } from "antd";
+import { Row, Col, Card } from "antd";
 import "./style.sass";
 import OrderVariant from "../../components/OrderVariant";
 import Button from "../../components/Button";
@@ -11,6 +11,7 @@ import convertTimesTime from "../../helpers/convertTimestime";
 import ImageShipping from "../../components/ImageShipping";
 import strings from "../../localization";
 import LoaderItem from "../../components/LoaderItem";
+import contentNotification from '../../helpers/notification';
 
 const ListNeedResponse = props => {
   const getListNeedResponse = async (update = false) => {
@@ -21,7 +22,7 @@ const ListNeedResponse = props => {
           "New Order has moved to the next process.",
           "Continue responding the order you have selected in Need Purchased Tabs.",
           "check-circle",
-          "#52C41A"
+          "primary"
         );
       }
     } catch (error) {
@@ -40,18 +41,6 @@ const ListNeedResponse = props => {
     } catch (error) {
       console.log(error);
     }
-  };
-
-  const contentNotification = (message, description, icon, colorIcon) => {
-    notification.open({
-      message: message,
-      description: description,
-      icon: <Icon type={icon} theme="filled" style={{ color: colorIcon }} />,
-      style: {
-        width: 500,
-        marginLeft: 400 - 508
-      }
-    });
   };
 
   const handleResponse = invoiceId => {
@@ -97,7 +86,7 @@ const ListNeedResponse = props => {
                             <td>:</td>
                             <td>
                               <span>
-                                {convertTimesTime.millisecond(invoice.order.orderActivityDate.orderDate)}
+                                {convertTimesTime.TypeMillisecondWithoutSecond(invoice.order.orderActivityDate.orderDate)}
                               </span>
                             </td>
                           </tr>

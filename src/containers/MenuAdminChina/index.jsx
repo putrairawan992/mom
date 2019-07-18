@@ -14,7 +14,7 @@ const MenuAdminChina = props => {
   const changeMenu = menu => {
     switch (menu) {
       case 1:
-        props.onChange(<h1>Satu</h1>);
+        props.onChange(<h1>Dashboard</h1>);
         break;
       case 2:
         props.onChange(<Product />);
