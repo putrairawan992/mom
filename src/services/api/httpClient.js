@@ -1,5 +1,4 @@
 import axios from 'axios';
-//const ngrok = 'http://a2206ca1.ngrok.io/api/v1/';
 const REACT_APP_API_SERVICE = process.env.REACT_APP_API_DUMMY_SERVICE;
 const getToken = () => {
   return localStorage.getItem("accessToken");

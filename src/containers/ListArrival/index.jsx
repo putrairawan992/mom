@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Row, Col, Card, notification, Icon } from "antd";
+import { Row, Col, Card } from "antd";
 import OrderVariant from "../../components/OrderVariant";
 import ModalAddNote from "../../components/ModalAddNote";
 import ModalConfirmPrint from "../../components/ModalConfirmPrint";
@@ -16,13 +16,13 @@ import {
   apiGetWithToken
 } from "../../services/api";
 import { PATH_ORDER } from "../../services/path/order";
-import ImageShipping from "../../components/ImageShipping";
 import strings from "../../localization";
+import OrderDetailIndonesia from "../../components/OrderDetailIndonesia";
+import LabelIndonesia from "../../components/LabelIndonesia";
+import contentNotification from "../../helpers/notification";
 
 import "../../sass/style.sass";
 import "./style.sass";
-import OrderDetailIndonesia from "../../components/OrderDetailIndonesia";
-import LabelIndonesia from "../../components/LabelIndonesia";
 
 const ListArrival = props => {
   const [visibleAddNote, setVisibleAddNote] = useState(false);
@@ -48,7 +48,7 @@ const ListArrival = props => {
             "Admin note created.",
             "Admin note has created, you can see full list by clicking the 'Show Admin Notes' button.",
             "check-circle",
-            "#52C41A"
+            "primary"
           );
         }
       }
@@ -122,18 +122,6 @@ const ListArrival = props => {
 
   const actionCancelConfirm = () => {
     setVisibleConfirm(!visibleConfirm);
-  };
-
-  const contentNotification = (message, description, icon, colorIcon) => {
-    notification.open({
-      message: message,
-      description: description,
-      icon: <Icon type={icon} theme="filled" style={{ color: colorIcon }} />,
-      style: {
-        width: 500,
-        marginLeft: 400 - 508
-      }
-    });
   };
 
   const handleNextOrder = invoiceId => {

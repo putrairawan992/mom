@@ -45,7 +45,7 @@ const ModalConfirm = ({
           <br/><br/>
           <Row type="flex" justify="end">
             <Col>
-              <span className="cancel" onClick={onCancel}>
+              <span className="modal-cancel" onClick={onCancel}>
                 Go Back
               </span>
               <Button

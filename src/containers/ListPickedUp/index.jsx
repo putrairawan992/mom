@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Row, Col, Card, notification, Icon } from "antd";
+import { Row, Col, Card } from "antd";
 import OrderVariant from "../../components/OrderVariant";
 import ModalAddNote from "../../components/ModalAddNote";
 import ButtonTextIcon from "../../components/ButtonTextIcon";
@@ -19,6 +19,7 @@ import { PATH_ORDER } from "../../services/path/order";
 import strings from "../../localization";
 import OrderDetailIndonesia from "../../components/OrderDetailIndonesia";
 import { optionsUndo } from "../../dataSource/option_undo";
+import contentNotification from '../../helpers/notification';
 
 import "../../sass/style.sass";
 import "./style.sass";
@@ -44,7 +45,7 @@ const ListPickedUp = props => {
             "Order Undo.",
             "The Order is being undo, you can see the history in activity log",
             "info-circle",
-            "#1890FF"
+            "secondary"
           );
         } else if (action === "NEXT") {
           await props.onLoad();
@@ -52,7 +53,7 @@ const ListPickedUp = props => {
             "The package has received by customer",
             "The package is already received by customer, and the order list has moved to the next tab",
             "check-circle",
-            "#52C41A"
+            "primary"
           );
         } else {
           actionAddNotes();
@@ -61,7 +62,7 @@ const ListPickedUp = props => {
             "Admin note created.",
             "Admin note has created, you can see full list by clicking the 'Show Admin Notes' button.",
             "check-circle",
-            "#52C41A"
+            "primary"
           );
         }
       }
@@ -153,18 +154,6 @@ const ListPickedUp = props => {
     setVisibleConfirm(!visibleConfirm);
   };
 
-  const contentNotification = (message, description, icon, colorIcon) => {
-    notification.open({
-      message: message,
-      description: description,
-      icon: <Icon type={icon} theme="filled" style={{ color: colorIcon }} />,
-      style: {
-        width: 500,
-        marginLeft: 400 - 508
-      }
-    });
-  };
-
   const handleNextOrder = invoiceId => {
     setRefInvoice(invoiceId);
     setVisibleConfirm(!visibleConfirm);
@@ -225,7 +214,7 @@ const ListPickedUp = props => {
                         productTextIndonesia={item.productSnapshot.name}
                       />
                       <OrderDetailIndonesia
-                        prevStatus="Shipped Time"
+                        prevStatus="Picked Up Time"
                         supplier={item.supplierSnapshot.name}
                         customer={invoice.order.customer.name}
                         time={invoice.order.orderActivityDate.orderDate}

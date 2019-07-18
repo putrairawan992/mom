@@ -6,6 +6,26 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 import { Row, Col, Divider, Icon, Modal, notification } from "antd";
 import OrderVariant from "../../components/OrderVariant";
 
+const copyClipboard = (
+  invoiceNo,
+  productName,
+  variant,
+  qyt,
+  price,
+  total,
+  note
+) => {
+  return `
+  - Invoice No: ${invoiceNo}
+  - Product Name : ${productName}
+  - Variant : ${variant}
+  - Quantity : ${qyt}
+  - Price : ${price}
+  - Total : ${total}
+  - Note : ${note}
+  `;
+};
+
 const ModalSupplier = ({ invoice, visible, onOk }) => {
   const copyDetailOrder = () => {
     notification.info({
@@ -54,7 +74,15 @@ const ModalSupplier = ({ invoice, visible, onOk }) => {
                 </Col>
                 <Col md={10} className="supplier__modal__copy-detail">
                   <CopyToClipboard
-                    text={item.productSnapshot.name}
+                    text={copyClipboard(
+                      invoice.invoiceNumber,
+                      item.productSnapshot.nameChina,
+                      item.productSnapshot.variants,
+                      item.productSnapshot.quantity,
+                      item.productSnapshot.priceCny,
+                      item.productSnapshot.calculateTotalPriceCny,
+                      item.note
+                    )}
                     onCopy={copyDetailOrder}
                   >
                     <span>Copy Detail</span>
@@ -83,7 +111,9 @@ const ModalSupplier = ({ invoice, visible, onOk }) => {
             <Row>
               <Col span={24}>
                 <span className="supplier__modal__detail-address__important">
-                  {`${item.supplierSnapshot.name} - ${item.supplierSnapshot.code}`}
+                  {`${item.supplierSnapshot.name} - ${
+                    item.supplierSnapshot.code
+                  }`}
                 </span>
                 <br />
                 <span>{item.supplierSnapshot.address}</span>

@@ -38,7 +38,7 @@ const ModalDetailOrder = ({ invoice, visible, onOk, barcodeNumber }) => {
                 </Col>
                 <LabelContent
                   label="Paid Time"
-                  content={convertTimesTime.millisecond(
+                  content={convertTimesTime.TypeMillisecondWithoutSecond(
                     invoice.order.orderActivityDate.orderDate
                   )}
                 />

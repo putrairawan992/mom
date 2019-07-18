@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Row, Col, Card, notification, Icon } from "antd";
+import { Row, Col, Card} from "antd";
 import OrderVariant from "../../components/OrderVariant";
 import ModalAddNote from "../../components/ModalAddNote";
 import ReactToPrint from "react-to-print";
@@ -22,6 +22,7 @@ import ImageShipping from "../../components/ImageShipping";
 import strings from "../../localization";
 import convertTimesTime from "../../helpers/convertTimestime";
 import { optionsUndo } from "../../dataSource/option_undo";
+import contentNotification from '../../helpers/notification';
 
 import "../../sass/style.sass";
 import "./style.sass";
@@ -49,7 +50,7 @@ const ListReadyToShip = props => {
             "Order Undo.",
             "The Order is being undo, you can see the history in activity log",
             "info-circle",
-            "#1890FF"
+            "secondary"
           );
         } else if (action === "NEXT") {
           await props.onLoad();
@@ -57,7 +58,7 @@ const ListReadyToShip = props => {
             "The package is shipped.",
             "The order has been moved to the shipped tab, and the package is already on it's way to indonesia.",
             "check-circle",
-            "#52C41A"
+            "primary"
           );
         } else {
           actionAddNotes();
@@ -66,7 +67,7 @@ const ListReadyToShip = props => {
             "Admin note created.",
             "Admin note has created, you can see full list by clicking the 'Show Admin Notes' button.",
             "check-circle",
-            "#52C41A"
+            "primary"
           );
         }
       }
@@ -158,18 +159,6 @@ const ListReadyToShip = props => {
     setVisibleConfirm(!visibleConfirm);
   };
 
-  const contentNotification = (message, description, icon, colorIcon) => {
-    notification.open({
-      message: message,
-      description: description,
-      icon: <Icon type={icon} theme="filled" style={{ color: colorIcon }} />,
-      style: {
-        width: 500,
-        marginLeft: 400 - 508
-      }
-    });
-  };
-
   const handleNextOrder = invoiceId => {
     setRefInvoice(invoiceId);
     setVisibleConfirm(!visibleConfirm);
@@ -240,7 +229,7 @@ const ListReadyToShip = props => {
                             <td>:</td>
                             <td>
                               <span>
-                              {convertTimesTime.millisecond(invoice.order.orderActivityDate.orderDate)}
+                              {convertTimesTime.TypeMillisecondWithoutSecond(invoice.order.orderActivityDate.orderDate)}
                               </span>
                             </td>
                           </tr>
@@ -281,7 +270,7 @@ const ListReadyToShip = props => {
                         <OrderVariant
                           variants={item.productSnapshot.informations}
                           quantity={item.productSnapshot.quantity}
-                          price={item.productSnapshot.price}
+                          price={item.productSnapshot.priceCny}
                           withPrice={true}
                         />
                       </div>

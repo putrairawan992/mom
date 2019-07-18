@@ -81,7 +81,8 @@ const OrderChina = () => {
   const paramGetListInvoice = (categorySearch, query) => {
     return {
       searchBy: categorySearch,
-      keyword: query
+      keyword: query,
+      filterBy: ""
     }
   };
 

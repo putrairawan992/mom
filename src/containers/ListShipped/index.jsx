@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Row, Col, Card, notification, Icon } from "antd";
+import { Row, Col, Card} from "antd";
 import OrderVariant from "../../components/OrderVariant";
 import ButtonTextIcon from "../../components/ButtonTextIcon";
 import LoaderItem from "../../components/LoaderItem";
@@ -13,6 +13,7 @@ import ImageShipping from "../../components/ImageShipping";
 import strings from "../../localization";
 import convertTimesTime from "../../helpers/convertTimestime";
 import { optionsUndo } from "../../dataSource/option_undo";
+import contentNotification from '../../helpers/notification';
 
 import "../../sass/style.sass";
 import "./style.sass";
@@ -53,7 +54,7 @@ const ListShipped = props => {
             "Order Undo.",
             "The Order is being undo, you can see the history in activity log",
             "info-circle",
-            "#1890FF"
+            "secondary"
           );
         }
       }
@@ -106,17 +107,6 @@ const ListShipped = props => {
     }
   };
 
-  const contentNotification = (message, description, icon, colorIcon) => {
-    notification.open({
-      message: message,
-      description: description,
-      icon: <Icon type={icon} theme="filled" style={{ color: colorIcon }} />,
-      style: {
-        width: 500,
-        marginLeft: 400 - 508
-      }
-    });
-  };
   const actionUndo = () => {
     setVisibleUndo(!visibleUndo);
   };
@@ -172,7 +162,7 @@ const ListShipped = props => {
                             <td>:</td>
                             <td>
                               <span>
-                                {convertTimesTime.millisecond(
+                                {convertTimesTime.TypeMillisecondWithoutSecond(
                                   invoice.order.orderActivityDate.orderDate
                                 )}
                               </span>
