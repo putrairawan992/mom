@@ -258,7 +258,7 @@ const ListReadyPickUp = props => {
                         </Button>
                         <ReactToPrint
                           trigger={() => (
-                            <Button type="secondary">Print Receipt</Button>
+                            <Button onClick={getBarcode()} type="secondary">Print Receipt</Button>
                           )}
                           content={() => componentRef[invoice.id]}
                           closeAfterPrint={true}
@@ -321,7 +321,7 @@ const ListReadyPickUp = props => {
               <LabelIndonesia
                 ref={el => (componentRef[invoice.id] = el)}
                 invoice={invoice}
-                barcodeNumber={"02044008057151"}
+                barcodeNumber={barcodeNumber}
               />
             </div>
           </Card>

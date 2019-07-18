@@ -199,6 +199,8 @@ const ListReadyToShip = props => {
     setVisibleLogNoteAdmin(!visibleLogNoteAdmin);
   };
 
+  console.log("log", props.invoices);
+  
   return (
     <React.Fragment>
       {props.loading ? (

@@ -2,9 +2,10 @@ import React from "react";
 import "./style.css";
 import { Row, Col } from "antd";
 import Barcode from "react-barcode";
+import ic_jne from "../../assets/img/ic_jne.png"
 
 const LabelDetailJne = props => {
-  const { order, barcodeNumber } = props;
+  const { order, barcodeNumber, isBarcode } = props;
   return (
     <div className="label-box-jne">
       <div className="label-box-date">
@@ -42,11 +43,11 @@ const LabelDetailJne = props => {
         </Row>
       </div>
       <div className="label-box-bottom">
-        <div style={{ padding: "6px" }}>
-          <img src="" alt="JNE" style={{ height: "32px" }} />
+        <div style={{ padding: "10px" }}>
+          <img src={ic_jne} alt="JNE" style={{ height: "24px" }} />
         </div>
         <div>
-          {barcodeNumber ? (
+          {isBarcode ? (
             <Barcode
               value={barcodeNumber}
               width={1.5}
@@ -56,8 +57,8 @@ const LabelDetailJne = props => {
               fontOption="bold"
             />
           ) : (
-            <div>
-              <p>No. Resi</p>
+            <div style={{paddingTop:"10px"}} >
+              <p>No. Resi {barcodeNumber}</p>
             </div>
           )}
         </div>
