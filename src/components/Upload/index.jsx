@@ -10,12 +10,19 @@ const Upload = props => {
       <Icon type={props.loading ? 'loading' : 'plus'}></Icon>
     </div>
   )
-
+  
   const imageUpload = (
     <div className="containerUpload">
       {
         props.type === 'no-style' ? 
-        <img src={props.imageUrl}  alt="avatar"/> :
+        <>
+          <img src={props.imageUrl}  alt="avatar"/> 
+          <div className="top-icon">
+          <Icon type="camera" onClick={() => props.editImage(props.index)}  className="cameraIcon"/>
+          <Icon  type="delete" onClick={() => props.remove(props.index,props.imageUrl)} className="deleteIcon"/>
+          </div>
+        </>
+        :
         <>
           <img src={props.imageUrl}  alt="avatar"/>
           <div className="top-icon">
