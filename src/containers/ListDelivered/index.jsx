@@ -9,13 +9,15 @@ import ModalReason from "../../containers/ModalReason";
 import ModalHistory from "../ModalHistory";
 import {
   apiPostWithToken,
-  apiGetWithToken
+  apiGetWithToken,
+  apiGetWithoutToken
 } from "../../services/api";
 import { PATH_ORDER } from "../../services/path/order";
 import strings from "../../localization";
 import { optionsUndo } from "../../dataSource/option_undo";
 import ModalDetailOrder from "../ModalDetailOrder";
 import contentNotification from "../../helpers/notification";
+import { PATH_BARCODE } from "../../services/path/barcode";
 
 import "../../sass/style.sass";
 import "./style.sass";
@@ -30,6 +32,7 @@ const ListDelivered = props => {
   const [listLogNote, setListLogNote] = useState([]);
   const [refInvoice, setRefInvoice] = useState(null);
   const [invoiceById, setInvoiceById] = useState(null);
+  const [barcodeNumber, setBarcodeNumber] = useState("");
 
   const updateList = async (update = false, action) => {
     try {
@@ -58,6 +61,17 @@ const ListDelivered = props => {
       }
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const getResiNumber = async () => {
+    try {
+      const response = await apiGetWithoutToken(PATH_BARCODE.BARCODE);
+      // console.log("waw", response.data);
+      const barcode = response.data.data;
+      setBarcodeNumber(barcode);
+    } catch (error) {
+      console.log("error");
     }
   };
 
@@ -122,6 +136,7 @@ const ListDelivered = props => {
 
   const handleNextOrder = invoiceId => {
     const getInvoice = props.invoices.find(invoice => invoice.id === invoiceId);
+    getResiNumber();
     setInvoiceById(getInvoice);
     setVisibleDetailOrder(!visibleDetailOrder);
   };
@@ -151,8 +166,8 @@ const ListDelivered = props => {
   };
 
   const actionOk = () => {
-    setVisibleDetailOrder(!visibleDetailOrder)
-  }
+    setVisibleDetailOrder(!visibleDetailOrder);
+  };
 
   return (
     <React.Fragment>
@@ -198,7 +213,10 @@ const ListDelivered = props => {
                     </Col>
                     <Col md={12}>
                       <div className="wrap-button">
-                        <Button type="white" onClick={() => handleNextOrder(invoice.id)}>
+                        <Button
+                          type="white"
+                          onClick={() => handleNextOrder(invoice.id)}
+                        >
                           See Detail
                         </Button>
                       </div>
@@ -258,6 +276,7 @@ const ListDelivered = props => {
       {invoiceById && (
         <ModalDetailOrder
           invoice={invoiceById}
+          barcodeNumber={barcodeNumber}
           visible={visibleDetailOrder}
           onOk={actionOk}
         />
