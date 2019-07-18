@@ -51,8 +51,7 @@ const ListPurchased = props => {
           contentNotification(
             "Order Undo.",
             "The Order is being undo, you can see the history in activity log",
-            "info-circle",
-            "secondary"
+            "info"
           );
         } else if (action === "CANCEL") {
           actionCancel();
@@ -60,8 +59,7 @@ const ListPurchased = props => {
           contentNotification(
             "Order Canceled.",
             "The Order is being canceled, you can see the history in activity log or canceled order tab",
-            "info-circle",
-            "secondary"
+            "info"
           );
         } else if (action === "NEXT") {
           await props.onLoad();
@@ -71,8 +69,7 @@ const ListPurchased = props => {
           contentNotification(
             "Admin note created.",
             "Admin note has created, you can see full list by clicking the 'Show Admin Notes' button.",
-            "check-circle",
-            "primary"
+            "success"
           );
         }
       }
