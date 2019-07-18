@@ -11,6 +11,8 @@ import HeaderOrder from "../../components/HeaderOrder";
 import NotFoundOrder from "../../components/NotFoundOrder";
 import NotFoundSearch from "../../components/NotFoundSearch";
 
+import "./style.sass";
+
 const TabPane = Tabs.TabPane;
 const OrderChina = () => {
   const [resListNeedResponse, setResListNeedResponse] = useState([]);

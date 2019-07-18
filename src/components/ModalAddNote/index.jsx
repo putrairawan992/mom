@@ -7,9 +7,12 @@ import { Formik } from "formik";
 import TextArea from "../TextArea";
 
 const schema = yup.object().shape({
-  reason: yup.string(),
   note: yup.string().required("Please write some notes")
 });
+
+const resetForm = values => {
+  values.note = "";
+};
 
 const ModalAddNote = ({ visible, onSubmit, onCancel, loading, invoiceId }) => {
   return (
@@ -39,6 +42,7 @@ const ModalAddNote = ({ visible, onSubmit, onCancel, loading, invoiceId }) => {
           handleSubmit
         }) => (
           <Form onSubmit={handleSubmit}>
+          {!visible && resetForm(values)}
             <Row className="row-item-undo">
               <Col>
                 <TextArea

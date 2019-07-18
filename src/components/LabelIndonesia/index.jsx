@@ -19,7 +19,7 @@ class LabelIndonesia extends Component {
           <div className="label-from">
             <LabelContent
               label="Pengirim"
-              content="Monggopesen"
+              content="Monggopesen.com"
               styleContent="label-form-content"
             />
             <LabelContent
