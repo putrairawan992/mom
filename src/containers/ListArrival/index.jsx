@@ -13,7 +13,8 @@ import ModalHistory from "../ModalHistory";
 import {
   apiPatchWithToken,
   apiPostWithToken,
-  apiGetWithToken
+  apiGetWithToken,
+  apiGetWithoutToken
 } from "../../services/api";
 import { PATH_ORDER } from "../../services/path/order";
 import strings from "../../localization";
@@ -23,6 +24,7 @@ import contentNotification from "../../helpers/notification";
 
 import "../../sass/style.sass";
 import "./style.sass";
+import { PATH_BARCODE } from "../../services/path/barcode";
 
 const ListArrival = props => {
   const [visibleAddNote, setVisibleAddNote] = useState(false);
@@ -35,6 +37,7 @@ const ListArrival = props => {
   const [invoiceById, setInvoiceById] = useState(null);
   const [refInvoice, setRefInvoice] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [barcodeNumber, setBarcodeNumber] = useState("")
 
   const updateList = async (update = false, action) => {
     try {
@@ -56,6 +59,17 @@ const ListArrival = props => {
       console.log(error);
     }
   };
+
+  const getBarcode = async() => {
+    try{
+      const response = await apiGetWithoutToken(PATH_BARCODE.BARCODE);
+      // console.log("waw", response.data);
+      const barcode = response.data.data
+      setBarcodeNumber(barcode)
+    } catch(error) {
+      console.log("error");
+    }
+  }
 
   const patchNext = async invoiceId => {
     setLoading(!loading);
@@ -126,6 +140,7 @@ const ListArrival = props => {
 
   const handleNextOrder = invoiceId => {
     const getInvoice = props.invoices.find(invoice => invoice.id === invoiceId);
+    getBarcode();
     setInvoiceById(getInvoice);
     setRefInvoice(invoiceId);
     setVisibleConfirm(!visibleConfirm);
@@ -295,7 +310,7 @@ const ListArrival = props => {
           }
           description={""}
         >
-          <LabelIndonesia invoice={invoiceById} />
+          <LabelIndonesia invoice={invoiceById} barcodeNumber={barcodeNumber} isBarcode={true} />
         </ModalConfirmPrint>
       )}
     </React.Fragment>

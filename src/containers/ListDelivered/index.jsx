@@ -33,6 +33,7 @@ const ListDelivered = props => {
   const [refInvoice, setRefInvoice] = useState(null);
   const [invoiceById, setInvoiceById] = useState(null);
   const [barcodeNumber, setBarcodeNumber] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const updateList = async (update = false, action) => {
     try {
@@ -81,9 +82,11 @@ const ListDelivered = props => {
       subCode: value.reason,
       note: value.note
     };
+    setLoading(!loading)
     try {
       const response = await apiPostWithToken(`${PATH_ORDER.UNDO}`, request);
       if (response) {
+        setLoading(false)
         updateList(true, "UNDO");
       }
     } catch (error) {
@@ -144,7 +147,7 @@ const ListDelivered = props => {
   const actionUndo = () => {
     setVisibleUndo(!visibleUndo);
   };
-
+  
   const actionSubmitUndo = payload => {
     postUndo(payload);
   };
@@ -236,6 +239,7 @@ const ListDelivered = props => {
                           onClick={() => {
                             setRefInvoice(invoice.id);
                             actionUndo();
+                            setLoading(false);
                           }}
                         />
                         <ButtonTextIcon
@@ -291,6 +295,7 @@ const ListDelivered = props => {
         visible={visibleUndo}
         onSubmit={actionSubmitUndo}
         onCancel={actionUndo}
+        loading={loading}
         invoiceId={refInvoice}
         options={optionsUndo}
         title={strings.modal_undo_title}

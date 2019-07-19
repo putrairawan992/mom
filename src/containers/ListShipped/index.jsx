@@ -43,6 +43,7 @@ const ListShipped = props => {
   const [listLogActivity, setListLogActivity] = useState([]);
   const [listLogNote, setListLogNote] = useState([]);
   const [refInvoice, setRefInvoice] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const updateList = async (update = false, action) => {
     try {
@@ -69,9 +70,11 @@ const ListShipped = props => {
       subCode: value.reason,
       note: value.note
     };
+    setLoading(!loading);
     try {
       const response = await apiPostWithToken(`${PATH_ORDER.UNDO}`, request);
       if (response) {
+        setLoading(false);
         updateList(true, "UNDO");
       }
     } catch (error) {
@@ -241,6 +244,7 @@ const ListShipped = props => {
         visible={visibleUndo}
         onSubmit={actionSubmitUndo}
         onCancel={actionUndo}
+        loading={loading}
         invoiceId={refInvoice}
         options={optionsUndo}
         title={strings.modal_undo_title}

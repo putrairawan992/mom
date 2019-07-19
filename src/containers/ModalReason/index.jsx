@@ -13,6 +13,7 @@ const Modal = ({
   visible,
   onSubmit,
   onCancel,
+  loading,
   invoiceId,
   options,
   title,
@@ -134,6 +135,7 @@ const Modal = ({
                 <Button
                   htmlType="submit"
                   type="danger"
+                  loading={loading}
                   onClick={() => {
                     setRevertStatus(true);
                   }}
