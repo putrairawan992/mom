@@ -17,32 +17,47 @@ const ProductPrice = (props) => {
   useEffect(() => {
     const splitRate = exchangeRate.split(" ")
     const rate = splitRate[1]
-    let totalPriceBySea = ((Number(basePrice) + Number(domesticFee)) * Number(rate)) + Number(feeBySea) + Number(administration)
-    let totalPriceByAir = ((Number(basePrice) + Number(domesticFee)) * Number(rate)) + Number(feeByAir) + Number(administration)
-    let ceilPriceBySea = Math.ceil(totalPriceBySea/1000) * 1000
-    let ceilPriceByAir = Math.ceil(totalPriceByAir/1000) * 1000
+    let totalPriceBySea = ((convertNumber(basePrice) + convertNumber(domesticFee)) * Number(rate)) + convertNumber(feeBySea) + convertNumber(administration)
+    let totalPriceByAir = ((convertNumber(basePrice) + convertNumber(domesticFee)) * Number(rate)) + convertNumber(feeByAir) + convertNumber(administration)
+    let ceilPriceBySea = formatCurrency(Math.ceil(totalPriceBySea/1000) * 1000)
+    let ceilPriceByAir = formatCurrency(Math.ceil(totalPriceByAir/1000) * 1000)
     setPriceBySea(`Rp ${ceilPriceBySea}`)
     setPriceByAir(`Rp ${ceilPriceByAir}`)
-  },[basePrice,domesticFee,administration,feeBySea,feeByAir])
+  },[basePrice,domesticFee,administration,feeBySea,feeByAir,exchangeRate])
 
   useEffect(() => {
+    const getRate = async() => {
+      try {
+        const response = await apiGetWithoutToken(PATH_EXCHANGE.RATE)
+        const responseRate = response.data.data
+        const currencyFromChina = responseRate.reduce(rate => {
+          return rate.currencyFrom === 'CNY'
+        })
+        setExchangeRate(`Rp ${currencyFromChina.value}`)
+        props.setFieldValue('rate',currencyFromChina)
+      } catch (error) {
+        console.log(error.response)
+      }
+    }
     getRate()
   },[])
 
-  const getRate = async() => {
-    try {
-      const response = await apiGetWithoutToken(PATH_EXCHANGE.RATE)
-      const responseRate = response.data.data
-      const currencyFromChina = responseRate.reduce(rate => {
-        return rate.currencyFrom === 'CNY'
-      })
-      setExchangeRate(`Rp ${currencyFromChina.value}`)
-      props.setFieldValue('rate',currencyFromChina)
-    } catch (error) {
-      console.log(error)
-    }
+  const handleChange = (event,key,setState) => {
+    const toNumber = convertNumber(event.target.value)
+    let currency = toNumber.toLocaleString()
+    setState(`${currency}`)
+    props.setFieldValue(key,toNumber)
   }
 
+  const convertNumber = (string) =>{
+    const toNumber = Number(string.replace(/\D/g, ''));
+    return toNumber
+  }
+
+  const formatCurrency = (price) => {
+    let number = Number(price)
+    return number.toLocaleString()
+  }
 
   return(
     <Card className="card" title={<div className="card-title">Product Price</div>}>
@@ -55,13 +70,12 @@ const ProductPrice = (props) => {
             <Tag className="tag">Required</Tag>
           </Row>
         </Col>
-        <Col span={props.grid.priceRight}>
+        <Col span={props.grid.priceRight} className="col-height">
           <Input 
             onChange={e => {
-              setBasePrice(e.target.value)
-              props.setFieldValue("basePrice",e.target.value)
+              handleChange(e,'basePrice',setBasePrice)
             }}
-            type="number"
+            value={basePrice}
             onBlur={props.handleBlur}
             name="basePrice"
             size="large"
@@ -78,25 +92,25 @@ const ProductPrice = (props) => {
             }
         </Col>
       </Row>
-      <br/><br/>
+      <div className="separator"/>
       <Row type="flex" align="middle" justify="start">
         <Col md={props.grid.left}>
           <Row type="flex">
             <div className="card-content">
               Domestic Fee
             </div>
+            
             <Tag className="tag">Required</Tag>
           </Row>
         </Col>
-        <Col md={props.grid.priceRight}>
+        <Col md={props.grid.priceRight} className="col-height">
           <Input
             value={domesticFee}
             name="domesticFee"
-            type="number"
-            onBlur={props.handleBlur}
             onChange={e => {
-              setDomesticFee(e.target.value)
-              props.setFieldValue("domesticFee",e.target.value)}}
+              handleChange(e,'domesticFee',setDomesticFee)
+            }}
+            onBlur={props.handleBlur}
             size="large"
             prefix={<div style={{fontSize : "15px"}}>¥</div>}
             status={
@@ -106,12 +120,11 @@ const ProductPrice = (props) => {
           />
              {
               props.errors.domesticFee &&  props.touched.domesticFee ? 
-              (<div className="text-error-message">{props.errors.domesticFee }</div>) :
-              null
+              (<div className="text-error-message">{props.errors.domesticFee }</div>) : null
             }
         </Col>
       </Row>
-      <br/><br/>
+      <div className="separator"/>
       <Row type="flex">
         <Col md={props.grid.left}>
           <Row type ="flex">
@@ -133,16 +146,14 @@ const ProductPrice = (props) => {
             By Sea  
           </div>
         </Col>
-        <Col md={props.grid.priceRight}>
+        <Col md={props.grid.priceRight} className="col-height">
           <Input
-            prefix="Rp"
+            prefix={"Rp"}
             value={feeBySea}
-            type="number"
             name="feeBySea"
             onBlur={props.handleBlur}
             onChange={e => {
-              setFeeBySea(e.target.value)
-              props.setFieldValue('feeBySea',e.target.value)
+              handleChange(e,'feeBySea',setFeeBySea)
             }}
             size="large"
             status={
@@ -157,23 +168,21 @@ const ProductPrice = (props) => {
           }
         </Col>
       </Row>
-      <br/><br/>
+      <div className="separator"/>
       <Row type="flex" align="middle">
         <Col md={props.grid.left}>
           <div className="card-sub-second-content">
             By Air
           </div>
         </Col>
-        <Col md={props.grid.priceRight}>
+        <Col md={props.grid.priceRight} className="col-height">
           <Input
             prefix="Rp"
             value={feeByAir}
-            type="number"
             onBlur={props.handleBlur}
             name="feeByAir"
             onChange={e => {
-              setFeeByAir(e.target.value)
-              props.setFieldValue('feeByAir',e.target.value)
+              handleChange(e,'feeByAir',setFeeByAir)
             }}
             size="large"
             status={
@@ -188,7 +197,7 @@ const ProductPrice = (props) => {
           }
         </Col>
       </Row>
-      <br/>
+      <div className="separator"/>
       <Row>
         <Col md={11} offset={7}>
           <Checkbox >
@@ -198,27 +207,25 @@ const ProductPrice = (props) => {
           </Checkbox>
         </Col>
       </Row>
-      <br/><br/>
+      <div className="separator"/>
       <Row type="flex" align="middle">
         <Col md={props.grid.left}>
           <div className="card-content">
             Administration
           </div>
         </Col>
-        <Col md={props.grid.priceRight}>
+        <Col md={props.grid.priceRight} className="col-height">
           <Input
             prefix="Rp"
-            type="number" 
             value={administration}
             onChange={e => {
-              setAdministration(e.target.value)
-              props.setFieldValue('administration', e.target.value)
+              handleChange(e,'administration',setAdministration)
             }}
             size="large"
           />
         </Col>
       </Row>
-      <br/><br/>
+      <div className="separator"/>
       <Row type="flex" align="middle">
         <Col md={props.grid.left}>
           <div className="card-content">
@@ -245,7 +252,7 @@ const ProductPrice = (props) => {
           />
         </Col>
       </Row>
-      <br/><br/>
+      <div className="separator"/>
       <Row type="flex" align="middle">
         <Col md={props.grid.left}>
           <div className="card-content">
@@ -261,7 +268,7 @@ const ProductPrice = (props) => {
           />
         </Col>
       </Row>
-      <br/><br/>
+      <div className="separator"/>
       <Row type="flex" align="middle">
         <Col md={props.grid.left}>
           <div className="card-content">

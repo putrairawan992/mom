@@ -8,9 +8,7 @@ import TextArea from '../../components/TextArea';
 
 const ProductInfo = (props) => {
   const [allCategory,setAllCategory] = useState([])
-  const [selectedCategory, setSelectedCategory] = useState("")
-
- 
+  // const [selectedCategory, setSelectedCategory] = useState("")
 
   const converter = (response) => {
     response.forEach((respSub,index) => {
@@ -28,10 +26,8 @@ const ProductInfo = (props) => {
     return path.some(option => option.name.toLowerCase().indexOf(inputValue.toLowerCase()) > -1);
   }
 
-  const onChange = async(value,selected,setFieldValue) => {
+  const onChange = async(value,setFieldValue) => {
     setFieldValue("category",value)
-    const selectedValue = selected.map(option => option.name).join('/ ')
-    setSelectedCategory(selectedValue)
   }
 
   useEffect(() => {
@@ -41,7 +37,6 @@ const ProductInfo = (props) => {
         const arrResponseCategory = response.data.data
         const arrCategory = converter(arrResponseCategory)
         setAllCategory([...arrCategory])
-        console.log("category",arrCategory)
       } catch (error) {
         console.log(error)
       }
@@ -61,7 +56,7 @@ const ProductInfo = (props) => {
             Original product name from supplier.
           </div>
         </Col>
-        <Col md={props.grid.right}>
+        <Col md={props.grid.right} className="col-height">
           <Input
             name="productNameOriginal"
             onChange={props.handleChange}
@@ -79,7 +74,7 @@ const ProductInfo = (props) => {
           }
         </Col>
       </Row>
-      <br/><br/>
+      <br/>
       <Row type="flex" align="middle">
         <Col md={props.grid.left}>
           <Row type="flex" align="middle">
@@ -90,7 +85,7 @@ const ProductInfo = (props) => {
             Product name that will be seen by customers
           </div>
         </Col>
-        <Col md={props.grid.right}>
+        <Col md={props.grid.right} className="col-height">
           <Input
             name="productName"
             onChange={props.handleChange}
@@ -108,7 +103,7 @@ const ProductInfo = (props) => {
           }
         </Col>
       </Row>
-      <br/><br/>
+      <br/>
       <Row type="flex">
         <Col md={props.grid.left}>
           <div className="card-content">Product Description</div>
@@ -136,7 +131,7 @@ const ProductInfo = (props) => {
             <Tag className="tag">Required</Tag>
           </Row>
         </Col>
-        <Col md={props.grid.right}>
+        <Col md={props.grid.right} className="col-height">
           <Cascader
             options={allCategory}
             fieldNames={{label: 'name', value :'id'}}
@@ -144,7 +139,7 @@ const ProductInfo = (props) => {
             name="category"
             // onBlur={props.handleBlur}
             placeholder="Choose Category"
-            onChange={(value,selected)=>onChange(value,selected, props.setFieldValue)}
+            onChange={(value,selected)=>onChange(value, props.setFieldValue)}
             showSearch={{filter}}
             size="large"
             type={

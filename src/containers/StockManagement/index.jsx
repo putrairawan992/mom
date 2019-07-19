@@ -28,6 +28,7 @@ const StockManagement = (props) => {
             name="quantity"
             onChange={props.handleChange}
             onBlur={props.handleBlur}
+            type="number"
           />
         </Col>
       </Row>

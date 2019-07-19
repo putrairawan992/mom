@@ -4,7 +4,7 @@ import { apiPostWithToken } from '../../services/api'
 import {PATH_UPLOAD} from '../../services/path/upload'
 import propTypes from 'prop-types'
 import {Card, Row, Col, Tag} from 'antd';
-import {FieldArray} from 'formik'
+import {FieldArray} from 'formik';
 
 const UploadImages = (props) => {
   const [imageUrl, setImageUrl] = useState([])
@@ -14,6 +14,7 @@ const UploadImages = (props) => {
   const [count, setCount] = useState(0)
   const [statusFile, setStatusFile] = useState(false)
   const [statusSize, setStatusSize] = useState(false)
+  const [dimension, setDimension] = useState(false)
   
   useEffect(() => {
     const initImage = () => {
@@ -30,12 +31,29 @@ const UploadImages = (props) => {
       }
       setArrImage(arr)
     }
-    initImage()  
+    initImage()
+    console.log("tes")  
   },[])
+
+  
 
   useEffect(() => {
     props.getPayloadImage(arrImage)
   },[arrImage,disable])
+
+  const checkDimension = (file) => {
+    return new Promise(resolve => {
+      let _URL = window.URL || window.webkitURL;
+      var image = new Image();
+      image.src = _URL.createObjectURL(file)
+      image.onload = function(e ) {
+        let dimension = {}
+          dimension.width = image.naturalWidth
+          dimension.height = image.naturalHeight
+        resolve(dimension)   
+      };
+    })
+  }
 
   const beforeUpload = (file) => {
     const isPng = file.type === 'image/png'
@@ -43,19 +61,20 @@ const UploadImages = (props) => {
     const isJPG = file.type === 'image/jpg';
     const isLt2M = file.size <= 3145728;
     if( !isJPG && !isJpeg && !isPng ) {
-      setStatusFile(true)
-      setTimeout(() => {
-        setStatusFile(false)
-      },3000)
+      timeOut(setStatusFile, 5000)
       return false
     }
     if(!isLt2M){
-      setStatusSize(true)
-      setTimeout(() => {
-        setStatusSize(false)
-      },3000)
+      timeOut(setStatusSize, 5000)
       return false
-    }
+    }      
+  }
+
+  const timeOut = (setState, time) => {
+    setState(true)
+    setTimeout(() => {
+      setState(false)
+    }, time)
   }
 
   const changeDefault = (index) => {
@@ -71,14 +90,14 @@ const UploadImages = (props) => {
   }
 
   const pushImageToArray = (response,index,arrayHelpers) => {
-    arrayHelpers.push({largeUrl: response.large, mediumUrl: response.medium, smallUrl: response.small})
+    arrayHelpers.push({largeUrl: response.largeUrl, mediumUrl: response.mediumUrl, smallUrl: response.smallUrl})
     setArrImage(()=>(
       arrImage.map((image, idx)=>{
         if(idx === index){
           if(count === 0){
-            return {...image, largeUrl: response.large, mediumUrl: response.medium, smallUrl: response.small, isDefault: true}
+            return {...image, largeUrl: response.largeUrl, mediumUrl: response.mediumUrl, smallUrl: response.smallUrl, isDefault: true}
           }else{
-            return {...image, largeUrl: response.large, mediumUrl: response.medium, smallUrl: response.small}
+            return {...image, largeUrl: response.largeUrl, mediumUrl: response.mediumUrl, smallUrl: response.smallUrl}
           }
         }else{
           return {...image}
@@ -130,17 +149,26 @@ const UploadImages = (props) => {
   }
 
   const uploadImage = async ({onError, onSuccess,file},index) => {
+    console.log("ini file",file)
     try {
       var formData = new FormData();
       formData.append("file",file);
-      const response = await apiPostWithToken(PATH_UPLOAD.UPLOAD,formData);
-      onSuccess(response.data.data)
-      console.log("response",response.data.data)
+      const isDimension = await checkDimension(file)
+      if(isDimension.width > 450 && isDimension.height > 450){
+        const response = await apiPostWithToken(PATH_UPLOAD.UPLOAD,formData);
+        onSuccess(response.data.data)
+      }else{
+        timeOut(setDimension, 5000)
+        let loadingTemp = [...loading]
+        loadingTemp[index] = false
+        setLoading(loadingTemp)
+      }
     } catch (error) {
       onError(error)
       let loadingTemp = [...loading]
       loadingTemp[index] = false
       setLoading(loadingTemp)
+      console.log(error.response.data.message)
     }
   }
 
@@ -159,8 +187,6 @@ const UploadImages = (props) => {
   }
 
   const editImage = (index) => {
-    console.log("jalan gk ini",index)
-    console.log(disable[index])
     let statusDisable = [...disable]
     statusDisable[index] = false
     setDisable(statusDisable)
@@ -180,7 +206,7 @@ const UploadImages = (props) => {
             </div>
             <ul style={{margin: 0, padding: 0, listStyleType: "none"}}>
               <li>- Max Img Size 3 MB</li>
-              <li>- Min Frame Size 300px X 300px</li>
+              <li>- Min Frame Size 450px X 450px</li>
               <li>- Format jpg, jpeg, png</li>
             </ul>
           </Col>
@@ -223,6 +249,10 @@ const UploadImages = (props) => {
             {
               props.errors.listImages && props.touched.listImages ?
               <div className="text-error-message">{props.errors.listImages}</div> : null
+            }
+            {
+              dimension ?
+              (<div className="text-error-message">Min Frame Size 450 X 450</div>) : null
             }
           </Col>
         </Row>
