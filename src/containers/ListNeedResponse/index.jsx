@@ -120,7 +120,7 @@ const ListNeedResponse = props => {
                         <OrderVariant
                           variants={item.productSnapshot.informations}
                           quantity={item.productSnapshot.quantity}
-                          price={item.productSnapshot.price}
+                          price={item.productSnapshot.priceCny}
                           withPrice={true}
                         />
                       </div>
