@@ -40,7 +40,7 @@ const ListNeedPurchased = props => {
   const [listLogNote, setListLogNote] = useState([]);
   const [invoiceById, setInvoiceById] = useState(null);
   const [refInvoice, setRefInvoice] = useState(null);
-  const [loadingConfirm, setLoadingConfirm] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const updateList = async (update = false, action) => {
     try {
@@ -85,13 +85,13 @@ const ListNeedPurchased = props => {
   };
 
   const patchNext = async invoiceId => {
-    setLoadingConfirm(!loadingConfirm);
+    setLoading(!loading);
     try {
       const response = await apiPatchWithToken(
         `${PATH_ORDER.NEXT}/${invoiceId}`
       );
       if (response) {
-        setLoadingConfirm(false);
+        setLoading(false);
         updateList(true, "NEXT");
       }
     } catch (error) {
@@ -105,9 +105,11 @@ const ListNeedPurchased = props => {
       subCode: value.reason,
       note: value.note
     };
+    setLoading(!loading)
     try {
       const response = await apiPostWithToken(`${PATH_ORDER.UNDO}`, request);
       if (response) {
+        setLoading(false)
         updateList(true, "UNDO");
       }
     } catch (error) {
@@ -320,6 +322,7 @@ const ListNeedPurchased = props => {
                           label={strings.undo}
                           onClick={() => {
                             setRefInvoice(invoice.id);
+                            setLoading(false);
                             actionUndo();
                           }}
                         />
@@ -369,7 +372,7 @@ const ListNeedPurchased = props => {
       <ModalConfirm
         visible={visibleConfirm}
         value={refInvoice}
-        loading={loadingConfirm}
+        loading={loading}
         onOk={actionConfirm}
         onCancel={actionCancelConfirm}
         title={"Makes Sure that the product is already purchased."}
@@ -394,6 +397,7 @@ const ListNeedPurchased = props => {
         visible={visibleUndo}
         onSubmit={actionSubmitUndo}
         onCancel={actionUndo}
+        loading={loading}
         invoiceId={refInvoice}
         options={optionsUndo}
         title={strings.modal_undo_title}

@@ -90,9 +90,11 @@ const ListPickedUp = props => {
       subCode: value.reason,
       note: value.note
     };
+    setLoading(!loading);
     try {
       const response = await apiPostWithToken(`${PATH_ORDER.UNDO}`, request);
       if (response) {
+        setLoading(false);
         updateList(true, "UNDO");
       }
     } catch (error) {
@@ -161,6 +163,7 @@ const ListPickedUp = props => {
   };
 
   const actionSubmitUndo = payload => {
+    setLoading(!loading)
     postUndo(payload);
   };
 
@@ -246,6 +249,7 @@ const ListPickedUp = props => {
                           label={strings.undo}
                           onClick={() => {
                             setRefInvoice(invoice.id);
+                            setLoading(false);
                             actionUndo();
                           }}
                         />
@@ -306,6 +310,7 @@ const ListPickedUp = props => {
         visible={visibleUndo}
         onSubmit={actionSubmitUndo}
         onCancel={actionUndo}
+        loading={loading}
         invoiceId={refInvoice}
         options={optionsUndo}
         title={strings.modal_undo_title}
