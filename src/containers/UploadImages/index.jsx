@@ -149,6 +149,7 @@ const UploadImages = (props) => {
   }
 
   const uploadImage = async ({onError, onSuccess,file},index) => {
+    console.log("ini file",file)
     try {
       var formData = new FormData();
       formData.append("file",file);
