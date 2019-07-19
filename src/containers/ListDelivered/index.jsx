@@ -44,8 +44,7 @@ const ListDelivered = props => {
           contentNotification(
             "Order Undo.",
             "The Order is being undo, you can see the history in activity log",
-            "info-circle",
-            "secondary"
+            "info"
           );
         } else if (action === "NEXT") {
           await props.onLoad();
@@ -55,8 +54,7 @@ const ListDelivered = props => {
           contentNotification(
             "Admin note created.",
             "Admin note has created, you can see full list by clicking the 'Show Admin Notes' button.",
-            "check-circle",
-            "primary"
+            "success"
           );
         }
       }

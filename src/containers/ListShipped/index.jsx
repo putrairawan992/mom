@@ -19,7 +19,7 @@ import "../../sass/style.sass";
 import "./style.sass";
 
 const StatusOrder = ({ status }) => {
-  return status === "SHP" ? (
+  return status === ("SHP" || "RTS" || "PRC" || "NPR" || "NRP")? (
     <React.Fragment>
       <span className="dot dot__color-shipped" />
       <span className="status-order-purchased">
@@ -54,8 +54,7 @@ const ListShipped = props => {
           contentNotification(
             "Order Undo.",
             "The Order is being undo, you can see the history in activity log",
-            "info-circle",
-            "secondary"
+            "info"
           );
         }
       }
@@ -203,7 +202,7 @@ const ListShipped = props => {
                     </Col>
                     <Col offset={3} md={9}>
                       <div className="wrap-button-text-icon">
-                      {invoice.status === 'SHP' &&
+                      {invoice.status === ("SHP" || "RTS" || "PRC" || "NPR" || "NRP") &&
                         <ButtonTextIcon
                           icon="rollback"
                           label={strings.undo}

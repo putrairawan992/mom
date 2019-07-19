@@ -51,16 +51,14 @@ const ListReadyPickUp = props => {
           contentNotification(
             "Order Undo.",
             "The Order is being undo, you can see the history in activity log",
-            "info-circle",
-            "secondary"
+            "info"
           );
         } else if (action === "NEXT") {
           await props.onLoad();
           contentNotification(
             "Courier has picked up the package.",
             "The package is already picked up by courier to be delivered to customer.",
-            "check-circle",
-            "primary"
+            "success"
           );
         } else {
           actionAddNotes();
@@ -68,8 +66,7 @@ const ListReadyPickUp = props => {
           contentNotification(
             "Admin note created.",
             "Admin note has created, you can see full list by clicking the 'Show Admin Notes' button.",
-            "check-circle",
-            "primary"
+            "sucess"
           );
         }
       }

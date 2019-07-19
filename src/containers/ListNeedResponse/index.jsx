@@ -23,8 +23,7 @@ const ListNeedResponse = props => {
         contentNotification(
           "New Order has moved to the next process.",
           "Continue responding the order you have selected in Need Purchased Tabs.",
-          "check-circle",
-          "primary"
+          "success"
         );
       }
     } catch (error) {

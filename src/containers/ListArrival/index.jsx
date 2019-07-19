@@ -50,8 +50,7 @@ const ListArrival = props => {
           contentNotification(
             "Admin note created.",
             "Admin note has created, you can see full list by clicking the 'Show Admin Notes' button.",
-            "check-circle",
-            "primary"
+            "success"
           );
         }
       }
