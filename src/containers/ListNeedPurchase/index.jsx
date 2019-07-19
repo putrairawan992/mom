@@ -51,8 +51,7 @@ const ListNeedPurchased = props => {
           contentNotification(
             "Order Undo.",
             "The Order is being undo, you can see the history in activity log",
-            "info-circle",
-            "secondary"
+            "info"
           );
         } else if (action === "CANCEL") {
           actionCancel();
@@ -60,8 +59,7 @@ const ListNeedPurchased = props => {
           contentNotification(
             "Order Canceled.",
             "The Order is being canceled, you can see the history in activity log or canceled order tab",
-            "info-circle",
-            "secondary"
+            "info"
           );
         } else if (action === "NEXT") {
           setVisibleConfirm(!visibleConfirm);
@@ -69,8 +67,7 @@ const ListNeedPurchased = props => {
           contentNotification(
             "New Order has moved to the next process.",
             "Continue responding the order you have selected in Need Purchased Tabs.",
-            "check-circle",
-            "primary"
+            "success"
           );
         } else {
           actionAddNotes();
@@ -78,8 +75,7 @@ const ListNeedPurchased = props => {
           contentNotification(
             "Admin note created.",
             "Admin note has created, you can see full list by clicking the 'Show Admin Notes' button.",
-            "check-circle",
-            "primary"
+            "success"
           );
         }
       }

@@ -49,16 +49,14 @@ const ListReadyToShip = props => {
           contentNotification(
             "Order Undo.",
             "The Order is being undo, you can see the history in activity log",
-            "info-circle",
-            "secondary"
+            "info"
           );
         } else if (action === "NEXT") {
           await props.onLoad();
           contentNotification(
             "The package is shipped.",
             "The order has been moved to the shipped tab, and the package is already on it's way to indonesia.",
-            "check-circle",
-            "primary"
+            "success"
           );
         } else {
           actionAddNotes();
@@ -66,8 +64,7 @@ const ListReadyToShip = props => {
           contentNotification(
             "Admin note created.",
             "Admin note has created, you can see full list by clicking the 'Show Admin Notes' button.",
-            "check-circle",
-            "primary"
+            "success"
           );
         }
       }
@@ -187,8 +184,6 @@ const ListReadyToShip = props => {
   const actionShowLogNoteAdmin = () => {
     setVisibleLogNoteAdmin(!visibleLogNoteAdmin);
   };
-
-  console.log("log", props.invoices);
   
   return (
     <React.Fragment>
