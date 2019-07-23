@@ -5,6 +5,7 @@ import LabelContent from "../LabelContent";
 
 class LabelChina extends React.Component {
   variants = variants => {
+    console.log(variants);
     return variants.map(variant => `${variant.value}`).join(", ");
   };
 
