@@ -134,14 +134,16 @@ const ListNeedPurchased = props => {
   };
 
   const postNote = async value => {
+    setLoading(!loading);
     const request = {
-      id: value.invoiceId,
+      invoiceId: value.invoiceId,
       note: value.note
     };
     try {
       const response = await apiPostWithToken(`${PATH_ORDER.NOTE}`, request);
       if (response) {
         updateList(true, "NOTE");
+        setLoading(false);
       }
     } catch (error) {
       console.log(error);
@@ -389,6 +391,8 @@ const ListNeedPurchased = props => {
       )}
       <ModalAddNote
         visible={visibleAddNote}
+        title={"Need Purchase"}
+        loading={loading}
         onSubmit={actionSubmitAddNote}
         onCancel={actionAddNotes}
         invoiceId={refInvoice}
