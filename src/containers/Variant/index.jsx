@@ -36,6 +36,8 @@ const Variant = (props) => {
   const [statusFile, setStatusFile] = useState([])
   const [statusSize, setStatusSize] = useState([])
   const [dimension, setDimension] = useState([])
+  const [loadingEdit, setLoadingEdit] = useState([])
+  const [imageUrl, setImageUrl] = useState([])
 
   const beforeUpload = (file,index) =>{
     const isPng = file.type === 'image/png'
@@ -70,7 +72,9 @@ const Variant = (props) => {
   }
 
   const handleChange = (info,setFieldValue,key,index) => {
+    console.log("handle",info.file)
     let tempLoading = [...loading]
+    let imageUrlTemp = [...imageUrl]
     if (info.file.status === 'uploading') {
       tempLoading[index] = true
       setLoading(tempLoading)
@@ -79,6 +83,8 @@ const Variant = (props) => {
     if (info.file.status === 'done' ) {
         getBase64(info.file.originFileObj, function(responseImageUrl) {
           tempLoading[index] = false
+          imageUrlTemp[index]=responseImageUrl;
+          setImageUrl(imageUrlTemp);
           setLoading(tempLoading);
           let objImage = {}
             objImage.largeUrl = info.file.response.largeUrl
@@ -94,14 +100,22 @@ const Variant = (props) => {
   };
 
   const uploadImage = async ({onError, onSuccess,file},index) => {
+    console.log("jalan gk nih ",index)
+    let tempLoadingEdit = [...loadingEdit]
+    tempLoadingEdit[index] = true
+    setLoadingEdit(tempLoadingEdit)
     try {
       var formData = new FormData();
       formData.append("file",file);
       const isDimension = await checkDimension(file)
       if(isDimension.width > 450 && isDimension.height){
         const response = await apiPostWithToken(PATH_UPLOAD.UPLOAD,formData);
+        tempLoadingEdit[index] = false
+        setLoadingEdit(tempLoadingEdit)
         onSuccess(response.data.data)
       }else{
+        tempLoadingEdit[index] = false
+        setLoadingEdit(tempLoadingEdit)
         timeOut(setDimension,dimension, 5000, index)
         let loadingTemp = [...loading]
         loadingTemp[index] = false
@@ -136,21 +150,17 @@ const Variant = (props) => {
     setValue(tempValue)
   }
 
-  const editImage = () => {
-    console.log('edit')
-    
+  const editImage = (index) => {
+    document.getElementsByClassName("mp-upload-variant")[index].getElementsByTagName("input")[0].click()
   }
 
   const remove = (i) => {
     props.setFieldValue(`variants.${props.index}.variantItems.${i}.image`, "")
     let tempDisable = [...status]
-    tempDisable[i] = true
+    tempDisable[i] = false
     setStatus(tempDisable)
   }
 
-
-
-  // console.log("ini error",props)
   return(
     <Card title={<VariantType handleChange={props.handleChange} setFieldValue={props.setFieldValue} handleBlur={props.handleBlur} cancelVariant={props.cancelVariant} index={props.index}/>}>
       <FieldArray
@@ -165,6 +175,7 @@ const Variant = (props) => {
                     <Upload
                       type="no-style"
                       loading={loading[i]}
+                      className="mp-upload-variant"
                       imageUrl={
                         props.values &&
                         props.values[props.index] &&
@@ -174,6 +185,7 @@ const Variant = (props) => {
                         typeof props.values[props.index].variantItems[i].image.smallUrl === "string"
                         ? props.values[props.index].variantItems[i].image.smallUrl : ""
                       }
+                      // imageUrl={imageUrl[i]}
                       disabled={status[i]}
                       name={`variants.${props.index}.variantItems.${i}.image`}
                       customRequest={({onError, onSuccess,file}) => uploadImage({onError, onSuccess,file},i)}
@@ -182,6 +194,7 @@ const Variant = (props) => {
                       remove={remove}
                       index={i}
                       beforeUpload={(file) => beforeUpload(file,i)}
+                      loadingEdit={loadingEdit[i]}
                     />
                       {
                         statusFile[i] ? 
@@ -257,7 +270,7 @@ const Variant = (props) => {
         )}
       />
       <br/><br/>
-      <Button width="full"  onClick={() => props.addVariantItems(props.errors)} type="secondary">Add Variant Name</Button>
+      <Button width="full"  onClick={() => props.addVariantItems(props.errors,props.index)} type="secondary">Add Variant Name</Button>
     </Card>
   )
 }

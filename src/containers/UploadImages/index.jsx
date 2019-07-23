@@ -15,6 +15,7 @@ const UploadImages = (props) => {
   const [statusFile, setStatusFile] = useState(false)
   const [statusSize, setStatusSize] = useState(false)
   const [dimension, setDimension] = useState(false)
+  const [loadingEdit, setLoadingEdit] = useState([])
   
   useEffect(() => {
     const initImage = () => {
@@ -149,7 +150,9 @@ const UploadImages = (props) => {
   }
 
   const uploadImage = async ({onError, onSuccess,file},index) => {
-    console.log("ini file",file)
+    let tempLoadingEdit = [...loadingEdit]
+    tempLoadingEdit[index] = true
+    setLoadingEdit(tempLoadingEdit)
     try {
       var formData = new FormData();
       formData.append("file",file);
@@ -157,18 +160,23 @@ const UploadImages = (props) => {
       if(isDimension.width > 450 && isDimension.height > 450){
         const response = await apiPostWithToken(PATH_UPLOAD.UPLOAD,formData);
         onSuccess(response.data.data)
+        tempLoadingEdit[index] = false
+        setLoadingEdit(tempLoadingEdit)
       }else{
+        tempLoadingEdit[index] = false
+        setLoadingEdit(tempLoadingEdit)
         timeOut(setDimension, 5000)
         let loadingTemp = [...loading]
         loadingTemp[index] = false
         setLoading(loadingTemp)
+        
       }
     } catch (error) {
       onError(error)
       let loadingTemp = [...loading]
       loadingTemp[index] = false
       setLoading(loadingTemp)
-      console.log(error.response.data.message)
+      console.log(error.response)
     }
   }
 
@@ -187,9 +195,10 @@ const UploadImages = (props) => {
   }
 
   const editImage = (index) => {
-    let statusDisable = [...disable]
-    statusDisable[index] = false
-    setDisable(statusDisable)
+    document.getElementsByClassName("upload")[index].getElementsByTagName("input")[0].click()
+    // let tempLoading = [...loadingEdit]
+    // tempLoading[index] = true
+    // setLoadingEdit(tempLoading)
   }
   
   return (
@@ -219,6 +228,7 @@ const UploadImages = (props) => {
                     return (
                       <Upload
                         imageUrl={imageUrl[index]}
+                       
                         onBlur={props.handleBlur}
                         name={"images"}
                         key={index}
@@ -232,6 +242,7 @@ const UploadImages = (props) => {
                         index={index}
                         beforeUpload={beforeUpload}
                         editImage={editImage}
+                        loadingEdit={loadingEdit[index]}
                     />
                     )
                   })

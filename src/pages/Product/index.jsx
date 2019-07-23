@@ -8,7 +8,7 @@ import * as Yup from 'yup';
 import ProductPrice from '../../containers/ProductPrice';
 import ProductInfo from '../../containers/ProductInfo';
 import Supplier from '../../containers/AllSupplier';
-import {message} from 'antd';
+import {message, notification} from 'antd';
 import Measurement from '../../containers/Measurement';
 import StockManagement from '../../containers/StockManagement';
 import {apiPostWithToken} from '../../services/api'
@@ -22,19 +22,19 @@ const schema = Yup.object().shape({
       name: Yup.string().required('You have to fill the variant information before creating product.')
     }))
   })),
-  supplier: Yup.string().required('Supplier is required').nullable(),
-  productNameOriginal: Yup.string().required('Product name is required'),
-  productName:  Yup.string().required('Product name is required'),
-  category: Yup.string().required('Category is required'),
-  basePrice: Yup.string().required('Base price is required.'),
-  domesticFee: Yup.string().required('Domestic fee price is required.'),
-  feeBySea: Yup.string().required('Shipment fee by sea is required.'),
-  feeByAir: Yup.string().required('Shipment fee by air is required'),
-  listImages:Yup.array().required("You have to upload at least one image to create product."),
-  width: Yup.string().required(),
-  length: Yup.string().required(),
-  height: Yup.string().required(),
-  actualWeight: Yup.string().required('Actual Weight is required')
+  // supplier: Yup.string().required('Supplier is required').nullable(),
+  // productNameOriginal: Yup.string().required('Product name is required'),
+  // productName:  Yup.string().required('Product name is required'),
+  // category: Yup.string().required('Category is required'),
+  // basePrice: Yup.string().required('Base price is required.'),
+  // domesticFee: Yup.string().required('Domestic fee price is required.'),
+  // feeBySea: Yup.string().required('Shipment fee by sea is required.'),
+  // feeByAir: Yup.string().required('Shipment fee by air is required'),
+  // listImages:Yup.array().required("You have to upload at least one image to create product."),
+  // width: Yup.string().required(),
+  // length: Yup.string().required(),
+  // height: Yup.string().required(),
+  // actualWeight: Yup.string().required('Actual Weight is required')
 });
 
 const Product = () => {
@@ -49,10 +49,10 @@ const Product = () => {
     }]
   })
   const [statusVariant, setStatusVariant] = useState(false)
-  const [stringVariantType] = [{
+  const stringVariantType = {
     name : "",
     image: {}
-  }]
+  }
   const grid = {
     left : 7,
     right: 17,
@@ -77,11 +77,15 @@ const Product = () => {
     }
   }
 
-  const addVariantItems = (errors) => {
+  const addVariantItems = (errors,i) => {
     if(!errors.variants){
       const arrTemp = [...totalVariants]
-      const tempVariantItems = arrTemp.map(item => {
-        return {...item, variantItems : [...item.variantItems, stringVariantType]}
+      const tempVariantItems = arrTemp.map((item, index) => {
+        if(i === index){
+          return {...item, variantItems : [...item.variantItems, stringVariantType]}
+        }else{
+          return {...item}
+        }
       })
       setTotalVariants(tempVariantItems)
     }
@@ -102,7 +106,6 @@ const Product = () => {
       }
     })
     setTotalVariants(arrTemp)
-    // console.log(values,"===", indexType)
   }
 
   const getPayloadImage = (dataImage) => {
@@ -127,7 +130,6 @@ const Product = () => {
       measurement.dimension = dimension
     let category = {}
       category.id = values.category[values.category.length -1]
-      // category.id = "a0413da0-2df5-4239-8f55-abf87a5ef8d2"
     let information = {}
       information.name = values.productName
       information.nameChinese = values.productNameOriginal
@@ -141,7 +143,11 @@ const Product = () => {
       shipmentFee.air = values.feeByAir
       shipmentFee.sea = values.feeBySea
     let fee = {}
-      fee.administration = values.administration
+      if(values.administration === ""){
+        fee.administration = 0
+      }else{
+        fee.administration = values.administration
+      }
       fee.domestic = values.domesticFee
       fee.shipmentFee = shipmentFee
     let price = {}
@@ -164,14 +170,25 @@ const Product = () => {
     //TODO fungsi post product
       try {
         const request = await apiPostWithToken(PATH_PRODUCT.CREATE, allDataProduct)
-        console.log(request)
         message.success(request.data.code)
-        // message.success("success")
       } catch (error) {
-        message.error("error")
-        console.log(error)
+        console.log(error.response)
+        openNotificationWithIcon('error', error.response)
       }
   }
+
+  const openNotificationWithIcon = (type,error) => {
+    notification[type]({
+      message: error.data.error,
+      duration: 0,
+      description:
+        `status: ${error.data.status} \xA0
+        ${error.data.message}
+        `,
+    });
+  };
+  
+  
 
   return (
     <div className="containerProduct">
