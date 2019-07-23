@@ -2,15 +2,10 @@ import React from "react";
 import PropTypes from "prop-types";
 import { currencyYuan } from "../../helpers/currency";
 import "./style.sass";
+import { variantTemplate } from "../../helpers/variantTemplate";
 
 const OrderVariant = ({ variants, quantity, price, withPrice }) => {
-  const names = variants.map((variant, index, arr) => {
-    if (index % 2 === 0) return `${variant.value} : `;
-    else {
-      if (arr.length - 1 <= index) return `${variant.value}`;
-      else return `${variant.value}, `;
-    }
-  });
+  const names = variantTemplate(variants);
   return (
     <table border={1} className="table-container">
       <tbody>

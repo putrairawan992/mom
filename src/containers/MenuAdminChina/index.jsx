@@ -11,6 +11,25 @@ const MenuAdminChina = props => {
     changeMenu(3);
   }, []);
 
+  const menus = [
+    {
+      icon: "bar-chart",
+      name: strings.dashboard
+    },
+    {
+      icon: "shop",
+      name: strings.product
+    },
+    {
+      icon: "shopping-cart",
+      name: strings.order
+    },
+    {
+      icon: "shop",
+      name: "list product"
+    }
+  ];
+
   const changeMenu = menu => {
     switch (menu) {
       case 1:
@@ -22,6 +41,9 @@ const MenuAdminChina = props => {
       case 3:
         props.onChange(<OrderChina />);
         break;
+      case 4:
+        props.onChange(<OrderChina />);
+        break;
       default:
         props.onChange(<OrderChina />);
     }
@@ -29,24 +51,17 @@ const MenuAdminChina = props => {
 
   return (
     <Menu theme="light" mode="inline" defaultSelectedKeys={["3"]}>
-      <Menu.Item key="1" onClick={() => changeMenu(1)}>
-        <div className="menu-sidebar">
-          <Icon type="bar-chart" />
-          <span className="nav-text">{strings.dashboard}</span>
-        </div>
-      </Menu.Item>
-      <Menu.Item key="2" onClick={() => changeMenu(2)}>
-        <div className="menu-sidebar">
-          <Icon type="shop" />
-          <span className="nav-text">{strings.product}</span>
-        </div>
-      </Menu.Item>
-      <Menu.Item key="3" onClick={() => changeMenu(3)}>
-        <div className="menu-sidebar">
-          <Icon type="shopping-cart" />
-          <span className="nav-text">{strings.order}</span>
-        </div>
-      </Menu.Item>
+      {menus.map((menu, idx) => {
+        const menuIndex = idx + 1;
+        return (
+          <Menu.Item key={menuIndex} onClick={() => changeMenu(menuIndex)}>
+            <div className="menu-sidebar">
+              <Icon type={menu.icon} />
+              <span className="nav-text">{menu.name}</span>
+            </div>
+          </Menu.Item>
+        );
+      })}
     </Menu>
   );
 };
