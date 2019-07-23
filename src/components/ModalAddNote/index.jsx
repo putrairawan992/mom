@@ -14,11 +14,11 @@ const resetForm = values => {
   values.note = "";
 };
 
-const ModalAddNote = ({ visible, onSubmit, onCancel, loading, invoiceId }) => {
+const ModalAddNote = ({ visible, onSubmit, onCancel, loading, title, invoiceId }) => {
   return (
     <Modal
       visible={visible}
-      title={<span className="title-notes">[ Need Purchase] Note</span>}
+      title={<span className="title-notes">[ {title}] Note</span>}
       onOk={onSubmit}
       onCancel={onCancel}
       footer={null}
@@ -75,6 +75,7 @@ const ModalAddNote = ({ visible, onSubmit, onCancel, loading, invoiceId }) => {
                 <Button
                   htmlType="submit"
                   type="primary"
+                  loading={loading}
                   size="large"
                   className="button-primary"
                 >
