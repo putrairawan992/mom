@@ -2,7 +2,7 @@ import React, { useState, useEffect} from 'react';
 import UploadImages from '../../containers/UploadImages';
 import Variants from '../../containers/Variants';
 import { Formik } from 'formik';
-import { Form } from 'antd';
+import { Form, Input } from 'antd';
 import Button from '../../components/Button';
 import * as Yup from 'yup';
 import ProductPrice from '../../containers/ProductPrice';
@@ -295,6 +295,7 @@ const FormProduct = (props) => {
           }) => (
             <Form onSubmit={handleSubmit}>
             <Form.Item>
+              <Input/>
             </Form.Item>
             <Form.Item>
               <Supplier
