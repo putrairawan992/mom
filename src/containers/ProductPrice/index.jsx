@@ -3,6 +3,7 @@ import {Card, Row, Col, Tag, Checkbox, Icon} from 'antd';
 import Input from '../../components/Input';
 import {apiGetWithoutToken} from '../../services/api';
 import {PATH_EXCHANGE} from '../../services/path/rate'
+import strings from '../../localization';
 
 const ProductPrice = (props) => {
   const [basePrice, setBasePrice] = useState("")
@@ -60,14 +61,14 @@ const ProductPrice = (props) => {
   }
 
   return(
-    <Card className="card" title={<div className="card-title">Product Price</div>}>
+    <Card className="card" title={<div className="card-title">{strings.product_price}</div>}>
       <Row type="flex" align="middle">
         <Col span={props.grid.left}>
           <Row type="flex">
             <div className="card-content">
-              Base Price
+              {strings.base_price}
             </div>
-            <Tag className="tag">Required</Tag>
+            <Tag className="tag">{strings.required}</Tag>
           </Row>
         </Col>
         <Col span={props.grid.priceRight} className="col-height">
@@ -97,10 +98,10 @@ const ProductPrice = (props) => {
         <Col md={props.grid.left}>
           <Row type="flex">
             <div className="card-content">
-              Domestic Fee
+              {strings.domestic_fee}
             </div>
             
-            <Tag className="tag">Required</Tag>
+            <Tag className="tag">{strings.required}</Tag>
           </Row>
         </Col>
         <Col md={props.grid.priceRight} className="col-height">
@@ -129,21 +130,21 @@ const ProductPrice = (props) => {
         <Col md={props.grid.left}>
           <Row type ="flex">
             <div className="card-content">
-              Shipment Fee
+              {strings.shipment_fee}
             </div>
-            <Tag className="tag">Required</Tag>
+            <Tag className="tag">{strings.required}</Tag>
           </Row>
         </Col>
         <Col md={15}>
           <div className="card-sub-content" style={{width: "100%"}}>
-            <p>Delivery fee (BR) from China to Indonesia</p>
+            <p>{strings.delivery_fee_quote}</p>
           </div>
         </Col>
       </Row>
       <Row type="flex" align="middle">
         <Col md={props.grid.left}>
           <div className="card-sub-second-content">
-            By Sea  
+            {strings.by_sea}  
           </div>
         </Col>
         <Col md={props.grid.priceRight} className="col-height">
@@ -172,7 +173,7 @@ const ProductPrice = (props) => {
       <Row type="flex" align="middle">
         <Col md={props.grid.left}>
           <div className="card-sub-second-content">
-            By Air
+            {strings.by_air}
           </div>
         </Col>
         <Col md={props.grid.priceRight} className="col-height">
@@ -202,7 +203,7 @@ const ProductPrice = (props) => {
         <Col md={11} offset={7}>
           <Checkbox >
             <span className="text-safety-orange">
-              Shipment Price Refrences <Icon fill="red" type="info-circle"/>
+              {strings.shipment_price_reference} <Icon fill="red" type="info-circle"/>
             </span>
           </Checkbox>
         </Col>
@@ -211,7 +212,7 @@ const ProductPrice = (props) => {
       <Row type="flex" align="middle">
         <Col md={props.grid.left}>
           <div className="card-content">
-            Administration
+            {strings.administration}
           </div>
         </Col>
         <Col md={props.grid.priceRight} className="col-height">
@@ -229,7 +230,7 @@ const ProductPrice = (props) => {
       <Row type="flex" align="middle">
         <Col md={props.grid.left}>
           <div className="card-content">
-            Exchange Rate
+            {strings.exchange_rate}
           </div>
         </Col>
         <Col md={3}>
@@ -256,7 +257,7 @@ const ProductPrice = (props) => {
       <Row type="flex" align="middle">
         <Col md={props.grid.left}>
           <div className="card-content">
-            Price By Sea
+            {strings.price_by_sea}
           </div>
         </Col>
         <Col md={props.grid.priceRight}>
@@ -272,7 +273,7 @@ const ProductPrice = (props) => {
       <Row type="flex" align="middle">
         <Col md={props.grid.left}>
           <div className="card-content">
-          Price By Air
+            {strings.price_by_air}
           </div>
         </Col>
         <Col md={props.grid.priceRight}>

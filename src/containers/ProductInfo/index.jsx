@@ -5,11 +5,14 @@ import {PATH_CATEGORY} from '../../services/path/category';
 import {apiGetWithoutToken} from '../../services/api';
 import Input from '../../components/Input';
 import TextArea from '../../components/TextArea';
+import strings from '../../localization'
 
 const ProductInfo = (props) => {
   const [allCategory,setAllCategory] = useState([])
-  // const [selectedCategory, setSelectedCategory] = useState("")
-
+  const [productNameOriginal, setProductNameOriginal] = useState("")
+  const [productName, setProductName] = useState("")
+  const [description, setDescription] = useState("")
+  const [category, setCategory] = useState([])
   const converter = (response) => {
     response.forEach((respSub,index) => {
       if(respSub.categorySubResponses){
@@ -21,18 +24,29 @@ const ProductInfo = (props) => {
     })
     return response
   }
-
+  
   const filter = (inputValue, path) => {
     return path.some(option => option.name.toLowerCase().indexOf(inputValue.toLowerCase()) > -1);
   }
 
   const onChange = async(value,setFieldValue) => {
     setFieldValue("category",value)
+    const changeValue = value.map((val) => {
+      return [...category, val]
+    })
+    setCategory(value)
   }
 
   useEffect(() => {
     const getAllCategory = async() =>{
       try {
+        if(props.dataProduct){
+          const dataProductInformation = props.dataProduct.information
+          setProductNameOriginal(dataProductInformation.nameChinese)
+          setProductName(dataProductInformation.name)
+          setDescription(dataProductInformation.description)
+          setCategory([...category, dataProductInformation.category.id])
+        }
         const response = await apiGetWithoutToken(PATH_CATEGORY.ALL_CATEGORY)
         const arrResponseCategory = response.data.data
         const arrCategory = converter(arrResponseCategory)
@@ -44,22 +58,29 @@ const ProductInfo = (props) => {
     getAllCategory()
   },[])
 
+  const handleChange = (event,key,setState) => {
+    setState(event.target.value)
+    props.setFieldValue(key,event.target.value)
+  }
+
   return(
-    <Card className="card" title={<div className="card-title">Product Information</div>}>
+    <Card className="card" title={<div className="card-title">{strings.product_information}</div>}>
       <Row type="flex" align="middle">
         <Col md={props.grid.left}>
           <Row type="flex" align="middle">
-            <div className="card-content">Product Name (CNY)</div>
-            <Tag className="tag">Required</Tag>
+            <div className="card-content">{strings.product_name_cny}</div>
+            <Tag className="tag">{strings.required}</Tag>
           </Row>
-          <div className="card-sub-content">
-            Original product name from supplier.
-          </div>
+          <div className="card-sub-content">{strings.product_cny_quote}</div>
         </Col>
         <Col md={props.grid.right} className="col-height">
           <Input
             name="productNameOriginal"
-            onChange={props.handleChange}
+            value={productNameOriginal}
+            onChange={(e) => {
+              handleChange(e,'productNameOriginal',setProductNameOriginal)
+              
+            }}
             onBlur={props.handleBlur}
             size="large"
             status={
@@ -78,18 +99,22 @@ const ProductInfo = (props) => {
       <Row type="flex" align="middle">
         <Col md={props.grid.left}>
           <Row type="flex" align="middle">
-            <div className="card-content">Product Name</div>
-            <Tag className="tag">Required</Tag>
+            <div className="card-content">{strings.product_name}</div>
+            <Tag className="tag">{strings.required}</Tag>
           </Row>
           <div className="card-sub-content">
-            Product name that will be seen by customers
+            {strings.product_name_quote}
           </div>
         </Col>
         <Col md={props.grid.right} className="col-height">
           <Input
             name="productName"
-            onChange={props.handleChange}
+            // onChange={props.handleChange}
+            onChange={
+              (e) =>handleChange(e,'productName',setProductName)
+            }
             onBlur={props.handleBlur}
+            value={productName}
             size="large"
             status={
               props.errors.productName && props.touched.productName ? 
@@ -106,20 +131,22 @@ const ProductInfo = (props) => {
       <br/>
       <Row type="flex">
         <Col md={props.grid.left}>
-          <div className="card-content">Product Description</div>
+          <div className="card-content">{strings.product_description}</div>
           <div className="card-sub-content">
-            Product Descrption helps customer
-            understanding the product, it can contain of what material that used
-            or anything that related to the product
+            {strings.product_description_quote}
           </div>
         </Col>
         <Col md={props.grid.right}>
           <TextArea
             name="description"
             autosize={{ minRows: 6, maxRows: 6}}
-            onChange={props.handleChange}
+            // onChange={props.handleChange}
             maxLength={2000}
-            value={props.values.description}
+            value={description}
+            // value={props.values.description}
+            onChange={
+              (e) => handleChange(e,'description',setDescription)
+            }
           />
         </Col>
       </Row>
@@ -127,8 +154,8 @@ const ProductInfo = (props) => {
       <Row type="flex" align="middle">
         <Col md={props.grid.left}>
           <Row type="flex" align="middle">
-            <div className="card-content">Category</div>
-            <Tag className="tag">Required</Tag>
+            <div className="card-content">{strings.category}</div>
+            <Tag className="tag">{strings.required}</Tag>
           </Row>
         </Col>
         <Col md={props.grid.right} className="col-height">
@@ -138,6 +165,7 @@ const ProductInfo = (props) => {
             expandTrigger="hover"
             name="category"
             // onBlur={props.handleBlur}
+            value ={category}
             placeholder="Choose Category"
             onChange={(value,selected)=>onChange(value, props.setFieldValue)}
             showSearch={{filter}}

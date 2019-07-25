@@ -5,7 +5,6 @@ import {PATH_UPLOAD} from '../../services/path/upload'
 import propTypes from 'prop-types'
 import {Card, Row, Col, Tag} from 'antd';
 import {FieldArray} from 'formik';
-import strings from '../../localization'
 
 const UploadImages = (props) => {
   const [imageUrl, setImageUrl] = useState([])
@@ -36,38 +35,13 @@ const UploadImages = (props) => {
         obj.count = 0
         arr.push(obj)
       }
-      if(props.dataProduct){
-        const dataImages = props.dataProduct.images
-        const injectArrImage = arr.map((image,index) => {
-          if(dataImages[index]){
-            return {...image , 
-              largeUrl : dataImages[index].largeUrl,
-              mediumUrl : dataImages[index].mediumUrl,
-              smallUrl: dataImages[index].smallUrl,
-              isDefault: dataImages[index].isDefault
-            }
-          }else{
-            return {...image}
-          }
-        })
-        setArrImage(injectArrImage)
-      }else{
-        setArrImage(arr)
-      }
+      setArrImage(arr)
     }
     initImage()
+    console.log("tes")  
   },[])
 
-  useEffect(() => {
-    if(props.dataProduct){
-      const dataImages = props.dataProduct.images
-      let tempImage = [...imageUrl]
-      const getMediumImage = dataImages.map((image) => {
-        return [...tempImage,image.mediumUrl]
-      })
-      setImageUrl(getMediumImage)
-    }
-  },[])
+  
 
   useEffect(() => {
     props.getPayloadImage(arrImage)
@@ -162,8 +136,8 @@ const UploadImages = (props) => {
     if (info.file.status === 'done' ) {
         let imageUrlTemp = [...imageUrl]
         let disableTemp = [...disable]
-        getBase64(info.file.originFileObj, function() {
-          imageUrlTemp[index]=info.file.response.mediumUrl;
+        getBase64(info.file.originFileObj, function(responseImageUrl) {
+          imageUrlTemp[index]=responseImageUrl;
           loadingTemp[index] = false;
           disableTemp[index] = true;
           setImageUrl(imageUrlTemp);
@@ -234,20 +208,20 @@ const UploadImages = (props) => {
   
   return (
     <React.Fragment>
-      <Card className="card" title={<div className="card-title">{strings.product_images}</div>} >
+      <Card className="card" title={<div className="card-title">Product Images</div>} >
         <Row>
           <Col md={7}>
             <Row type="flex">
-            <div className="card-content">{strings.images}</div>
-              <Tag className="tag">{strings.required}</Tag>
+            <div className="card-content">Images</div>
+              <Tag className="tag">Required</Tag>
             </Row>
             <div className="card-sub-content">
-              {strings.product_images_quote}
+              It required at least one image to create a product, the images should be;
             </div>
             <ul style={{margin: 0, padding: 0, listStyleType: "none"}}>
-              <li>{strings.max_image_size}</li>
-              <li>{strings.min_frame}</li>
-              <li>{strings.format_image}</li>
+              <li>- Max Img Size 3 MB</li>
+              <li>- Min Frame Size 450px X 450px</li>
+              <li>- Format jpg, jpeg, png</li>
             </ul>
           </Col>
           <Col md={15}>
@@ -280,13 +254,14 @@ const UploadImages = (props) => {
                 )}
               />
             </Row>
+            <div>count : {countLoading}</div>
             {
               statusFile ? 
-              (<div className="text-error-message">{strings.type_image_error}</div>): null
+              (<div className="text-error-message">Only JPG, PNG, JPEG</div>): null
             }
             {
               statusSize ? 
-              <div className="text-error-message">{strings.size_image_error}</div> : null
+              <div className="text-error-message">Max Size 3MB</div> : null
             }
             {
               props.errors.listImages && props.touched.listImages ?
@@ -294,7 +269,7 @@ const UploadImages = (props) => {
             }
             {
               dimension ?
-              (<div className="text-error-message">{strings.frame_image_error}</div>) : null
+              (<div className="text-error-message">Min Frame Size 450 X 450</div>) : null
             }
           </Col>
         </Row>

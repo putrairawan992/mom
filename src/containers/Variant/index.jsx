@@ -1,4 +1,4 @@
-import React,{useState} from 'react'
+import React,{useState, useEffect} from 'react'
 import {Card, Row, Col} from 'antd'
 import Button from '../../components/Button'
 import ButtonTextIcon from '../../components/ButtonTextIcon'
@@ -7,23 +7,40 @@ import Input from '../../components/Input'
 import { apiPostWithToken } from '../../services/api'
 import { PATH_UPLOAD } from '../../services/path/upload';
 import {FieldArray} from 'formik';
+import strings from '../../localization'
 
 const VariantType = (props) => {
+  const [variantType, setVariantType] = useState("")
+  const handleChangeValue = (event, index) => {
+    const tempVariant = [...variantType]
+    tempVariant[index] = event.target.value
+    setVariantType(tempVariant)
+  }
+
   return (
     <Row type="flex" align="middle" justify="center">
       <Col md={4}>
-        Variant Type
+        {strings.variant_type}
       </Col>
       <Col md={16}>
         <Input
-          onChange={props.handleChange}
+          value={
+            props.values &&
+            props.values[props.index] &&
+            typeof props.values[props.index].name === 'string' ?
+            props.values[props.index].name : ''
+          }
+          onChange={(e) => {
+            props.setFieldValue(`variants.${props.index}.name`,e.target.value)
+            handleChangeValue(e,props.index)
+          }}
           name={`variants.${props.index}.name`}
           onBlur={props.handleBlur}
           size="large"
         />
       </Col>
       <Col className="variant" md={4}>
-        <Button onClick={() => props.cancelVariant(props.setFieldValue,props.index,`variants`)} >Cancel</Button>
+        <Button onClick={() => props.cancelVariant(props.values,props.index,`variants`)} >{strings.Cancel}</Button>
       </Col>
     </Row>
   )
@@ -72,7 +89,6 @@ const Variant = (props) => {
   }
 
   const handleChange = (info,setFieldValue,key,index) => {
-    console.log("handle",info.file)
     let tempLoading = [...loading]
     let imageUrlTemp = [...imageUrl]
     if (info.file.status === 'uploading') {
@@ -100,7 +116,7 @@ const Variant = (props) => {
   };
 
   const uploadImage = async ({onError, onSuccess,file},index) => {
-    console.log("jalan gk nih ",index)
+    console.log("jalan gk nih ",file)
     let tempLoadingEdit = [...loadingEdit]
     tempLoadingEdit[index] = true
     setLoadingEdit(tempLoadingEdit)
@@ -150,8 +166,8 @@ const Variant = (props) => {
     setValue(tempValue)
   }
 
-  const editImage = (index) => {
-    document.getElementsByClassName("mp-upload-variant")[index].getElementsByTagName("input")[0].click()
+  const editImage = (indexVariant,index) => {
+    document.getElementsByClassName(`mp-upload-variant-${indexVariant}`)[index].getElementsByTagName("input")[0].click()
   }
 
   const remove = (i) => {
@@ -160,9 +176,9 @@ const Variant = (props) => {
     tempDisable[i] = false
     setStatus(tempDisable)
   }
-
+  
   return(
-    <Card title={<VariantType handleChange={props.handleChange} setFieldValue={props.setFieldValue} handleBlur={props.handleBlur} cancelVariant={props.cancelVariant} index={props.index}/>}>
+    <Card title={<VariantType handleChange={props.handleChange} values={props.values} setFieldValue={props.setFieldValue} handleBlur={props.handleBlur} cancelVariant={props.cancelVariant} index={props.index}/>}>
       <FieldArray
         name="variantItems"
         render={arrayHelpers => (
@@ -175,7 +191,7 @@ const Variant = (props) => {
                     <Upload
                       type="no-style"
                       loading={loading[i]}
-                      className="mp-upload-variant"
+                      className={`mp-upload-variant-${props.index}`}
                       imageUrl={
                         props.values &&
                         props.values[props.index] &&
@@ -193,20 +209,21 @@ const Variant = (props) => {
                       editImage={editImage}
                       remove={remove}
                       index={i}
+                      indexVariant={props.index}
                       beforeUpload={(file) => beforeUpload(file,i)}
                       loadingEdit={loadingEdit[i]}
                     />
                       {
                         statusFile[i] ? 
-                        (<div className="text-error-message">Only JPG, PNG, JPEG</div>): null
+                        (<div className="text-error-message">{strings.type_image_error}</div>): null
                       }
                       {
                         statusSize[i] ? 
-                        <div className="text-error-message">Max Size 3MB</div> : null
+                        <div className="text-error-message">{strings.size_image_error}</div> : null
                       }
                       {
                         dimension[i] ?
-                        (<div className="text-error-message">Min Frame Size 450 X 450</div>) : null
+                        (<div className="text-error-message">{strings.frame_image_error}</div>) : null
                       }
                   </Col>
                   <Col  md={16} className="col-height">
@@ -270,7 +287,7 @@ const Variant = (props) => {
         )}
       />
       <br/><br/>
-      <Button width="full"  onClick={() => props.addVariantItems(props.errors,props.index)} type="secondary">Add Variant Name</Button>
+      <Button width="full"  onClick={() => props.addVariantItems(props.errors,props.index,props.values)} type="secondary">{strings.add_variant_name}</Button>
     </Card>
   )
 }

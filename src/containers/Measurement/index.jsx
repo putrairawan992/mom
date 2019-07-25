@@ -1,6 +1,7 @@
 import React,{useState, useEffect} from 'react';
 import {Row, Col, Card, Tag, Checkbox, Icon} from 'antd';
 import Input from '../../components/Input';
+import strings from '../../localization'
 
 const Measurement = (props) => {
 
@@ -21,12 +22,19 @@ const Measurement = (props) => {
     }
   },[actualWeight,width,length,volumetric,height])
 
+  useEffect(() => {
+    if(props.dataProduct){
+      const information = props.dataProduct.information
+      setHeight(information.measurement.dimension.height)
+    }
+  })
+
   return (
-    <Card className="card" title={<div className="card-title">Measurement</div>}>
+    <Card className="card" title={<div className="card-title">{strings.measurement}</div>}>
       <Row type="flex" align="middle">
         <Col md={24}>
           <div className="card-tittle-content">
-            Fill all the information on weight and dimension of the product, so the system can calculate the volumetric weight and used the data for shipping and delivery procedure.
+            {strings.measurement_quote}
           </div>
         </Col>
       </Row>
@@ -34,13 +42,13 @@ const Measurement = (props) => {
       <Row type="flex" align="middle">
         <Col md={7}>
           <Row type="flex">
-            <div className="card-content">Actual Weight</div>
-            <Tag className="tag">Required</Tag>
+            <div className="card-content">{strings.actual_weight}</div>
+            <Tag className="tag">{strings.required}</Tag>
           </Row>
         </Col>
         <Col md={8} className="col-height">
           <Input
-            placeholder="Weight"
+            placeholder={strings.placeholder_weight}
             name="actualWeight"
             onChange={e => {
               setActualWeight(e.target.value)
@@ -48,9 +56,9 @@ const Measurement = (props) => {
             }}
             type="number"
             onBlur={props.handleBlur}
-            value={actualWeight}
+            value={props.values.actualWeight}
             size="large"
-            suffix={<div style={{fontSize: "14px"}}>Kg</div>}
+            suffix={<div style={{fontSize: "14px"}}>{strings.kg}</div>}
             status={
               props.errors.actualWeight && props.touched.actualWeight ?
               "error" : "default"
@@ -67,15 +75,15 @@ const Measurement = (props) => {
       <Row type="flex" align="middle">
         <Col md={7}>
           <Row type="flex">
-            <div className="card-content">Dimension</div>
-            <Tag className="tag">Required</Tag>
+            <div className="card-content">{strings.dimension}</div>
+            <Tag className="tag">{strings.required}</Tag>
           </Row>
         </Col>
         <Col md={12} className="col-height">
           <Row type="flex" >
             <Col md={8} style={{paddingRight : "10px"}}>
                 <Input
-                  placeholder="Width"
+                  placeholder={strings.placeholder_width}
                   defaultValue=""
                   name="width"
                   onChange={e => {
@@ -84,8 +92,8 @@ const Measurement = (props) => {
                   }}
                   type="number"
                   onBlur={props.handleBlur}
-                  // value={width}
-                  suffix={<div style={{fontSize: "14px"}}>cm</div>}
+                  value={props.values.width}
+                  suffix={<div style={{fontSize: "14px"}}>{strings.cm}</div>}
                   size="large"
                   status={
                     props.errors.width && props.touched.width ?
@@ -95,7 +103,7 @@ const Measurement = (props) => {
             </Col>
             <Col md={8} style={{paddingLeft : "10px"}}>
               <Input
-                placeholder="Length"
+                placeholder={strings.placeholder_length}
                 name="length"
                 onChange={e => {
                   setLength(e.target.value)
@@ -103,8 +111,8 @@ const Measurement = (props) => {
                 }}
                 type="number"
                 onBlur={props.handleBlur}
-                // value={length}
-                suffix={<div style={{fontSize: "14px"}}>cm</div>}
+                value={props.values.length}
+                suffix={<div style={{fontSize: "14px"}}>{strings.cm}</div>}
                 size="large"
                 status={
                   props.errors.length && props.touched.length ?
@@ -114,7 +122,7 @@ const Measurement = (props) => {
             </Col>
             <Col md={8} style={{paddingLeft: "20px"}}>
               <Input
-                placeholder="Height"
+                placeholder={strings.placeholder_height}
                 name="height"
                 onChange={e => {
                   setHeight(e.target.value)
@@ -123,7 +131,8 @@ const Measurement = (props) => {
                 type="number"
                 onBlur={props.handleBlur}
                 // value={height}
-                suffix={<div style={{fontSize: "14px"}}>cm</div>}
+                value={props.values.height}
+                suffix={<div style={{fontSize: "14px"}}>{strings.cm}</div>}
                 size="large"
                 status={
                   props.errors.height && props.touched.height ?
@@ -134,7 +143,7 @@ const Measurement = (props) => {
           </Row>
           {
             (props.errors.width && props.touched.width) || (props.errors.length && props.touched.length) || (props.errors.height && props.touched.height) ? 
-            (<div className="text-error-message">Please fill all required measurement to calculate volumetric weight.</div>) :
+            (<div className="text-error-message">{strings.dimension_measurement_errro}</div>) :
             null
           }
         </Col>
@@ -142,12 +151,12 @@ const Measurement = (props) => {
       <br/>
       <Row type="flex" align="middle">
         <Col md={7}>
-          <div className="card-content">Volumetric Weight</div>
+          <div className="card-content">{strings.volumetric_weight}</div>
         </Col>
         <Col md={12}>
           <Input
             value={volumetric}
-            suffix={<div style={{fontSize: "14px"}}>Kg</div>}
+            suffix={<div style={{fontSize: "14px"}}>{strings.kg}</div>}
             size="large"
             disabled
             status="disabled"
@@ -160,7 +169,7 @@ const Measurement = (props) => {
         <Col md={15} offset={7}>
           <Checkbox >
             <span className="text-safety-orange">
-              Product Is Fragile <Icon fill="red" type="info-circle"/>
+              {strings.product_fragile} <Icon fill="red" type="info-circle"/>
             </span>
           </Checkbox>
         </Col>
