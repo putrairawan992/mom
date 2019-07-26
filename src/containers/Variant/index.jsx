@@ -166,9 +166,8 @@ const Variant = (props) => {
       props.errors.variants[index].variantItems &&
       props.touched.variants[index].variantItems &&
       props.errors.variants[index].variantItems[i] &&
-      props.touched.variants[props.index].variantItems[i] &&
-      typeof props.errors.variants[index].variantItems[i].name === 'string' &&
-      props.touched.variants[index].variantItems[i].name ?
+      props.touched.variants[index].variantItems[i] &&
+      typeof props.errors.variants[index].variantItems[i].name === 'string' ?
       true :  false
     )
   }
@@ -188,16 +187,7 @@ const Variant = (props) => {
                       type="no-style"
                       loading={loading[i]}
                       className={`mp-upload-variant-${props.index}`}
-                      imageUrl={
-                        props.values &&
-                        props.values[props.index] &&
-                        props.values[props.index].variantItems &&
-                        props.values[props.index].variantItems[i] &&
-                        props.values[props.index].variantItems[i].image &&
-                        typeof props.values[props.index].variantItems[i].image.smallUrl === "string"
-                        ? props.values[props.index].variantItems[i].image.smallUrl : ""
-                      }
-                      // imageUrl={imageUrl[i]}
+                      imageUrl={props.values[props.index].variantItems[i].image.smallUrl}
                       disabled={status[i]}
                       name={`variants.${props.index}.variantItems.${i}.image`}
                       customRequest={({onError, onSuccess,file}) => uploadImage({onError, onSuccess,file},i)}
@@ -229,9 +219,7 @@ const Variant = (props) => {
                         props.setFieldValue(`variants.${props.index}.variantItems.${i}.name`,e.target.value)
                         handleChangeValue(e,i)
                       }}
-                      value={
-                        checkError(props.index, i) ? props.values[props.index].variantItems[i].name : ''
-                      }
+                      value={props.values[props.index].variantItems[i].name}
                       onBlur={props.handleBlur}
                       size="large"
                       status={checkError(props.index, i) ? "error" : "default" }        
@@ -249,7 +237,7 @@ const Variant = (props) => {
                         const tempValue = [...value]
                         tempValue[i] = ""
                         setValue(tempValue)
-                        arrayHelpers.remove(i)
+                        // arrayHelpers.remove(i)
                       }
                     }}  style={{fontSize : "60px"}} icon="delete"/>
                   </Col>
@@ -261,7 +249,11 @@ const Variant = (props) => {
         )}
       />
       <br/><br/>
-      <Button width="full"  onClick={() => props.addVariantItems(props.errors,props.index,props.values)} type="secondary">{strings.add_variant_name}</Button>
+        <Button width="full"
+          onClick={() => props.addVariantItems(props.errors,props.index,props.values)} type="secondary"
+        >
+        {strings.add_variant_name}
+        </Button>
     </Card>
   )
 }

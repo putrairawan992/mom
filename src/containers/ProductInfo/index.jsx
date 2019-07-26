@@ -1,13 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import Cascader from '../../components/Cascader';
 import {Card, Row, Col, Tag} from 'antd';
 import {PATH_CATEGORY} from '../../services/path/category';
 import {apiGetWithoutToken} from '../../services/api';
 import Input from '../../components/Input';
 import TextArea from '../../components/TextArea';
-import strings from '../../localization'
+import strings from '../../localization';
+import ProductContext from '../../context/GlobalStateProduct/product-context'
 
 const ProductInfo = (props) => {
+  const context = useContext(ProductContext)
+  const {initialValues} = context
   const [allCategory,setAllCategory] = useState([])
   const [productNameOriginal, setProductNameOriginal] = useState("")
   const [productName, setProductName] = useState("")
@@ -77,7 +80,7 @@ const ProductInfo = (props) => {
         <Col md={props.grid.right} className="col-height">
           <Input
             name="productNameOriginal"
-            value={productNameOriginal}
+            value={props.values.productNameOriginal}
             onChange={(e) => {
               handleChange(e,'productNameOriginal',setProductNameOriginal)
               
@@ -115,7 +118,7 @@ const ProductInfo = (props) => {
               (e) =>handleChange(e,'productName',setProductName)
             }
             onBlur={props.handleBlur}
-            value={productName}
+            value={props.values.productName}
             size="large"
             status={
               props.errors.productName && props.touched.productName ? 

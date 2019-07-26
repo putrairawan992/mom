@@ -6,6 +6,7 @@ import propTypes from 'prop-types'
 import {Card, Row, Col, Tag} from 'antd';
 import {FieldArray} from 'formik';
 import strings from '../../localization'
+import {getBase64, checkDimension} from '../../helpers/validation-upload'
 
 const UploadImages = (props) => {
   const [imageUrl, setImageUrl] = useState([])
@@ -73,19 +74,7 @@ const UploadImages = (props) => {
     props.getPayloadImage(arrImage)
   },[arrImage,disable])
 
-  const checkDimension = (file) => {
-    return new Promise(resolve => {
-      let _URL = window.URL || window.webkitURL;
-      var image = new Image();
-      image.src = _URL.createObjectURL(file)
-      image.onload = function(e ) {
-        let dimension = {}
-          dimension.width = image.naturalWidth
-          dimension.height = image.naturalHeight
-        resolve(dimension)   
-      };
-    })
-  }
+ 
 
   const beforeUpload = (file) => {
     const isPng = file.type === 'image/png'
@@ -173,12 +162,6 @@ const UploadImages = (props) => {
         });
     }
   };
-
-  const getBase64 = (img, callback) => {
-    const reader = new FileReader();
-    reader.addEventListener('load', () => callback(reader.result));
-    reader.readAsDataURL(img);
-  }
 
   const uploadImage = async ({onError, onSuccess,file},index) => {
     let tempLoadingEdit = [...loadingEdit]

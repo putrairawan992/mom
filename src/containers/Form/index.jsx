@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect, useContext} from 'react';
 import UploadImages from '../../containers/UploadImages';
 import Variants from '../../containers/Variants';
 import { Formik } from 'formik';
@@ -13,33 +13,35 @@ import Measurement from '../../containers/Measurement';
 import StockManagement from '../../containers/StockManagement';
 import {apiPostWithToken} from '../../services/api'
 import {PATH_PRODUCT} from '../../services/path/product';
-import strings from '../../localization'
+import strings from '../../localization';
+import ProductContext from '../../context/GlobalStateProduct/product-context'
 import './style.sass';
 
 const schema = Yup.object().shape({
   variants: Yup.array(Yup.object().shape({
-    name: Yup.string().required(),
+    // name: Yup.string().required(),
     variantItems: Yup.array().of(Yup.object().shape({
       name: Yup.string().required(strings.variant_item_error)
     }))
   })),
-  supplier: Yup.string().required(strings.supplier_error).nullable(),
-  productNameOriginal: Yup.string().required(strings.product_error),
-  productName:  Yup.string().required(strings.product_error),
-  category: Yup.string().required(strings.category_error),
-  basePrice: Yup.string().required(strings.base_price_error),
-  domesticFee: Yup.string().required(strings.domestic_error),
-  feeBySea: Yup.string().required(strings.shipment_sea_error),
-  feeByAir: Yup.string().required(strings.shimpet_air_error),
-  listImages:Yup.array().required(strings.upload_image_error),
-  width: Yup.string().required(),
-  length: Yup.string().required(),
-  height: Yup.string().required(),
-  actualWeight: Yup.string().required(strings.actual_weight_error),
-  quantity: Yup.string().required(strings.quantity_error)
+  // supplier: Yup.string().required(strings.supplier_error).nullable(),
+  // productNameOriginal: Yup.string().required(strings.product_error),
+  // productName:  Yup.string().required(strings.product_error),
+  // category: Yup.string().required(strings.category_error),
+  // basePrice: Yup.string().required(strings.base_price_error),
+  // domesticFee: Yup.string().required(strings.domestic_error),
+  // feeBySea: Yup.string().required(strings.shipment_sea_error),
+  // feeByAir: Yup.string().required(strings.shimpet_air_error),
+  // listImages:Yup.array().required(strings.upload_image_error),
+  // width: Yup.string().required(),
+  // length: Yup.string().required(),
+  // height: Yup.string().required(),
+  // actualWeight: Yup.string().required(strings.actual_weight_error),
+  // quantity: Yup.string().required(strings.quantity_error)
 });
 
 const FormProduct = (props) => {
+  const context = useContext(ProductContext)
   const [payloadImage, setPayloadImage] = useState([])
   const [totalVariants, setTotalVariants] = useState([])
   const [allProduct, setAllProduct] = useState({})
@@ -63,13 +65,7 @@ const FormProduct = (props) => {
   const [initialValues ,setInitialValues] = useState({
     administration: "",
     actualWeight: "",
-    variants: [{
-      name : '',
-      variantItems: [{
-        name: '',
-        image : ''
-      }]
-    }],
+    variants: [],
     listImages: [],
     supplier: "",
     basePrice: "",
@@ -135,15 +131,6 @@ const FormProduct = (props) => {
 
   const addVariantItems = (errors,i,values) => {
     if(!errors.variants){
-      const arrTemp = [...totalVariants]
-      const tempVariantItems = arrTemp.map((item, index) => {
-        if(i === index){
-          return {...item, variantItems : [...item.variantItems, stringVariantType]}
-        }else{
-          return {...item}
-        }
-      })
-      setTotalVariants(tempVariantItems)
       const tempValues = values.map((value,index) =>{
         if(i === index){
           return {...value, variantItems: [...value.variantItems,stringVariantType]}
@@ -274,13 +261,13 @@ const FormProduct = (props) => {
         {strings.create_product}
       </p>
       <Formik
-          initialValues={initialValues}
+          initialValues={context.initialValues}
           enableReinitialize
           onSubmit={values => {
             handleSubmit(values)
             
           }}
-          validationSchema={schema}
+          // validationSchema={schema}
         >
           {({
             values,
@@ -355,7 +342,7 @@ const FormProduct = (props) => {
                 removeVariantItems={removeVariantItems}
                 touched={touched}
                 onReset={onReset}
-                variants={initialValues.variants}
+                // variants={initialValues.variants}
                 openVariant={openVariant}
               />
               </Form.Item>

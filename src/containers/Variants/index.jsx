@@ -36,7 +36,7 @@ const Variants = (props) => {
          </li>
       </ul><br/>
       {
-        props.variants.map((variant,index) => {
+        props.values.map((variant,index) => {
           return (
             <div key={index}>
               <Variant
@@ -59,8 +59,8 @@ const Variants = (props) => {
         })
       }
       {
-      props.variants.length === 1 &&
-        <Button type="grey" onClick={() => props.addVariant(props.variants)} style={{float: "right"}}>{strings.add_variant_type}</Button>
+      props.values.length === 1 &&
+        <Button type="grey" onClick={() => props.addVariant(props.values)} style={{float: "right"}}>{strings.add_variant_type}</Button>
       }
       </Row>
     }
