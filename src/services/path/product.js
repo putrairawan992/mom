@@ -1,5 +1,7 @@
-const CREATE = 'product'
+const CREATE = 'product';
+const PRODUCT = 'product';
 
 export const PATH_PRODUCT = {
-  CREATE: CREATE
+  CREATE: CREATE,
+  PRODUCT: PRODUCT
 }
