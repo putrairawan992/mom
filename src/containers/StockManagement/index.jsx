@@ -2,6 +2,7 @@ import React,{useState} from 'react'
 import {Card, Row, Col, Switch, Tag } from 'antd'
 import Input from '../../components/Input'
 import strings from '../../localization'
+import { Form } from 'antd'
 
 const StockManagement = (props) => {
   const [readyStock, setReadyStock] = useState(true)
@@ -11,7 +12,15 @@ const StockManagement = (props) => {
     props.setFieldValue('readyStock', value)
   }
 
+  console.log(props.errors)
+
   return (
+    <Form.Item 
+      validateStatus={
+        ( typeof props.errors.quantity === 'string' && props.touched.quantity) ? 
+        "error" : 'success'
+      }
+    >
     <Card className="card" title={
       <div style={{display: "flex"}}>
         <div className="card-title">{strings.stock_management}</div>
@@ -32,6 +41,10 @@ const StockManagement = (props) => {
             type="number"
             value={props.values.quantity}
           />
+          {
+            ( typeof props.errors.quantity === 'string' && props.touched.quantity) ? 
+             <div className="text-error-message">{props.errors.quantity}</div> : null
+          }
         </Col>
       </Row>
       <br/>
@@ -48,6 +61,7 @@ const StockManagement = (props) => {
         </Col>
       </Row>
     </Card>
+    </Form.Item>
   )
 }
 

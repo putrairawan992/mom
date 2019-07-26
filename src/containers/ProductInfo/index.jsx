@@ -52,7 +52,8 @@ const ProductInfo = (props) => {
         const arrCategory = converter(arrResponseCategory)
         setAllCategory([...arrCategory])
       } catch (error) {
-        console.log(error)
+        console.log(error.response)
+        setAllCategory([])
       }
     }
     getAllCategory()

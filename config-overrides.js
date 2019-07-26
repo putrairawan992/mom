@@ -10,7 +10,7 @@ module.exports = override(
    javascriptEnabled: true,
    modifyVars: { 
     '@primary-color': '#007E80',
-    '@error-color' : 'red'
+    '@error-color' : '#A8071A'
   },
  }),
 );

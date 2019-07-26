@@ -33,12 +33,12 @@ const Product = () => {
   return (
     <React.Fragment>
         {
-          // status ?
-          // <ProductList
-          //   toFormCreate={toFormCreate}
-          //   toFormEdit={toFormEdit}
-          //   loading={loading}
-          // /> :
+          status ?
+          <ProductList
+            toFormCreate={toFormCreate}
+            toFormEdit={toFormEdit}
+            loading={loading}
+          /> :
           <ProductContext.Provider> 
             <FormProduct
               dataProduct={dataProduct}

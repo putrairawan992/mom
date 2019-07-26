@@ -117,7 +117,8 @@ const strings = new LocalizedStrings({
     shimpet_air_error: 'Shipment fee by air is required',
     upload_image_error: 'You have to upload at least one image to create product.',
     actual_weight_error: 'Actual Weight is required',
-    dimension_measurement_errro: 'Please fill all required measurement to calculate volumetric weight.'
+    dimension_measurement_errro: 'Please fill all required measurement to calculate volumetric weight.',
+    quantity_error: 'Quantity is required'
 
     
 

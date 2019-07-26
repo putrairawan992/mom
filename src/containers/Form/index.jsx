@@ -35,7 +35,8 @@ const schema = Yup.object().shape({
   width: Yup.string().required(),
   length: Yup.string().required(),
   height: Yup.string().required(),
-  actualWeight: Yup.string().required(strings.actual_weight_error)
+  actualWeight: Yup.string().required(strings.actual_weight_error),
+  quantity: Yup.string().required(strings.quantity_error)
 });
 
 const FormProduct = (props) => {
@@ -295,9 +296,6 @@ const FormProduct = (props) => {
           }) => (
             <Form onSubmit={handleSubmit}>
             <Form.Item>
-              <Input/>
-            </Form.Item>
-            <Form.Item>
               <Supplier
                 handleBlur={handleBlur}
                 setFieldValue={setFieldValue}
@@ -371,15 +369,17 @@ const FormProduct = (props) => {
                   values={values}
                 />
               </Form.Item>
-              <Form.Item>
+              {/* <Form.Item> */}
                 <StockManagement
                   setFieldValue={setFieldValue}
                   grid={grid}
                   handleChange={handleChange}
                   handleBlur={handleBlur}
                   values={values}
+                  errors={errors}
+                  touched={touched}
                 />
-              </Form.Item>
+              {/* </Form.Item> */}
               <div style={{textAlign: "right"}}>
                 <Button
                   type="primary"

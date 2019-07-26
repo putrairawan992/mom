@@ -1,4 +1,4 @@
-import React,{useState, useEffect} from 'react'
+import React,{useState} from 'react'
 import {Card, Row, Col} from 'antd'
 import Button from '../../components/Button'
 import ButtonTextIcon from '../../components/ButtonTextIcon'
@@ -6,8 +6,9 @@ import Upload from '../../components/Upload'
 import Input from '../../components/Input'
 import { apiPostWithToken } from '../../services/api'
 import { PATH_UPLOAD } from '../../services/path/upload';
-import {FieldArray} from 'formik';
-import strings from '../../localization'
+import {FieldArray, ErrorMessage, Field} from 'formik';
+import strings from '../../localization';
+import {checkDimension, getBase64} from '../../helpers/validation-upload'
 
 const VariantType = (props) => {
   const [variantType, setVariantType] = useState("")
@@ -40,7 +41,7 @@ const VariantType = (props) => {
         />
       </Col>
       <Col className="variant" md={4}>
-        <Button onClick={() => props.cancelVariant(props.values,props.index,`variants`)} >{strings.Cancel}</Button>
+        <Button onClick={() => props.cancelVariant(props.values,props.index,`variants`)} >{strings.cancel}</Button>
       </Col>
     </Row>
   )
@@ -82,12 +83,6 @@ const Variant = (props) => {
     }, time)
   }
 
-  const getBase64 = (img, callback) => {
-    const reader = new FileReader();
-    reader.addEventListener('load', () => callback(reader.result));
-    reader.readAsDataURL(img);
-  }
-
   const handleChange = (info,setFieldValue,key,index) => {
     let tempLoading = [...loading]
     let imageUrlTemp = [...imageUrl]
@@ -116,7 +111,6 @@ const Variant = (props) => {
   };
 
   const uploadImage = async ({onError, onSuccess,file},index) => {
-    console.log("jalan gk nih ",file)
     let tempLoadingEdit = [...loadingEdit]
     tempLoadingEdit[index] = true
     setLoadingEdit(tempLoadingEdit)
@@ -146,20 +140,6 @@ const Variant = (props) => {
     }
   }
 
-  const checkDimension = (file) => {
-    return new Promise(resolve => {
-      let _URL = window.URL || window.webkitURL;
-      var image = new Image();
-      image.src = _URL.createObjectURL(file)
-      image.onload = function(e ) {
-        let dimension = {}
-          dimension.width = image.naturalWidth
-          dimension.height = image.naturalHeight
-        resolve(dimension)   
-      };
-    })
-  }
-
   const handleChangeValue = (e,index) => {
     const tempValue = [...value]
     tempValue[index] = e.target.value
@@ -177,6 +157,22 @@ const Variant = (props) => {
     setStatus(tempDisable)
   }
   
+  const checkError = (index, i) => {
+    return (
+      props.errors.variants &&
+      props.touched.variants &&
+      props.errors.variants[index] &&
+      props.touched.variants[index] &&
+      props.errors.variants[index].variantItems &&
+      props.touched.variants[index].variantItems &&
+      props.errors.variants[index].variantItems[i] &&
+      props.touched.variants[props.index].variantItems[i] &&
+      typeof props.errors.variants[index].variantItems[i].name === 'string' &&
+      props.touched.variants[index].variantItems[i].name ?
+      true :  false
+    )
+  }
+
   return(
     <Card title={<VariantType handleChange={props.handleChange} values={props.values} setFieldValue={props.setFieldValue} handleBlur={props.handleBlur} cancelVariant={props.cancelVariant} index={props.index}/>}>
       <FieldArray
@@ -234,38 +230,16 @@ const Variant = (props) => {
                         handleChangeValue(e,i)
                       }}
                       value={
-                        props.values &&
-                        props.values[props.index] &&
-                        props.values[props.index].variantItems &&
-                        props.values[props.index].variantItems[i] &&
-                        typeof props.values[props.index].variantItems[i].name === 'string'
-                        ? props.values[props.index].variantItems[i].name : ""
+                        checkError(props.index, i) ? props.values[props.index].variantItems[i].name : ''
                       }
                       onBlur={props.handleBlur}
                       size="large"
-                      status={
-                        props.errors.variants &&
-                        props.errors.variants[props.index] &&
-                        props.errors.variants[props.index].variantItems &&
-                        props.errors.variants[props.index].variantItems[i] &&
-                        typeof props.errors.variants[props.index].variantItems[i].name === 'string'
-                        ? "error" : "default"
-                      }        
+                      status={checkError(props.index, i) ? "error" : "default" }        
                     />
-                    {
-                      props.errors.variants &&
-                      props.errors.variants[props.index] &&
-                      props.errors.variants[props.index].variantItems &&
-                      props.errors.variants[props.index].variantItems[i] &&
-                      typeof props.errors.variants[props.index].variantItems[i].name === 'string'
-                      ? 
-                      (<div className="text-error-message">{props.errors.variants[props.index].variantItems[i].name}</div>) :
-                      null
-                    }
-                    {
-                      typeof props.errors.variants === 'string' && props.touched.variants ?
-                      (<div className="text-error-message">{props.errors.variants}</div>) : null
-                    }
+                    <ErrorMessage
+                      name={`variants.${props.index}.variantItems.${i}.name`}
+                      render={message => <div className="text-error-message">{message}</div>}
+                    />
                   </Col>
                   <Col className="variant" md={4}>
                     <ButtonTextIcon label="" onClick={() => {
