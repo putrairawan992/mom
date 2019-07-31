@@ -20,24 +20,18 @@ const LabelDetailJne = props => {
       </div>
       <div className="label-box-detail">
         <Row className="label-detail-title">
-          <Col span={8}>
-            <span>Piece(s)</span>
-          </Col>
-          <Col span={8}>
+          <Col span={12}>
             <span>Weight(s)</span>
           </Col>
-          <Col span={8}>
+          <Col span={12}>
             <span>Volume(cm)</span>
           </Col>
         </Row>
         <Row className="label-detail-content">
-          <Col span={8}>
-            <span>2 of 2</span>
-          </Col>
-          <Col span={8}>
+          <Col span={12}>
             <span>1.4</span>
           </Col>
-          <Col span={8}>
+          <Col span={12}>
             <span>30 x 65 x 30</span>
           </Col>
         </Row>

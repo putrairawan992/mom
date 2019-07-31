@@ -54,9 +54,7 @@ class LabelIndonesia extends Component {
             <LabelContent
               label="Deskripsi"
               content={
-                order.orderItems[0].supplierSnapshot.name +
-                " - " +
-                order.orderItems[0].supplierSnapshot.code
+                order.orderItems[0].productSnapshot.name
               }
               styleContent="label-form-content"
             />
