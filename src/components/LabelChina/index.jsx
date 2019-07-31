@@ -2,11 +2,11 @@ import React from "react";
 import "./style.css";
 import monggopesen_logo from "../../assets/img/monggopesen_logo.png";
 import LabelContent from "../LabelContent";
+import { variantTemplate } from "../../helpers/variantTemplate";
 
 class LabelChina extends React.Component {
   variants = variants => {
-    console.log(variants);
-    return variants.map(variant => `${variant.value}`).join(", ");
+    return variantTemplate(variants)
   };
 
   productName = item => {
@@ -45,11 +45,11 @@ class LabelChina extends React.Component {
                     content={this.productName(item)}
                     styleContent="label-item-info"
                   />
-                  <LabelContent
+                  {item.productSnapshot.informations.length > 0 && <LabelContent
                     label="Variant"
                     content={this.variants(item.productSnapshot.informations)}
                     styleContent="label-item-info"
-                  />
+                  />}
                   <LabelContent
                     label="Qty"
                     content={item.productSnapshot.quantity}

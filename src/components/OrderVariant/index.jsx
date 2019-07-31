@@ -6,14 +6,15 @@ import { variantTemplate } from "../../helpers/variantTemplate";
 
 const OrderVariant = ({ variants, quantity, price, withPrice }) => {
   const names = variantTemplate(variants);
+  console.log(names);
   return (
     <table border={1} className="table-container">
       <tbody>
         <tr>
           <td colSpan={2} className="row-variant">
-            <span className="wrap-variant-text">
-              <span className="variant-value">{names}</span>
-            </span>
+            {names.length > 0 && <span className="wrap-variant-text">
+              Variant : <span className="variant-value">{names}</span>
+            </span>}
             <span className="wrap-variant-text">
               Qty : <span className="variant-value">{quantity} </span>
             </span>
