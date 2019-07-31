@@ -7,9 +7,9 @@ const ProductList = (props) => {
 
   return (
     <React.Fragment>
-      <Button onClick={() => props.toFormCreate()}>Create</Button>
+      <Button onClick={() => context.toFormCreate()}>Create</Button>
       <Button
-        // loading={context.loading}
+        loading={context.loading}
         onClick={() =>{
           props.toFormEdit()
           context.getProductById()

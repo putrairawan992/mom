@@ -10,12 +10,9 @@ import ProductContext from '../../context/GlobalStateProduct/product-context'
 
 const ProductInfo = (props) => {
   const context = useContext(ProductContext)
-  const {initialValues} = context
   const [allCategory,setAllCategory] = useState([])
-  const [productNameOriginal, setProductNameOriginal] = useState("")
-  const [productName, setProductName] = useState("")
-  const [description, setDescription] = useState("")
   const [category, setCategory] = useState([])
+  // const [category, setCategory] = useState(['7a8e64a9-2dce-41d0-bdcd-e0da053c8f4e','09afa381-7442-4239-960f-02f93702e026','d0c97895-0375-474c-8971-936555073dc6'])
   const converter = (response) => {
     response.forEach((respSub,index) => {
       if(respSub.categorySubResponses){
@@ -43,16 +40,14 @@ const ProductInfo = (props) => {
   useEffect(() => {
     const getAllCategory = async() =>{
       try {
-        if(props.dataProduct){
-          const dataProductInformation = props.dataProduct.information
-          setProductNameOriginal(dataProductInformation.nameChinese)
-          setProductName(dataProductInformation.name)
-          setDescription(dataProductInformation.description)
-          setCategory([...category, dataProductInformation.category.id])
-        }
         const response = await apiGetWithoutToken(PATH_CATEGORY.ALL_CATEGORY)
         const arrResponseCategory = response.data.data
         const arrCategory = converter(arrResponseCategory)
+        if(context.initialValues.category){
+          const contextCategory = context.initialValues.category
+          const id = await getResponseCategory(arrResponseCategory,contextCategory)
+          setCategory(id)
+        }
         setAllCategory([...arrCategory])
       } catch (error) {
         console.log(error.response)
@@ -62,8 +57,33 @@ const ProductInfo = (props) => {
     getAllCategory()
   },[])
 
-  const handleChange = (event,key,setState) => {
-    setState(event.target.value)
+  const getResponseCategory = async(category,context) => {
+    let arrCategoryId = []      
+    if(context.level === 'LEVEL1'){
+      arrCategoryId.push(context.id)
+    }else if(context.level === 'LEVEL3'){
+      const t = category.filter(cat => {
+        let subRespone = cat.categorySubResponses
+        if(subRespone){
+          for(let i = 0; i< subRespone.length ; i++){
+            if(subRespone[i].id === context.parent){
+              return true
+            }else{
+              return false
+            }
+          }
+        }
+      })
+      let [data] = t
+      arrCategoryId.push(data.id,context.parent,context.id)
+    }else{
+      arrCategoryId.push(context.parent,context.id)
+    }
+    return arrCategoryId
+  }
+
+  const handleChange = (event,key) => {
+    // setState(event.target.value)
     props.setFieldValue(key,event.target.value)
   }
 
@@ -82,7 +102,7 @@ const ProductInfo = (props) => {
             name="productNameOriginal"
             value={props.values.productNameOriginal}
             onChange={(e) => {
-              handleChange(e,'productNameOriginal',setProductNameOriginal)
+              handleChange(e,'productNameOriginal')
               
             }}
             onBlur={props.handleBlur}
@@ -115,7 +135,7 @@ const ProductInfo = (props) => {
             name="productName"
             // onChange={props.handleChange}
             onChange={
-              (e) =>handleChange(e,'productName',setProductName)
+              (e) =>handleChange(e,'productName')
             }
             onBlur={props.handleBlur}
             value={props.values.productName}
@@ -144,12 +164,10 @@ const ProductInfo = (props) => {
           <TextArea
             name="description"
             autosize={{ minRows: 6, maxRows: 6}}
-            // onChange={props.handleChange}
             maxLength={2000}
-            value={description}
-            // value={props.values.description}
+            value={props.values.description}
             onChange={
-              (e) => handleChange(e,'description',setDescription)
+              (e) => handleChange(e,'description')
             }
           />
         </Col>

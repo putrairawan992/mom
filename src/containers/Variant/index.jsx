@@ -1,4 +1,4 @@
-import React,{useState} from 'react'
+import React,{useState, useContext} from 'react'
 import {Card, Row, Col} from 'antd'
 import Button from '../../components/Button'
 import ButtonTextIcon from '../../components/ButtonTextIcon'
@@ -6,11 +6,13 @@ import Upload from '../../components/Upload'
 import Input from '../../components/Input'
 import { apiPostWithToken } from '../../services/api'
 import { PATH_UPLOAD } from '../../services/path/upload';
-import {FieldArray, ErrorMessage, Field} from 'formik';
+import {FieldArray, ErrorMessage} from 'formik';
 import strings from '../../localization';
-import {checkDimension, getBase64} from '../../helpers/validation-upload'
+import {checkDimension, getBase64} from '../../helpers/validation-upload';
+import ProductContext from '../../context/GlobalStateProduct/product-context'
 
 const VariantType = (props) => {
+  const context = useContext(ProductContext)
   const [variantType, setVariantType] = useState("")
   const handleChangeValue = (event, index) => {
     const tempVariant = [...variantType]
@@ -41,13 +43,14 @@ const VariantType = (props) => {
         />
       </Col>
       <Col className="variant" md={4}>
-        <Button onClick={() => props.cancelVariant(props.values,props.index,`variants`)} >{strings.cancel}</Button>
+        <Button onClick={() => context.cancelVariant(props.values,props.index)} >{strings.cancel}</Button>
       </Col>
     </Row>
   )
 }
 
 const Variant = (props) => {
+  const context = useContext(ProductContext)
   const [loading, setLoading] = useState([])
   const [value,setValue] = useState([])
   const [status,setStatus] = useState([])
@@ -131,7 +134,6 @@ const Variant = (props) => {
         loadingTemp[index] = false
         setLoading(loadingTemp)
       }
-      
     } catch (error) {
       onError(error)
       let loadingTemp = [...loading]
@@ -173,7 +175,7 @@ const Variant = (props) => {
   }
 
   return(
-    <Card title={<VariantType handleChange={props.handleChange} values={props.values} setFieldValue={props.setFieldValue} handleBlur={props.handleBlur} cancelVariant={props.cancelVariant} index={props.index}/>}>
+    <Card title={<VariantType handleChange={props.handleChange} values={props.values} setFieldValue={props.setFieldValue} handleBlur={props.handleBlur} index={props.index}/>}>
       <FieldArray
         name="variantItems"
         render={arrayHelpers => (
@@ -187,7 +189,13 @@ const Variant = (props) => {
                       type="no-style"
                       loading={loading[i]}
                       className={`mp-upload-variant-${props.index}`}
-                      imageUrl={props.values[props.index].variantItems[i].image.smallUrl}
+                      imageUrl={
+                        props.values[props.index] &&
+                        props.values[props.index].variantItems &&
+                        props.values[props.index].variantItems[i] &&
+                        props.values[props.index].variantItems[i].image?
+                        props.values[props.index].variantItems[i].image.smallUrl: ''
+                      }
                       disabled={status[i]}
                       name={`variants.${props.index}.variantItems.${i}.image`}
                       customRequest={({onError, onSuccess,file}) => uploadImage({onError, onSuccess,file},i)}
@@ -219,7 +227,13 @@ const Variant = (props) => {
                         props.setFieldValue(`variants.${props.index}.variantItems.${i}.name`,e.target.value)
                         handleChangeValue(e,i)
                       }}
-                      value={props.values[props.index].variantItems[i].name}
+                      value={
+                        props.values[props.index] &&
+                        props.values[props.index].variantItems &&
+                        props.values[props.index].variantItems[i] &&
+                        props.values[props.index].variantItems[i].name?
+                        props.values[props.index].variantItems[i].name : ''
+                      }
                       onBlur={props.handleBlur}
                       size="large"
                       status={checkError(props.index, i) ? "error" : "default" }        
@@ -233,7 +247,7 @@ const Variant = (props) => {
                     <ButtonTextIcon label="" onClick={() => {
                       const totalVariantType = props.variant.variantItems.length
                       if(totalVariantType > 1){
-                        props.removeVariantItems(i,props.index,props.values,props.onReset)
+                        context.removeVariantItems(i,props.index,props.values,props.onReset)
                         const tempValue = [...value]
                         tempValue[i] = ""
                         setValue(tempValue)
@@ -250,7 +264,7 @@ const Variant = (props) => {
       />
       <br/><br/>
         <Button width="full"
-          onClick={() => props.addVariantItems(props.errors,props.index,props.values)} type="secondary"
+          onClick={() => context.addVariantItems(props.errors,props.index,props.values)} type="secondary"
         >
         {strings.add_variant_name}
         </Button>

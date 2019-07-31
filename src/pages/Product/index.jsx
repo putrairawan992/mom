@@ -9,7 +9,6 @@ const Product = () => {
   const context = useContext(ProductContext)
   const [dataProduct, setDataProduct] = useState(null)
   const [labelButton, setLabelButton] = useState("")
-  const [loading, setLoading] = useState(false)
   const toFormEdit = () => {
     setLabelButton("Edit Product")
   }
@@ -25,7 +24,6 @@ const Product = () => {
           <ProductList
             toFormCreate={toFormCreate}
             toFormEdit={toFormEdit}
-            loading={loading}
           /> :
           <FormProduct
             dataProduct={dataProduct}

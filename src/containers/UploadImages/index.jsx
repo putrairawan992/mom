@@ -1,4 +1,4 @@
-import React,{useState, useEffect} from 'react'
+import React,{useState, useEffect, useContext} from 'react'
 import Upload from '../../components/Upload'
 import { apiPostWithToken } from '../../services/api'
 import {PATH_UPLOAD} from '../../services/path/upload'
@@ -6,9 +6,12 @@ import propTypes from 'prop-types'
 import {Card, Row, Col, Tag} from 'antd';
 import {FieldArray} from 'formik';
 import strings from '../../localization'
-import {getBase64, checkDimension} from '../../helpers/validation-upload'
+import {getBase64, checkDimension} from '../../helpers/validation-upload';
+import ProductContext from '../../context/GlobalStateProduct/product-context';
 
 const UploadImages = (props) => {
+  const context = useContext(ProductContext)
+  const {initialValues} =  context
   const [imageUrl, setImageUrl] = useState([])
   const [loading, setLoading] = useState([])
   const [disable, setDisable] = useState([])
@@ -37,35 +40,35 @@ const UploadImages = (props) => {
         obj.count = 0
         arr.push(obj)
       }
-      if(props.dataProduct){
-        const dataImages = props.dataProduct.images
+      if(initialValues.listImages){
         const injectArrImage = arr.map((image,index) => {
-          if(dataImages[index]){
-            return {...image , 
-              largeUrl : dataImages[index].largeUrl,
-              mediumUrl : dataImages[index].mediumUrl,
-              smallUrl: dataImages[index].smallUrl,
-              isDefault: dataImages[index].isDefault
+          if(initialValues.listImages[index]){
+            return { ...image, 
+                largeUrl : initialValues.listImages[index].largeUrl,
+                mediumUrl : initialValues.listImages[index].mediumUrl,
+                smallUrl: initialValues.listImages[index].smallUrl,
+                isDefault: initialValues.listImages[index].isDefault
             }
           }else{
             return {...image}
           }
         })
         setArrImage(injectArrImage)
-      }else{
-        setArrImage(arr)
       }
     }
     initImage()
   },[])
 
   useEffect(() => {
-    if(props.dataProduct){
-      const dataImages = props.dataProduct.images
+    if(initialValues.listImages){
+      const dataImages = initialValues.listImages
       let tempImage = [...imageUrl]
-      const getMediumImage = dataImages.map((image) => {
+      let tempDisable = [...disable]
+      const getMediumImage = dataImages.map((image, index) => {
+        tempDisable[index] = true
         return [...tempImage,image.mediumUrl]
       })
+      setDisable(tempDisable)
       setImageUrl(getMediumImage)
     }
   },[])

@@ -12,8 +12,6 @@ const StockManagement = (props) => {
     props.setFieldValue('readyStock', value)
   }
 
-  console.log(props.errors)
-
   return (
     <Form.Item 
       validateStatus={
