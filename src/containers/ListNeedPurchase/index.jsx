@@ -40,7 +40,7 @@ const ListNeedPurchased = props => {
   const [listLogNote, setListLogNote] = useState([]);
   const [invoiceById, setInvoiceById] = useState(null);
   const [refInvoice, setRefInvoice] = useState(null);
-  const [loadingConfirm, setLoadingConfirm] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const updateList = async (update = false, action) => {
     try {
@@ -51,8 +51,7 @@ const ListNeedPurchased = props => {
           contentNotification(
             "Order Undo.",
             "The Order is being undo, you can see the history in activity log",
-            "info-circle",
-            "secondary"
+            "info"
           );
         } else if (action === "CANCEL") {
           actionCancel();
@@ -60,8 +59,7 @@ const ListNeedPurchased = props => {
           contentNotification(
             "Order Canceled.",
             "The Order is being canceled, you can see the history in activity log or canceled order tab",
-            "info-circle",
-            "secondary"
+            "info"
           );
         } else if (action === "NEXT") {
           setVisibleConfirm(!visibleConfirm);
@@ -69,8 +67,7 @@ const ListNeedPurchased = props => {
           contentNotification(
             "New Order has moved to the next process.",
             "Continue responding the order you have selected in Need Purchased Tabs.",
-            "check-circle",
-            "primary"
+            "success"
           );
         } else {
           actionAddNotes();
@@ -78,8 +75,7 @@ const ListNeedPurchased = props => {
           contentNotification(
             "Admin note created.",
             "Admin note has created, you can see full list by clicking the 'Show Admin Notes' button.",
-            "check-circle",
-            "primary"
+            "success"
           );
         }
       }
@@ -89,13 +85,13 @@ const ListNeedPurchased = props => {
   };
 
   const patchNext = async invoiceId => {
-    setLoadingConfirm(!loadingConfirm);
+    setLoading(!loading);
     try {
       const response = await apiPatchWithToken(
         `${PATH_ORDER.NEXT}/${invoiceId}`
       );
       if (response) {
-        setLoadingConfirm(false);
+        setLoading(false);
         updateList(true, "NEXT");
       }
     } catch (error) {
@@ -109,9 +105,11 @@ const ListNeedPurchased = props => {
       subCode: value.reason,
       note: value.note
     };
+    setLoading(!loading)
     try {
       const response = await apiPostWithToken(`${PATH_ORDER.UNDO}`, request);
       if (response) {
+        setLoading(false)
         updateList(true, "UNDO");
       }
     } catch (error) {
@@ -136,14 +134,16 @@ const ListNeedPurchased = props => {
   };
 
   const postNote = async value => {
+    setLoading(!loading);
     const request = {
-      id: value.invoiceId,
+      invoiceId: value.invoiceId,
       note: value.note
     };
     try {
       const response = await apiPostWithToken(`${PATH_ORDER.NOTE}`, request);
       if (response) {
         updateList(true, "NOTE");
+        setLoading(false);
       }
     } catch (error) {
       console.log(error);
@@ -312,7 +312,7 @@ const ListNeedPurchased = props => {
                         <OrderVariant
                           variants={item.productSnapshot.informations}
                           quantity={item.productSnapshot.quantity}
-                          price={item.productSnapshot.price}
+                          price={item.productSnapshot.priceCny}
                           withPrice={true}
                         />
                       </div>
@@ -324,6 +324,7 @@ const ListNeedPurchased = props => {
                           label={strings.undo}
                           onClick={() => {
                             setRefInvoice(invoice.id);
+                            setLoading(false);
                             actionUndo();
                           }}
                         />
@@ -373,7 +374,7 @@ const ListNeedPurchased = props => {
       <ModalConfirm
         visible={visibleConfirm}
         value={refInvoice}
-        loading={loadingConfirm}
+        loading={loading}
         onOk={actionConfirm}
         onCancel={actionCancelConfirm}
         title={"Makes Sure that the product is already purchased."}
@@ -390,6 +391,8 @@ const ListNeedPurchased = props => {
       )}
       <ModalAddNote
         visible={visibleAddNote}
+        title={"Need Purchase"}
+        loading={loading}
         onSubmit={actionSubmitAddNote}
         onCancel={actionAddNotes}
         invoiceId={refInvoice}
@@ -398,6 +401,7 @@ const ListNeedPurchased = props => {
         visible={visibleUndo}
         onSubmit={actionSubmitUndo}
         onCancel={actionUndo}
+        loading={loading}
         invoiceId={refInvoice}
         options={optionsUndo}
         title={strings.modal_undo_title}

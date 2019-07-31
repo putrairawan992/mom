@@ -10,7 +10,7 @@ const GlobalStateProduct = props => {
   const [loading, setLoading] = useState(false)
   const [statusVariant, setStatusVariant] = useState(false)
   const [labelButton, setLabelButton] = useState("")
-  const [category, setCategory] = useState([])
+  const [titleForm, setTitleForm] = useState("")
   const [initialValues,setInitialValues] = useState({
     administration: "",
     actualWeight: "",
@@ -93,10 +93,8 @@ const GlobalStateProduct = props => {
     })
   }
 
-  const getProductById = async() => {
+  const toFormEdit = async(id) => {
     setLoading(true)
-    // let id = 'e7cc606c-6000-4752-b4d3-4c9655f045ff'
-    let id = 'd6d3e63f-6f66-4486-936a-5e26a25f8ed2'
     try {
       const response = await apiGetWithoutToken(PATH_PRODUCT.GET_BY_ID + id,)
       const respponseProduct = response.data.data
@@ -104,6 +102,8 @@ const GlobalStateProduct = props => {
       setLoading(false)
       setStatus(false)
       setStatusVariant(true)
+      setLabelButton("Edit Product")
+      setTitleForm("Edit Product")
     } catch (error) {
       clearStateInitialValues()
       setStatus(true)
@@ -138,6 +138,7 @@ const GlobalStateProduct = props => {
   const toFormCreate = () => {
     setStatus(false)
     setLabelButton("Add Product")
+    setTitleForm("Create Product")
   }
 
   const addProduct = (values, images) => {
@@ -199,7 +200,7 @@ const GlobalStateProduct = props => {
   return (
     <ProductContext.Provider
       value={{
-        getProductById: getProductById,
+        toFormEdit: toFormEdit,
         initialValues: initialValues,
         status: status,
         loading: loading,
@@ -210,7 +211,8 @@ const GlobalStateProduct = props => {
         addVariantItems: addVariantItems,
         labelButton: labelButton,
         removeVariantItems: removeVariantItems,
-        addProduct: addProduct
+        addProduct: addProduct,
+        titleForm: titleForm
       }}
     >
       {props.children}

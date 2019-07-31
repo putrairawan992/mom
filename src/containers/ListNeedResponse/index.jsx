@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Row, Col, Card } from "antd";
 import "./style.sass";
 import OrderVariant from "../../components/OrderVariant";
@@ -11,9 +11,11 @@ import convertTimesTime from "../../helpers/convertTimestime";
 import ImageShipping from "../../components/ImageShipping";
 import strings from "../../localization";
 import LoaderItem from "../../components/LoaderItem";
-import contentNotification from '../../helpers/notification';
+import contentNotification from "../../helpers/notification";
 
 const ListNeedResponse = props => {
+  const [loading, setLoading] = useState([]);
+
   const getListNeedResponse = async (update = false) => {
     try {
       if (update) {
@@ -21,8 +23,7 @@ const ListNeedResponse = props => {
         contentNotification(
           "New Order has moved to the next process.",
           "Continue responding the order you have selected in Need Purchased Tabs.",
-          "check-circle",
-          "primary"
+          "success"
         );
       }
     } catch (error) {
@@ -30,12 +31,19 @@ const ListNeedResponse = props => {
     }
   };
 
-  const patchNextNeedResponse = async invoiceId => {
+  const patchNextNeedResponse = async (invoiceId, index) => {
+    // setLoading(!loading);
+    const tempLoading = [...loading]
+    tempLoading[index] = true
+    setLoading(tempLoading)
     try {
       const response = await apiPatchWithToken(
         `${PATH_ORDER.NEXT}/${invoiceId}`
       );
+      console.log("respon", response);
       if (response) {
+        tempLoading[index] = false
+        setLoading(tempLoading);
         getListNeedResponse(true);
       }
     } catch (error) {
@@ -43,8 +51,8 @@ const ListNeedResponse = props => {
     }
   };
 
-  const handleResponse = invoiceId => {
-    patchNextNeedResponse(invoiceId);
+  const handleResponse = (invoiceId, index) => {
+    patchNextNeedResponse(invoiceId, index);
   };
 
   return (
@@ -56,7 +64,7 @@ const ListNeedResponse = props => {
           </Row>
         </Card>
       ) : props.invoices ? (
-        props.invoices.map(invoice => (
+        props.invoices.map( (invoice, index) => (
           <Card key={invoice.id}>
             {invoice.order.orderItems.map(item => (
               <Row key={item.id}>
@@ -86,7 +94,9 @@ const ListNeedResponse = props => {
                             <td>:</td>
                             <td>
                               <span>
-                                {convertTimesTime.TypeMillisecondWithoutSecond(invoice.order.orderActivityDate.orderDate)}
+                                {convertTimesTime.TypeMillisecondWithoutSecond(
+                                  invoice.order.orderActivityDate.orderDate
+                                )}
                               </span>
                             </td>
                           </tr>
@@ -106,7 +116,8 @@ const ListNeedResponse = props => {
                       <div className="wrap-button">
                         <Button
                           type="primary"
-                          onClick={() => handleResponse(invoice.id)}
+                          loading={loading[index]}
+                          onClick={() => handleResponse(invoice.id, index)}
                         >
                           {strings.respond}
                         </Button>
@@ -120,7 +131,7 @@ const ListNeedResponse = props => {
                         <OrderVariant
                           variants={item.productSnapshot.informations}
                           quantity={item.productSnapshot.quantity}
-                          price={item.productSnapshot.price}
+                          price={item.productSnapshot.priceCny}
                           withPrice={true}
                         />
                       </div>

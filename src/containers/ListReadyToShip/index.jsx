@@ -49,16 +49,14 @@ const ListReadyToShip = props => {
           contentNotification(
             "Order Undo.",
             "The Order is being undo, you can see the history in activity log",
-            "info-circle",
-            "secondary"
+            "info"
           );
         } else if (action === "NEXT") {
           await props.onLoad();
           contentNotification(
             "The package is shipped.",
             "The order has been moved to the shipped tab, and the package is already on it's way to indonesia.",
-            "check-circle",
-            "primary"
+            "success"
           );
         } else {
           actionAddNotes();
@@ -66,8 +64,7 @@ const ListReadyToShip = props => {
           contentNotification(
             "Admin note created.",
             "Admin note has created, you can see full list by clicking the 'Show Admin Notes' button.",
-            "check-circle",
-            "primary"
+            "success"
           );
         }
       }
@@ -98,9 +95,11 @@ const ListReadyToShip = props => {
       subCode: value.reason,
       note: value.note
     };
+    setLoading(!loading)
     try {
       const response = await apiPostWithToken(`${PATH_ORDER.UNDO}`, request);
       if (response) {
+        setLoading(false)
         updateList(true, "UNDO");
       }
     } catch (error) {
@@ -109,14 +108,16 @@ const ListReadyToShip = props => {
   };
 
   const postNote = async value => {
+    setLoading(!loading);
     const request = {
-      id: value.invoiceId,
+      invoiceId: value.invoiceId,
       note: value.note
     };
     try {
       const response = await apiPostWithToken(`${PATH_ORDER.NOTE}`, request);
       if (response) {
         updateList(true, "NOTE");
+        setLoading(false);
       }
     } catch (error) {
       console.log(error);
@@ -187,8 +188,6 @@ const ListReadyToShip = props => {
   const actionShowLogNoteAdmin = () => {
     setVisibleLogNoteAdmin(!visibleLogNoteAdmin);
   };
-
-  console.log("log", props.invoices);
   
   return (
     <React.Fragment>
@@ -282,6 +281,7 @@ const ListReadyToShip = props => {
                           label={strings.undo}
                           onClick={() => {
                             setRefInvoice(invoice.id);
+                            setLoading(false);
                             actionUndo();
                           }}
                         />
@@ -341,6 +341,8 @@ const ListReadyToShip = props => {
       />
       <ModalAddNote
         visible={visibleAddNote}
+        title={"Ready To Ship"}
+        loading={loading}
         onSubmit={actionSubmitAddNote}
         onCancel={actionAddNotes}
         invoiceId={refInvoice}
@@ -349,6 +351,7 @@ const ListReadyToShip = props => {
         visible={visibleUndo}
         onSubmit={actionSubmitUndo}
         onCancel={actionUndo}
+        loading={loading}
         invoiceId={refInvoice}
         options={optionsUndo}
         title={strings.modal_undo_title}

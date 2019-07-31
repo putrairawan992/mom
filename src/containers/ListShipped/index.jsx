@@ -19,7 +19,7 @@ import "../../sass/style.sass";
 import "./style.sass";
 
 const StatusOrder = ({ status }) => {
-  return status === "SHP" ? (
+  return status === ("SHP" || "RTS" || "PRC" || "NPR" || "NRP")? (
     <React.Fragment>
       <span className="dot dot__color-shipped" />
       <span className="status-order-purchased">
@@ -43,6 +43,7 @@ const ListShipped = props => {
   const [listLogActivity, setListLogActivity] = useState([]);
   const [listLogNote, setListLogNote] = useState([]);
   const [refInvoice, setRefInvoice] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const updateList = async (update = false, action) => {
     try {
@@ -53,8 +54,7 @@ const ListShipped = props => {
           contentNotification(
             "Order Undo.",
             "The Order is being undo, you can see the history in activity log",
-            "info-circle",
-            "secondary"
+            "info"
           );
         }
       }
@@ -69,9 +69,11 @@ const ListShipped = props => {
       subCode: value.reason,
       note: value.note
     };
+    setLoading(!loading);
     try {
       const response = await apiPostWithToken(`${PATH_ORDER.UNDO}`, request);
       if (response) {
+        setLoading(false);
         updateList(true, "UNDO");
       }
     } catch (error) {
@@ -193,14 +195,14 @@ const ListShipped = props => {
                         <OrderVariant
                           variants={item.productSnapshot.informations}
                           quantity={item.productSnapshot.quantity}
-                          price={item.productSnapshot.price}
+                          price={item.productSnapshot.priceCny}
                           withPrice={true}
                         />
                       </div>
                     </Col>
                     <Col offset={3} md={9}>
                       <div className="wrap-button-text-icon">
-                      {invoice.status === 'SHP' &&
+                      {invoice.status === ("SHP" || "RTS" || "PRC" || "NPR" || "NRP") &&
                         <ButtonTextIcon
                           icon="rollback"
                           label={strings.undo}
@@ -241,6 +243,7 @@ const ListShipped = props => {
         visible={visibleUndo}
         onSubmit={actionSubmitUndo}
         onCancel={actionUndo}
+        loading={loading}
         invoiceId={refInvoice}
         options={optionsUndo}
         title={strings.modal_undo_title}

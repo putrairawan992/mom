@@ -44,16 +44,14 @@ const ListPickedUp = props => {
           contentNotification(
             "Order Undo.",
             "The Order is being undo, you can see the history in activity log",
-            "info-circle",
-            "secondary"
+            "info"
           );
         } else if (action === "NEXT") {
           await props.onLoad();
           contentNotification(
             "The package has received by customer",
             "The package is already received by customer, and the order list has moved to the next tab",
-            "check-circle",
-            "primary"
+            "success"
           );
         } else {
           actionAddNotes();
@@ -61,8 +59,7 @@ const ListPickedUp = props => {
           contentNotification(
             "Admin note created.",
             "Admin note has created, you can see full list by clicking the 'Show Admin Notes' button.",
-            "check-circle",
-            "primary"
+            "success"
           );
         }
       }
@@ -93,9 +90,11 @@ const ListPickedUp = props => {
       subCode: value.reason,
       note: value.note
     };
+    setLoading(!loading);
     try {
       const response = await apiPostWithToken(`${PATH_ORDER.UNDO}`, request);
       if (response) {
+        setLoading(false);
         updateList(true, "UNDO");
       }
     } catch (error) {
@@ -104,14 +103,16 @@ const ListPickedUp = props => {
   };
 
   const postNote = async value => {
+    setLoading(!loading);
     const request = {
-      id: value.invoiceId,
+      invoiceId: value.invoiceId,
       note: value.note
     };
     try {
       const response = await apiPostWithToken(`${PATH_ORDER.NOTE}`, request);
       if (response) {
         updateList(true, "NOTE");
+        setLoading(false);
       }
     } catch (error) {
       console.log(error);
@@ -164,6 +165,7 @@ const ListPickedUp = props => {
   };
 
   const actionSubmitUndo = payload => {
+    setLoading(!loading)
     postUndo(payload);
   };
 
@@ -249,6 +251,7 @@ const ListPickedUp = props => {
                           label={strings.undo}
                           onClick={() => {
                             setRefInvoice(invoice.id);
+                            setLoading(false);
                             actionUndo();
                           }}
                         />
@@ -301,6 +304,8 @@ const ListPickedUp = props => {
       />
       <ModalAddNote
         visible={visibleAddNote}
+        title={"Picked Up"}
+        loading={loading}
         onSubmit={actionSubmitAddNote}
         onCancel={actionAddNotes}
         invoiceId={refInvoice}
@@ -309,6 +314,7 @@ const ListPickedUp = props => {
         visible={visibleUndo}
         onSubmit={actionSubmitUndo}
         onCancel={actionUndo}
+        loading={loading}
         invoiceId={refInvoice}
         options={optionsUndo}
         title={strings.modal_undo_title}

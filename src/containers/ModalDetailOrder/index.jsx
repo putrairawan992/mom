@@ -2,7 +2,7 @@ import React from "react";
 import "./style.sass";
 import PropTypes from "prop-types";
 import Button from "../../components/Button";
-import { Row, Col, Divider, Icon, Modal } from "antd";
+import { Row, Col, Divider, Modal } from "antd";
 import convertTimesTime from "../../helpers/convertTimestime";
 import LabelContent from "../../components/LabelContent";
 import LabelDetailJne from "../../components/LabelDetailJne";

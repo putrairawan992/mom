@@ -33,6 +33,7 @@ const ListDelivered = props => {
   const [refInvoice, setRefInvoice] = useState(null);
   const [invoiceById, setInvoiceById] = useState(null);
   const [barcodeNumber, setBarcodeNumber] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const updateList = async (update = false, action) => {
     try {
@@ -43,8 +44,7 @@ const ListDelivered = props => {
           contentNotification(
             "Order Undo.",
             "The Order is being undo, you can see the history in activity log",
-            "info-circle",
-            "secondary"
+            "info"
           );
         } else if (action === "NEXT") {
           await props.onLoad();
@@ -54,8 +54,7 @@ const ListDelivered = props => {
           contentNotification(
             "Admin note created.",
             "Admin note has created, you can see full list by clicking the 'Show Admin Notes' button.",
-            "check-circle",
-            "primary"
+            "success"
           );
         }
       }
@@ -81,9 +80,11 @@ const ListDelivered = props => {
       subCode: value.reason,
       note: value.note
     };
+    setLoading(!loading)
     try {
       const response = await apiPostWithToken(`${PATH_ORDER.UNDO}`, request);
       if (response) {
+        setLoading(false)
         updateList(true, "UNDO");
       }
     } catch (error) {
@@ -92,14 +93,16 @@ const ListDelivered = props => {
   };
 
   const postNote = async value => {
+    setLoading(!loading);
     const request = {
-      id: value.invoiceId,
+      invoiceId: value.invoiceId,
       note: value.note
     };
     try {
       const response = await apiPostWithToken(`${PATH_ORDER.NOTE}`, request);
       if (response) {
         updateList(true, "NOTE");
+        setLoading(false);
       }
     } catch (error) {
       console.log(error);
@@ -144,7 +147,7 @@ const ListDelivered = props => {
   const actionUndo = () => {
     setVisibleUndo(!visibleUndo);
   };
-
+  
   const actionSubmitUndo = payload => {
     postUndo(payload);
   };
@@ -236,6 +239,7 @@ const ListDelivered = props => {
                           onClick={() => {
                             setRefInvoice(invoice.id);
                             actionUndo();
+                            setLoading(false);
                           }}
                         />
                         <ButtonTextIcon
@@ -283,6 +287,8 @@ const ListDelivered = props => {
       )}
       <ModalAddNote
         visible={visibleAddNote}
+        title={"Delivered"}
+        loading={loading}
         onSubmit={actionSubmitAddNote}
         onCancel={actionAddNotes}
         invoiceId={refInvoice}
@@ -291,6 +297,7 @@ const ListDelivered = props => {
         visible={visibleUndo}
         onSubmit={actionSubmitUndo}
         onCancel={actionUndo}
+        loading={loading}
         invoiceId={refInvoice}
         options={optionsUndo}
         title={strings.modal_undo_title}

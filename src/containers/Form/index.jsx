@@ -53,7 +53,7 @@ const FormProduct = (props) => {
   return (
     <div className="containerProduct">
       <p className="title-page">
-        {strings.create_product}
+        {context.titleForm}
       </p>
       <Formik
           initialValues={context.initialValues}
