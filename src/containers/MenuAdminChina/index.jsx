@@ -5,10 +5,11 @@ import OrderChina from "../../pages/OrderChina";
 import strings from "../../localization";
 import Product from "../../pages/Product";
 import "./style.sass";
+import Products from "../../pages/Products";
 
 const MenuAdminChina = props => {
   useEffect(() => {
-    changeMenu(3);
+    changeMenu(4);
   }, []);
 
   const menus = [
@@ -42,7 +43,7 @@ const MenuAdminChina = props => {
         props.onChange(<OrderChina />);
         break;
       case 4:
-        props.onChange(<OrderChina />);
+        props.onChange(<Products/>);
         break;
       default:
         props.onChange(<OrderChina />);
