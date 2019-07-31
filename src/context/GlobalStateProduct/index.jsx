@@ -1,8 +1,9 @@
 import React,{useState} from 'react';
 import ProductContext from './product-context';
-import {apiGetWithoutToken} from '../../services/api';
+import {apiGetWithoutToken, apiPostWithToken} from '../../services/api';
 import {PATH_PRODUCT} from '../../services/path/product';
 import {PATH_CATEGORY} from '../../services/path/category';
+import {message, notification} from 'antd';
 
 
 const GlobalStateProduct = props => {
@@ -141,7 +142,7 @@ const GlobalStateProduct = props => {
     setTitleForm("Create Product")
   }
 
-  const addProduct = (values, images) => {
+  const addProduct = async(values, images) => {
     let dimension = {}
       dimension.width = values.width
       dimension.length = values.length
@@ -188,14 +189,25 @@ const GlobalStateProduct = props => {
       console.log("payload",allDataProduct)
       // setAllProduct(allDataProduct)
     //TODO fungsi post product
-      // try {
-      //   const request = await apiPostWithToken(PATH_PRODUCT.CREATE, allDataProduct)
-      //   message.success(request.data.code)
-      // } catch (error) {
-      //   console.log(error.response)
-      //   openNotificationWithIcon('error', error.response)
-      // }
+      try {
+        const request = await apiPostWithToken(PATH_PRODUCT.CREATE, allDataProduct)
+        message.success(request.data.code)
+      } catch (error) {
+        console.log(error.response)
+        openNotificationWithIcon('error', error.response)
+      }
   }
+
+  const openNotificationWithIcon = (type,error) => {
+    notification[type]({
+      message: error.data.error,
+      duration: 0,
+      description:
+        `status: ${error.data.status} \xA0
+        ${error.data.message}
+        `,
+    });
+  };
 
   return (
     <ProductContext.Provider

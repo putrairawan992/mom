@@ -2,17 +2,14 @@ import React, { useState, useContext} from 'react';
 import UploadImages from '../../containers/UploadImages';
 import Variants from '../../containers/Variants';
 import { Formik } from 'formik';
-import { Form, Input } from 'antd';
+import { Form } from 'antd';
 import Button from '../../components/Button';
 import ProductPrice from '../../containers/ProductPrice';
 import ProductInfo from '../../containers/ProductInfo';
 import Supplier from '../../containers/AllSupplier';
-import {message, notification} from 'antd';
+
 import Measurement from '../../containers/Measurement';
 import StockManagement from '../../containers/StockManagement';
-import {apiPostWithToken} from '../../services/api'
-import {PATH_PRODUCT} from '../../services/path/product';
-import strings from '../../localization';
 import ProductContext from '../../context/GlobalStateProduct/product-context';
 import {schemaProduct} from '../../schema'
 import './style.sass';
@@ -39,16 +36,7 @@ const FormProduct = (props) => {
    
   }
 
-  const openNotificationWithIcon = (type,error) => {
-    notification[type]({
-      message: error.data.error,
-      duration: 0,
-      description:
-        `status: ${error.data.status} \xA0
-        ${error.data.message}
-        `,
-    });
-  };
+ 
   
   return (
     <div className="containerProduct">
@@ -62,7 +50,7 @@ const FormProduct = (props) => {
             handleSubmit(values)
             
           }}
-          // validationSchema={schemaProduct}
+          validationSchema={schemaProduct}
         >
           {({
             values,

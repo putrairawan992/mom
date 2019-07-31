@@ -26,10 +26,6 @@ const MenuAdminChina = props => {
       icon: "shopping-cart",
       name: strings.order
     },
-    {
-      icon: "shop",
-      name: "list product"
-    }
   ];
 
   const changeMenu = menu => {
@@ -45,9 +41,6 @@ const MenuAdminChina = props => {
         break;
       case 3:
         props.onChange(<OrderChina />);
-        break;
-      case 4:
-        props.onChange(<Products/>);
         break;
       default:
         props.onChange(<OrderChina />);
