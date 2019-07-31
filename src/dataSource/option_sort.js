@@ -1,11 +1,11 @@
 export const sortOption = [
   {
-    value: "",
+    value: "creationDate",
     name: "Newest",
-    direction: ""
+    direction: "desc"
   },
   {
-    value: "",
+    value: "creationDate",
     name: "Oldest",
     direction: "asc"
   },

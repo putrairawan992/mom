@@ -3,30 +3,52 @@ import { Card, Table, Select, Icon, Input } from "antd";
 import { PATH_PRODUCT } from "../../services/path/product";
 import { apiGetWithoutToken } from "../../services/api";
 import { filterCategoryOption } from "../../dataSource/option_category";
-import { filterProductOption } from "../../dataSource/option_product";
+import { filterProductOption } from "../../dataSource/option_filter_product";
 import { sortOption } from "../../dataSource/option_sort";
 import "./style.sass";
+import Button from "../../components/Button";
+import { currencyYuan } from "../../helpers/currency";
 
 const { Option } = Select;
 const { Search } = Input;
 
 const Products = props => {
   const [loading, setLoading] = useState(false);
-  const [direction, setDirection] = useState("desc");
   const [listProduct, setListProduct] = useState([]);
+  const [path, setPath] = useState(PATH_PRODUCT.PRODUCT);
+  const [category, setCategory] = useState("");
+  const [parameter, setParameter]= useState({
+    sortBy: "creationDate", 
+    direction: "desc", 
+    filterBy: "",
+    searchBy: "",
+    limit: 20
+  });
 
   useEffect(() => {
     getListProduct();
   }, []);
 
-  const schemaProducts = ({ id, image, name, price }) => ({
+  useEffect(() => {
+    getListProduct();
+  }, [parameter]);
+
+  useEffect(() => {
+    getListProduct();
+  }, [path]);
+
+  useEffect(() => {
+    setPathProductCategory();
+  }, [category]);
+
+  const schemaProducts = ({ id, image, nameChinese, name, basePrice, supplierName, isReadyStock }) => ({
     id: id,
     image: image.defaultImage,
-    nameCny: name,
+    nameCny: nameChinese,
     nameIdn: name,
-    priceCny: price,
-    supplier: "Western General Merchandise",
-    stock: "Ready Stock"
+    priceCny: currencyYuan(basePrice),
+    supplier: supplierName,
+    stock: isReadyStock ? "Ready Stock": "Out of Stock"
   });
 
   const convertToSchemaProduct = response => {
@@ -97,49 +119,68 @@ const Products = props => {
     }
   ];
 
-  // const paramProduct = direction => {
-  //   return {
-  //     direction: direction
-  //   };
-  // };
-
-  const getListProduct = async (parameter = "") => {
+  const getListProduct = async () => {
     setLoading(true);
     try {
       const response = await apiGetWithoutToken(
-        `${PATH_PRODUCT.PRODUCT}`,
+        `${path}`,
         parameter
       );
       setListProduct(convertToSchemaProduct(response));
       setLoading(false);
     } catch (error) {
       console.log(error);
+      setListProduct(null);
+      setLoading(false);
     }
   };
 
+  const setPathProductCategory = () => {
+    if(category===""){
+      setPath(PATH_PRODUCT.PRODUCT);
+    }else{
+      setPath(`${PATH_PRODUCT.CATEGORY}/${category}`);
+    }
+  }
+
   const actionSort = (value) => {
-    getListProduct(value);
+    const sort = JSON.parse(value);
+    setParameter({...parameter, sortBy: sort.value, direction: sort.direction});
   };
-  const actionFilterCategory = () => {};
-  const actionFilterProduct = () => {};
+
+  const actionFilterCategory = (value) => {
+    setCategory(JSON.parse(value).value);
+    setPathProductCategory();
+  };
+  
+  const actionFilterProduct = (value) => {
+    const filter = JSON.parse(value);
+    setParameter({...parameter, filterBy: filter.value});
+  };
+
+  const actionSearch = (value) => {
+    const keyword = value;
+    setParameter({...parameter, searchBy: keyword});
+  };
 
   return (
     <Fragment>
-      <div>
-        <h1>Product List</h1>
+      <div className="mp-container-title-product">
+        <span>Product List</span>
+        <Button>Add Product +</Button>
       </div>
       <Card>
         <div className="mp-container-header-table">
           <div className="mp-container-title-select">
             <span className="mp-span-title-select">Sort</span>
             <Select
-              defaultValue={`{ "value": ${sortOption[0].value}, "direction": ${sortOption[0].direction} }`}
+              defaultValue={JSON.stringify({ value: sortOption[0].value, direction: sortOption[0].direction })}
               style={{ width: 200 }}
               className="mp-select-product-list"
               onChange={actionSort}
             >
               {sortOption.map(sort => (
-                <Option key={sort.value} value={`{ "value": ${sort.value}, "direction": ${sort.direction} }`}>
+                <Option key={sort.value} value={JSON.stringify({ value: sort.value, direction: sort.direction})}>
                   {sort.name}
                 </Option>
               ))}
@@ -148,25 +189,25 @@ const Products = props => {
           <div className="mp-container-title-select">
             <span className="mp-span-title-select">Filter</span>
             <Select
-              defaultValue={filterCategoryOption[0].value}
+              defaultValue={filterCategoryOption[0].name}
               style={{ width: 200 }}
               className="mp-select-product-list"
               onChange={actionFilterCategory}
             >
               {filterCategoryOption.map(category => (
-                <Option key={category.value} value={category.value}>
+                <Option key={category.value} value={JSON.stringify({ value: category.value})}>
                   {category.name}
                 </Option>
               ))}
             </Select>
             <Select
-              defaultValue={filterProductOption[0].value}
+              defaultValue={filterProductOption[0].name}
               style={{ width: 200 }}
               className="mp-select-product-list"
               onChange={actionFilterProduct}
             >
               {filterProductOption.map(product => (
-                <Option key={product.value} value={product.value}>
+                <Option key={product.value} value={JSON.stringify({ value: product.value})}>
                   {product.name}
                 </Option>
               ))}
@@ -175,7 +216,7 @@ const Products = props => {
           <div>
             <Search
               placeholder="input search text"
-              onSearch={value => console.log(value)}
+              onSearch={value => actionSearch(value)}
               style={{ width: 300 }}
             />
           </div>
