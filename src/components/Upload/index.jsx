@@ -18,9 +18,15 @@ const Upload = props => {
         <>
           <img src={props.imageUrl}  alt="avatar"/> 
           <div className="top-icon">
-          <Icon type="camera" onClick={() => props.editImage(props.index)}  className="cameraIcon"/>
+          <Icon type="camera" onClick={() => props.editImage(props.indexVariant,props.index)}  className="cameraIcon"/>
           <Icon  type="delete" onClick={() => props.remove(props.index,props.imageUrl)} className="deleteIcon"/>
           </div>
+          {
+            props.loadingEdit ?
+            <div className="container-loading">
+              <Icon className="loading-edit" type={ 'loading' }></Icon>
+            </div>   : null
+          }
         </>
         :
         <>
@@ -29,6 +35,12 @@ const Upload = props => {
           <Icon type="camera" onClick={() => props.editImage(props.index)} className="cameraIcon"/>
           <Icon onClick={() => props.remove(props.index)} type="delete" className="deleteIcon"/>
           </div>
+          {
+            props.loadingEdit ?
+            <div className="container-loading">
+              <Icon className="loading-edit" type={ 'loading' }></Icon>
+            </div>   : null
+          }
           <Button width="full"
             onClick={() => props.changeDefault(props.index,props)} 
             className={props.type === 'default' ? 'mp-btn-upload' : 'mp-btn-upload-non-default'}
@@ -46,8 +58,12 @@ const Upload = props => {
       name="avatar"
       listType="picture-card"
       showUploadList={false}
+      // className="upload"
       >
+      <div className="inside-upload">
       {props.imageUrl ? imageUpload : uploadButton}
+      </div>
+      
     </UploadAnt>
   )
 }
