@@ -4,7 +4,9 @@ import { Menu, Icon } from "antd";
 import OrderChina from "../../pages/OrderChina";
 import strings from "../../localization";
 import Product from "../../pages/Product";
+import GlobalStateProduct from '../../context/GlobalStateProduct'
 import "./style.sass";
+import Products from "../../pages/Products";
 
 const MenuAdminChina = props => {
   useEffect(() => {
@@ -24,10 +26,6 @@ const MenuAdminChina = props => {
       icon: "shopping-cart",
       name: strings.order
     },
-    {
-      icon: "shop",
-      name: "list product"
-    }
   ];
 
   const changeMenu = menu => {
@@ -36,12 +34,12 @@ const MenuAdminChina = props => {
         props.onChange(<h1>Dashboard</h1>);
         break;
       case 2:
-        props.onChange(<Product />);
+        props.onChange(
+        <GlobalStateProduct>
+          <Product />
+        </GlobalStateProduct>);
         break;
       case 3:
-        props.onChange(<OrderChina />);
-        break;
-      case 4:
         props.onChange(<OrderChina />);
         break;
       default:

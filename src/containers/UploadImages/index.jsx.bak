@@ -1,17 +1,12 @@
-import React,{useState, useEffect, useContext} from 'react'
+import React,{useState, useEffect} from 'react'
 import Upload from '../../components/Upload'
 import { apiPostWithToken } from '../../services/api'
 import {PATH_UPLOAD} from '../../services/path/upload'
 import propTypes from 'prop-types'
 import {Card, Row, Col, Tag} from 'antd';
 import {FieldArray} from 'formik';
-import strings from '../../localization'
-import {getBase64, checkDimension} from '../../helpers/validation-upload';
-import ProductContext from '../../context/GlobalStateProduct/product-context';
 
 const UploadImages = (props) => {
-  const context = useContext(ProductContext)
-  const {initialValues} =  context
   const [imageUrl, setImageUrl] = useState([])
   const [loading, setLoading] = useState([])
   const [disable, setDisable] = useState([])
@@ -40,44 +35,31 @@ const UploadImages = (props) => {
         obj.count = 0
         arr.push(obj)
       }
-      if(initialValues.listImages){
-        const injectArrImage = arr.map((image,index) => {
-          if(initialValues.listImages[index]){
-            return { ...image, 
-                largeUrl : initialValues.listImages[index].largeUrl,
-                mediumUrl : initialValues.listImages[index].mediumUrl,
-                smallUrl: initialValues.listImages[index].smallUrl,
-                isDefault: initialValues.listImages[index].isDefault
-            }
-          }else{
-            return {...image}
-          }
-        })
-        setArrImage(injectArrImage)
-      }
+      setArrImage(arr)
     }
     initImage()
+    console.log("tes")  
   },[])
 
-  useEffect(() => {
-    if(initialValues.listImages){
-      const dataImages = initialValues.listImages
-      let tempImage = [...imageUrl]
-      let tempDisable = [...disable]
-      const getMediumImage = dataImages.map((image, index) => {
-        tempDisable[index] = true
-        return [...tempImage,image.mediumUrl]
-      })
-      setDisable(tempDisable)
-      setImageUrl(getMediumImage)
-    }
-  },[])
+  
 
   useEffect(() => {
     props.getPayloadImage(arrImage)
   },[arrImage,disable])
 
- 
+  const checkDimension = (file) => {
+    return new Promise(resolve => {
+      let _URL = window.URL || window.webkitURL;
+      var image = new Image();
+      image.src = _URL.createObjectURL(file)
+      image.onload = function(e ) {
+        let dimension = {}
+          dimension.width = image.naturalWidth
+          dimension.height = image.naturalHeight
+        resolve(dimension)   
+      };
+    })
+  }
 
   const beforeUpload = (file) => {
     const isPng = file.type === 'image/png'
@@ -154,8 +136,8 @@ const UploadImages = (props) => {
     if (info.file.status === 'done' ) {
         let imageUrlTemp = [...imageUrl]
         let disableTemp = [...disable]
-        getBase64(info.file.originFileObj, function() {
-          imageUrlTemp[index]=info.file.response.mediumUrl;
+        getBase64(info.file.originFileObj, function(responseImageUrl) {
+          imageUrlTemp[index]=responseImageUrl;
           loadingTemp[index] = false;
           disableTemp[index] = true;
           setImageUrl(imageUrlTemp);
@@ -165,6 +147,12 @@ const UploadImages = (props) => {
         });
     }
   };
+
+  const getBase64 = (img, callback) => {
+    const reader = new FileReader();
+    reader.addEventListener('load', () => callback(reader.result));
+    reader.readAsDataURL(img);
+  }
 
   const uploadImage = async ({onError, onSuccess,file},index) => {
     let tempLoadingEdit = [...loadingEdit]
@@ -220,20 +208,20 @@ const UploadImages = (props) => {
   
   return (
     <React.Fragment>
-      <Card className="card" title={<div className="card-title">{strings.product_images}</div>} >
+      <Card className="card" title={<div className="card-title">Product Images</div>} >
         <Row>
           <Col md={7}>
             <Row type="flex">
-            <div className="card-content">{strings.images}</div>
-              <Tag className="tag">{strings.required}</Tag>
+            <div className="card-content">Images</div>
+              <Tag className="tag">Required</Tag>
             </Row>
             <div className="card-sub-content">
-              {strings.product_images_quote}
+              It required at least one image to create a product, the images should be;
             </div>
             <ul style={{margin: 0, padding: 0, listStyleType: "none"}}>
-              <li>{strings.max_image_size}</li>
-              <li>{strings.min_frame}</li>
-              <li>{strings.format_image}</li>
+              <li>- Max Img Size 3 MB</li>
+              <li>- Min Frame Size 450px X 450px</li>
+              <li>- Format jpg, jpeg, png</li>
             </ul>
           </Col>
           <Col md={15}>
@@ -266,13 +254,14 @@ const UploadImages = (props) => {
                 )}
               />
             </Row>
+            <div>count : {countLoading}</div>
             {
               statusFile ? 
-              (<div className="text-error-message">{strings.type_image_error}</div>): null
+              (<div className="text-error-message">Only JPG, PNG, JPEG</div>): null
             }
             {
               statusSize ? 
-              <div className="text-error-message">{strings.size_image_error}</div> : null
+              <div className="text-error-message">Max Size 3MB</div> : null
             }
             {
               props.errors.listImages && props.touched.listImages ?
@@ -280,7 +269,7 @@ const UploadImages = (props) => {
             }
             {
               dimension ?
-              (<div className="text-error-message">{strings.frame_image_error}</div>) : null
+              (<div className="text-error-message">Min Frame Size 450 X 450</div>) : null
             }
           </Col>
         </Row>

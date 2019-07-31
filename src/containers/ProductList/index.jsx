@@ -1,18 +1,19 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, { Fragment, useState, useEffect, useContext } from "react";
 import { Card, Table, Select, Icon, Input } from "antd";
 import { PATH_PRODUCT } from "../../services/path/product";
 import { apiGetWithoutToken } from "../../services/api";
 import { filterCategoryOption } from "../../dataSource/option_category";
 import { filterProductOption } from "../../dataSource/option_filter_product";
 import { sortOption } from "../../dataSource/option_sort";
-import "./style.sass";
 import Button from "../../components/Button";
 import { currencyYuan } from "../../helpers/currency";
+import ProductContext from '../../context/GlobalStateProduct/product-context';
 
 const { Option } = Select;
 const { Search } = Input;
 
 const Products = props => {
+  const context = useContext(ProductContext)
   const [loading, setLoading] = useState(false);
   const [listProduct, setListProduct] = useState([]);
   const [path, setPath] = useState(PATH_PRODUCT.PRODUCT);
@@ -107,7 +108,9 @@ const Products = props => {
           <Icon
             className="mp-icon-product-action"
             type="edit"
-            onClick={() => alert(record.id)}
+            onClick={() =>{ 
+              context.toFormEdit(record.id)
+            }}
           />
           <Icon
             className="mp-icon-product-action"
@@ -167,7 +170,7 @@ const Products = props => {
     <Fragment>
       <div className="mp-container-title-product">
         <span>Product List</span>
-        <Button>Add Product +</Button>
+        <Button onClick={() => context.toFormCreate()}>Add Product +</Button>
       </div>
       <Card>
         <div className="mp-container-header-table">

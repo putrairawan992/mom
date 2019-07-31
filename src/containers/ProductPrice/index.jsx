@@ -1,10 +1,14 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 import {Card, Row, Col, Tag, Checkbox, Icon} from 'antd';
 import Input from '../../components/Input';
 import {apiGetWithoutToken} from '../../services/api';
 import {PATH_EXCHANGE} from '../../services/path/rate'
+import strings from '../../localization';
+import {InputNumber, Form} from 'antd';
+import ProductContext from '../../context/GlobalStateProduct/product-context'
 
 const ProductPrice = (props) => {
+  const context = useContext(ProductContext)
   const [basePrice, setBasePrice] = useState("")
   const [domesticFee, setDomesticFee] = useState("")
   const [feeBySea, setFeeBySea] = useState("")
@@ -45,51 +49,63 @@ const ProductPrice = (props) => {
   const handleChange = (event,key,setState) => {
     const toNumber = convertNumber(event.target.value)
     let currency = toNumber.toLocaleString()
-    setState(`${currency}`)
+    // let convert = currencyYuan(event.target.value)
+    const convert = event.target.value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+    // setState(`${convert}`)
+    setState(currency)
     props.setFieldValue(key,toNumber)
   }
 
   const convertNumber = (string) =>{
-    const toNumber = Number(string.replace(/\D/g, ''));
-    return toNumber
+
+    // const toNumber = Number(string.replace(/,/, ''));
+    // const toNumber = parseFloat(string.replace(/[^0-9-.]/g,''))
+    return string
   }
 
   const formatCurrency = (price) => {
     let number = Number(price)
-    return number.toLocaleString()
+    return price.toLocaleString()
+  }
+
+  const onChangeNumber = (value,key,setState) => {
+    // const rx = /^[0-9\b]+$/;
+    setState(value)
+    props.setFieldValue(key,value)
+    
   }
 
   return(
-    <Card className="card" title={<div className="card-title">Product Price</div>}>
+    <Card className="card" title={<div className="card-title">{strings.product_price}</div>}>
       <Row type="flex" align="middle">
         <Col span={props.grid.left}>
           <Row type="flex">
             <div className="card-content">
-              Base Price
+              {strings.base_price}
             </div>
-            <Tag className="tag">Required</Tag>
+            <Tag className="tag">{strings.required}</Tag>
           </Row>
         </Col>
         <Col span={props.grid.priceRight} className="col-height">
-          <Input 
-            onChange={e => {
-              handleChange(e,'basePrice',setBasePrice)
-            }}
-            value={basePrice}
-            onBlur={props.handleBlur}
-            name="basePrice"
-            size="large"
-            prefix={<div style={{fontSize : "15px"}}>¥</div>}
-            status={
-              props.errors.basePrice  && props.touched.basePrice?
-              "error": "default"
-            }
+          <Form.Item validateStatus={
+            props.errors.basePrice  && props.touched.basePrice?
+            "error": "success"
+          }>
+            <InputNumber
+              value={basePrice}
+              style={{width : "100%"}}
+              formatter={value => `¥ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+              parser={value => value.replace(/\¥\s?|(,*)/g, '')}
+              onChange={value => onChangeNumber(value,'basePrice',setBasePrice)}
+              size="large"
+              name="basePrice"
             />
-            {
-              props.errors.basePrice  && props.touched.basePrice? 
-              (<div className="text-error-message">{props.errors.basePrice }</div>) :
-              null
-            }
+              {
+                props.errors.basePrice  && props.touched.basePrice? 
+                (<div className="text-error-message">{props.errors.basePrice }</div>) :
+                null
+              }
+          </Form.Item>
         </Col>
       </Row>
       <div className="separator"/>
@@ -97,31 +113,33 @@ const ProductPrice = (props) => {
         <Col md={props.grid.left}>
           <Row type="flex">
             <div className="card-content">
-              Domestic Fee
+              {strings.domestic_fee}
             </div>
-            
-            <Tag className="tag">Required</Tag>
+            <Tag className="tag">{strings.required}</Tag>
           </Row>
         </Col>
         <Col md={props.grid.priceRight} className="col-height">
-          <Input
-            value={domesticFee}
-            name="domesticFee"
-            onChange={e => {
-              handleChange(e,'domesticFee',setDomesticFee)
-            }}
-            onBlur={props.handleBlur}
-            size="large"
-            prefix={<div style={{fontSize : "15px"}}>¥</div>}
-            status={
-              props.errors.domesticFee &&  props.touched.domesticFee ? 
-              "error" : "default"
-            }
-          />
-             {
+          <Form.Item validateStatus={
+            props.errors.domesticFee &&  props.touched.domesticFee ? 
+            "error" : "success"
+          }>
+            <InputNumber
+              value={domesticFee}
+              style={{width : "100%"}}
+              name="domesticFee"
+              onChange={value => {
+                onChangeNumber(value,'domesticFee',setDomesticFee)
+              }}
+              onBlur={props.handleBlur}
+              size="large"
+              formatter={value => `¥ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+              parser={value => value.replace(/\¥\s?|(,*)/g, '')}
+            />
+              {
               props.errors.domesticFee &&  props.touched.domesticFee ? 
               (<div className="text-error-message">{props.errors.domesticFee }</div>) : null
             }
+          </Form.Item>
         </Col>
       </Row>
       <div className="separator"/>
@@ -129,21 +147,21 @@ const ProductPrice = (props) => {
         <Col md={props.grid.left}>
           <Row type ="flex">
             <div className="card-content">
-              Shipment Fee
+              {strings.shipment_fee}
             </div>
-            <Tag className="tag">Required</Tag>
+            <Tag className="tag">{strings.required}</Tag>
           </Row>
         </Col>
         <Col md={15}>
           <div className="card-sub-content" style={{width: "100%"}}>
-            <p>Delivery fee (BR) from China to Indonesia</p>
+            <p>{strings.delivery_fee_quote}</p>
           </div>
         </Col>
       </Row>
       <Row type="flex" align="middle">
         <Col md={props.grid.left}>
           <div className="card-sub-second-content">
-            By Sea  
+            {strings.by_sea}  
           </div>
         </Col>
         <Col md={props.grid.priceRight} className="col-height">
@@ -172,7 +190,7 @@ const ProductPrice = (props) => {
       <Row type="flex" align="middle">
         <Col md={props.grid.left}>
           <div className="card-sub-second-content">
-            By Air
+            {strings.by_air}
           </div>
         </Col>
         <Col md={props.grid.priceRight} className="col-height">
@@ -202,7 +220,7 @@ const ProductPrice = (props) => {
         <Col md={11} offset={7}>
           <Checkbox >
             <span className="text-safety-orange">
-              Shipment Price Refrences <Icon fill="red" type="info-circle"/>
+              {strings.shipment_price_reference} <Icon fill="red" type="info-circle"/>
             </span>
           </Checkbox>
         </Col>
@@ -211,7 +229,7 @@ const ProductPrice = (props) => {
       <Row type="flex" align="middle">
         <Col md={props.grid.left}>
           <div className="card-content">
-            Administration
+            {strings.administration}
           </div>
         </Col>
         <Col md={props.grid.priceRight} className="col-height">
@@ -229,7 +247,7 @@ const ProductPrice = (props) => {
       <Row type="flex" align="middle">
         <Col md={props.grid.left}>
           <div className="card-content">
-            Exchange Rate
+            {strings.exchange_rate}
           </div>
         </Col>
         <Col md={3}>
@@ -256,7 +274,7 @@ const ProductPrice = (props) => {
       <Row type="flex" align="middle">
         <Col md={props.grid.left}>
           <div className="card-content">
-            Price By Sea
+            {strings.price_by_sea}
           </div>
         </Col>
         <Col md={props.grid.priceRight}>
@@ -272,7 +290,7 @@ const ProductPrice = (props) => {
       <Row type="flex" align="middle">
         <Col md={props.grid.left}>
           <div className="card-content">
-          Price By Air
+            {strings.price_by_air}
           </div>
         </Col>
         <Col md={props.grid.priceRight}>

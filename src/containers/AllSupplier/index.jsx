@@ -1,9 +1,9 @@
 import React, {useState} from 'react'
 import {Row, Col, Spin, Card, Tag} from 'antd'
-// import debounce from 'lodash/debounce'
 import Select from '../../components/Select'
 import { PATH_SUPPLIER} from '../../services/path/supplier';
 import {apiGetWithToken} from '../../services/api';
+import strings from '../../localization'
 
 const AllSupplier = (props) => {
   const [fetching, setFetching] = useState(false)
@@ -23,21 +23,18 @@ const AllSupplier = (props) => {
   }
 
   const change = (value,setFieldValue) => {
-    console.log(value)
     setFieldValue("supplier",value)
     setFetching(false)
   }
 
-  // console.log(props.errors)
-
   return(
     <React.Fragment>
-      <Card className="card" title={<div className="card-title">Supplier Info</div>}>
+      <Card className="card" title={<div className="card-title">{strings.supplier_info}</div>}>
         <Row type="flex" align="middle">
           <Col md={props.grid.left}>
             <Row type="flex">
-              <div className="card-content">Supplier</div>
-              <Tag className="tag">Required</Tag>
+              <div className="card-content">{strings.supplier}</div>
+              <Tag className="tag">{strings.required}</Tag>
             </Row>
           </Col>
           <Col md={props.grid.right} className="col-height">
@@ -47,7 +44,7 @@ const AllSupplier = (props) => {
             onSearch={getAllSuppplier}
             name="supplier"
             // value={value}
-            placeholder="Choose Supplier"
+            placeholder={strings.placeholder_supplier}
             size="large"
             onBlur={props.handleBlur}
             notFoundContent={fetching ? <Spin size="small" /> : null}
