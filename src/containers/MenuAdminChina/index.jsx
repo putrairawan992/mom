@@ -26,6 +26,10 @@ const MenuAdminChina = props => {
       icon: "shopping-cart",
       name: strings.order
     },
+    {
+      icon: "shopping-cart",
+      name: "Customer"
+    },
   ];
 
   const changeMenu = menu => {
@@ -40,6 +44,9 @@ const MenuAdminChina = props => {
         </GlobalStateProduct>);
         break;
       case 3:
+        props.onChange(<OrderChina />);
+        break;
+      case 4:
         props.onChange(<OrderChina />);
         break;
       default:

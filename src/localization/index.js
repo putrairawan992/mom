@@ -49,7 +49,7 @@ const strings = new LocalizedStrings({
     cancellation_category: 'Cancellation Category',
     order: 'Order',
     order_indonesia: 'Order Indonesia',
-    order_time: 'Order Time',
+    order_time: 'Paid Time',
     customer_note: 'Customer Note',
     respond: 'Respond',
     invoice_no: 'Invoice No. ',

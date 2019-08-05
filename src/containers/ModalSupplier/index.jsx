@@ -5,6 +5,7 @@ import Button from "../../components/Button";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { Row, Col, Divider, Icon, Modal, notification } from "antd";
 import OrderVariant from "../../components/OrderVariant";
+import { currencyYuan } from "../../helpers/currency";
 
 const copyClipboard = (
   invoiceNo,
@@ -20,8 +21,8 @@ const copyClipboard = (
   - Product Name : ${productName}
   - Variant : ${variant}
   - Quantity : ${qyt}
-  - Price : ${price}
-  - Total : ${total}
+  - Price : ${currencyYuan(price)}
+  - Total : ${currencyYuan(total)}
   - Note : ${note}
   `;
 };
@@ -95,6 +96,7 @@ const ModalSupplier = ({ invoice, visible, onOk }) => {
                     variants={item.productSnapshot.informations}
                     quantity={item.productSnapshot.quantity}
                     price={item.productSnapshot.priceCny}
+                    width={100}
                     withPrice={true}
                   />
                 </Col>

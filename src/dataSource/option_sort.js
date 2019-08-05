@@ -10,12 +10,12 @@ export const sortOption = [
     direction: "asc"
   },
   {
-    value: "price.basePrice.cny ",
+    value: "price.basePrice.cny",
     name: "Cheapest",
     direction: "asc"
   },
   {
-    value: "price.basePrice.cny ",
+    value: "price.basePrice.cny",
     name: "Most Expensive",
     direction: "desc"
   },

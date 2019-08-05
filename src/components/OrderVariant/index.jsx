@@ -4,10 +4,10 @@ import { currencyYuan } from "../../helpers/currency";
 import "./style.sass";
 import { variantTemplate } from "../../helpers/variantTemplate";
 
-const OrderVariant = ({ variants, quantity, price, withPrice }) => {
+const OrderVariant = ({ variants, quantity, price, withPrice, width}) => {
   const names = variantTemplate(variants);
   return (
-    <table border={1} className="table-container">
+    <table border={1} className="table-container" style={{width: `${width}%`}}>
       <tbody>
         <tr>
           <td colSpan={2} className="row-variant">
@@ -42,7 +42,12 @@ OrderVariant.propTypes = {
   variants: PropTypes.arrayOf(Object),
   quantity: PropTypes.number,
   price: PropTypes.number,
-  span: PropTypes.number
+  span: PropTypes.number,
+  width: PropTypes.number
 };
+
+OrderVariant.defaultProps = {
+  width: 80
+}
 
 export default OrderVariant;

@@ -18,9 +18,10 @@ import { optionsUndo } from "../../dataSource/option_undo";
 import ModalDetailOrder from "../ModalDetailOrder";
 import contentNotification from "../../helpers/notification";
 import { PATH_BARCODE } from "../../services/path/barcode";
-
+import convertTimesTime from "../../helpers/convertTimestime";
 import "../../sass/style.sass";
 import "./style.sass";
+
 
 const ListDelivered = props => {
   const [visibleUndo, setVisibleUndo] = useState(false);
@@ -207,7 +208,7 @@ const ListDelivered = props => {
                             <td>:</td>
                             <td>
                               <span>
-                                {invoice.order.orderActivityDate.orderDate}
+                                {convertTimesTime.TypeMillisecondWithoutSecond(invoice.order.orderActivityDate.orderDate)}
                               </span>
                             </td>
                           </tr>
