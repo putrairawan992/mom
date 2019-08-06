@@ -9,6 +9,16 @@ class LabelIndonesia extends Component {
   render() {
     const { invoiceNumber, order } = this.props.invoice;
     const { barcodeNumber } = this.props;
+    const invoiceNum = "#" + invoiceNumber;
+    const receiverName = order.orderAddress.receiverName;
+    const phoneNumber = order.orderAddress.phoneNumber;
+    const productName = order.orderItems[0].productSnapshot.name;
+    const address = `${order.orderAddress.labelName}, ${
+      order.orderAddress.fullAddress
+    }, ${order.orderAddress.subdistrict}, ${order.orderAddress.city}, ${
+      order.orderAddress.province
+    }, ${order.orderAddress.zipcode}`;
+
     return (
       <div className="label-indonesia">
         <div className="label-box">
@@ -24,7 +34,7 @@ class LabelIndonesia extends Component {
             />
             <LabelContent
               label="Invoice"
-              content={"#" + invoiceNumber}
+              content={invoiceNum}
               styleContent="label-indo-invoice"
             />
           </div>
@@ -32,20 +42,13 @@ class LabelIndonesia extends Component {
           <div className="label-from">
             <LabelContent
               label="Penerima"
-              content={order.orderAddress.receiverName}
+              content={receiverName}
               styleContent="label-form-content"
             />
-            <LabelContent
-              label="Alamat"
-              content={`${order.orderAddress.labelName}, ${
-                order.orderAddress.fullAddress
-              }, ${order.orderAddress.subdistrict}, ${
-                order.orderAddress.city
-              }, ${order.orderAddress.province}, ${order.orderAddress.zipcode}`}
-            />
+            <LabelContent label="Alamat" content={address} />
             <LabelContent
               label="Telp"
-              content={order.orderAddress.phoneNumber}
+              content={phoneNumber}
               styleContent="label-form-content"
             />
           </div>
@@ -53,14 +56,16 @@ class LabelIndonesia extends Component {
           <div className="label-from">
             <LabelContent
               label="Deskripsi"
-              content={
-                order.orderItems[0].productSnapshot.name
-              }
+              content={productName}
               styleContent="label-form-content"
             />
           </div>
           <Divider />
-          <LabelDetailJne order={order} barcodeNumber={barcodeNumber} isBarcode={true} />
+          <LabelDetailJne
+            order={order}
+            barcodeNumber={barcodeNumber}
+            isBarcode={true}
+          />
         </div>
       </div>
     );
