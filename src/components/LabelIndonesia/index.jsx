@@ -53,14 +53,16 @@ class LabelIndonesia extends Component {
           <div className="label-from">
             <LabelContent
               label="Deskripsi"
-              content={
-                order.orderItems[0].productSnapshot.name
-              }
+              content={order.orderItems[0].productSnapshot.name}
               styleContent="label-form-content"
             />
           </div>
           <Divider />
-          <LabelDetailJne order={order} barcodeNumber={barcodeNumber} isBarcode={true} />
+          <LabelDetailJne
+            order={order}
+            barcodeNumber={barcodeNumber}
+            isBarcode={true}
+          />
         </div>
       </div>
     );
