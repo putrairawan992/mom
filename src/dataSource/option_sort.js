@@ -1,4 +1,4 @@
-export const sortOption = [
+const product = [
   {
     value: "creationDate",
     name: "Newest",
@@ -50,3 +50,42 @@ export const sortOption = [
     direction: "desc"
   },
 ];
+
+const customer = [
+  {
+    value: "creationDate",
+    name: "Newest",
+    direction: "desc"
+  },
+  {
+    value: "creationDate",
+    name: "Oldest",
+    direction: "asc"
+  },
+  {
+    value: "name",
+    name: "Name (A-Z)",
+    direction: "asc"
+  },
+  {
+    value: "name",
+    name: "Name (Z-A)",
+    direction: "desc"
+  },
+  {
+    value: "user.email",
+    name: "Email (A-Z)",
+    direction: "asc"
+  },
+  {
+    value: "user.email",
+    name: "Email (Z-A)",
+    direction: "desc"
+  }
+];
+
+
+export const sortOption = {
+  product: product,
+  customer: customer
+}

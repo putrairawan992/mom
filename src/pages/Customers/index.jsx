@@ -1,213 +1,173 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { Card, Table, Select, Icon, Input } from "antd";
-import { PATH_PRODUCT } from "../../services/path/product";
-import { apiGetWithoutToken } from "../../services/api";
-import { filterCategoryOption } from "../../dataSource/option_category";
-import { filterProductOption } from "../../dataSource/option_filter_product";
-import { sortOption } from "../../dataSource/option_sort";
+import { Card, Table, Select, Input, Pagination } from "antd";
+import { apiGetWithToken } from "../../services/api";
+import { filterOption as filter } from "../../dataSource/option_filter";
+import { sortOption as sort } from "../../dataSource/option_sort";
 import "./style.sass";
-import Button from "../../components/Button";
-import { currencyYuan } from "../../helpers/currency";
+import convertTimesTime from "../../helpers/convertTimestime";
+import { PATH_CUSTOMER } from "../../services/path/customer";
 
 const { Option } = Select;
 const { Search } = Input;
+const filterOption = filter.customer;
+const sortOption = sort.customer;
 
-const Products = props => {
+const Customers = () => {
   const [loading, setLoading] = useState(false);
-  const [listProduct, setListProduct] = useState([]);
-  const [path, setPath] = useState(PATH_PRODUCT.PRODUCT);
-  const [category, setCategory] = useState("");
-  const [parameter, setParameter]= useState({
-    sortBy: "creationDate", 
-    direction: "desc", 
+  const [list, setList] = useState([]);
+  const [total, setTotal] = useState(0);
+  const pageSize = 5;
+  const [parameter, setParameter] = useState({
+    sortBy: "",
+    direction: "",
     filterBy: "",
-    searchBy: "",
-    limit: 20
+    keyword: "",
+    limit: pageSize,
+    page: 0
   });
 
   useEffect(() => {
-    getListProduct();
+    getList();
   }, []);
 
   useEffect(() => {
-    getListProduct();
+    getList();
   }, [parameter]);
 
-  useEffect(() => {
-    getListProduct();
-  }, [path]);
-
-  useEffect(() => {
-    setPathProductCategory();
-  }, [category]);
-
-  const schemaProducts = ({ id, image, nameChinese, name, basePrice, supplierName, isReadyStock }) => ({
+  const schemaList = ({ id, name, email, createdDate, status }) => ({
     id: id,
-    image: image.defaultImage,
-    nameCny: nameChinese,
-    nameIdn: name,
-    priceCny: currencyYuan(basePrice),
-    supplier: supplierName,
-    stock: isReadyStock ? "Ready Stock": "Out of Stock"
+    name: name,
+    email: email,
+    createdDate: convertTimesTime.TypeMillisecondWithoutSecond(createdDate),
+    status: status
   });
 
-  const convertToSchemaProduct = response => {
-    const products = response.data.data;
-    return products.map(product => schemaProducts(product));
+  const convertToSchema = response => {
+    const list = response.data.data;
+    return list.map(data => schemaList(data));
   };
 
   const columns = [
     {
-      title: "",
-      dataIndex: "image",
-      key: "image",
-      width: 50,
-      render: imageUrl => {
-        return (
-          <img src={imageUrl} alt="product" style={{ width: 50, height: 50 }} />
-        );
-      }
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+      width: 250
     },
     {
-      title: "Product Name (CHN)",
-      dataIndex: "nameCny",
-      key: "nameCny",
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
       width: 200
     },
     {
-      title: "Product Name (IDN)",
-      dataIndex: "nameIdn",
-      key: "nameIdn",
-      width: 200
-    },
-    {
-      title: "Base Price",
-      dataIndex: "priceCny",
-      key: "priceCny",
-      width: 100
-    },
-    {
-      title: "Supplier",
-      dataIndex: "supplier",
-      key: "supplier",
-      width: 200
-    },
-    {
-      title: "Stock Status",
-      dataIndex: "stock",
-      key: "stock",
+      title: "Costumer Since",
+      dataIndex: "createdDate",
+      key: "createdDate",
       width: 150
     },
     {
-      title: "Action",
-      key: "action",
+      title: "Email Confirmation",
+      key: "status",
       width: 100,
-      render: (text, record) => (
-        <span className="mp-table-product-action">
-          <Icon
-            className="mp-icon-product-action"
-            type="edit"
-            onClick={() => alert(record.id)}
-          />
-          <Icon
-            className="mp-icon-product-action"
-            type="delete"
-            onClick={() => alert(record.id)}
-          />
-        </span>
-      )
+      render: text => {
+        if (text.status === "ACTV") {
+          return <span>Confirmed</span>;
+        } else if (text.status === "VRFI") {
+          return <span>Not Yet Confirmed</span>;
+        }
+      }
     }
   ];
 
-  const getListProduct = async () => {
+  const getList = async () => {
     setLoading(true);
     try {
-      const response = await apiGetWithoutToken(
-        `${path}`,
+      const response = await apiGetWithToken(
+        `${PATH_CUSTOMER.LIST}`,
         parameter
       );
-      setListProduct(convertToSchemaProduct(response));
+      console.log(response);
+      setTotal(response.data.element);
+      setList(convertToSchema(response));
       setLoading(false);
     } catch (error) {
       console.log(error);
-      setListProduct(null);
+      setList(null);
       setLoading(false);
     }
   };
 
-  const setPathProductCategory = () => {
-    if(category===""){
-      setPath(PATH_PRODUCT.PRODUCT);
-    }else{
-      setPath(`${PATH_PRODUCT.CATEGORY}/${category}`);
-    }
+  const actionChangePagination = (value)=> {
+    setParameter({
+      ...parameter,
+      page: value-1
+    });
   }
 
-  const actionSort = (value) => {
+  const actionSort = value => {
     const sort = JSON.parse(value);
-    setParameter({...parameter, sortBy: sort.value, direction: sort.direction});
+    setParameter({
+      ...parameter,
+      sortBy: sort.value,
+      direction: sort.direction
+    });
   };
 
-  const actionFilterCategory = (value) => {
-    setCategory(JSON.parse(value).value);
-    setPathProductCategory();
-  };
-  
-  const actionFilterProduct = (value) => {
+  const actionFilterProduct = value => {
     const filter = JSON.parse(value);
-    setParameter({...parameter, filterBy: filter.value});
+    setParameter({ ...parameter, filterBy: filter.value, page: 0 });
   };
 
-  const actionSearch = (value) => {
+  const actionSearch = value => {
     const keyword = value;
-    setParameter({...parameter, searchBy: keyword});
+    console.log(keyword)
+    setParameter({ ...parameter, keyword: keyword, page: 0  });
   };
 
   return (
     <Fragment>
       <div className="mp-container-title-product">
-        <span>Product List</span>
-        <Button>Add Product +</Button>
+        <span>Customer List</span>
       </div>
       <Card>
         <div className="mp-container-header-table">
           <div className="mp-container-title-select">
             <span className="mp-span-title-select">Sort</span>
             <Select
-              defaultValue={JSON.stringify({ value: sortOption[0].value, direction: sortOption[0].direction })}
+              defaultValue={JSON.stringify({
+                value: sortOption[0].value,
+                direction: sortOption[0].direction
+              })}
               style={{ width: 200 }}
               className="mp-select-product-list"
               onChange={actionSort}
             >
               {sortOption.map(sort => (
-                <Option key={sort.value} value={JSON.stringify({ value: sort.value, direction: sort.direction})}>
+                <Option
+                  key={sort.value}
+                  value={JSON.stringify({
+                    value: sort.value,
+                    direction: sort.direction
+                  })}
+                >
                   {sort.name}
                 </Option>
               ))}
             </Select>
-          </div>
-          <div className="mp-container-title-select">
+            <span style={{marginRight: 48}}/>
             <span className="mp-span-title-select">Filter</span>
             <Select
-              defaultValue={filterCategoryOption[0].name}
-              style={{ width: 200 }}
-              className="mp-select-product-list"
-              onChange={actionFilterCategory}
-            >
-              {filterCategoryOption.map(category => (
-                <Option key={category.value} value={JSON.stringify({ value: category.value})}>
-                  {category.name}
-                </Option>
-              ))}
-            </Select>
-            <Select
-              defaultValue={filterProductOption[0].name}
+              defaultValue={filterOption[0].name}
               style={{ width: 200 }}
               className="mp-select-product-list"
               onChange={actionFilterProduct}
             >
-              {filterProductOption.map(product => (
-                <Option key={product.value} value={JSON.stringify({ value: product.value})}>
+              {filterOption.map(product => (
+                <Option
+                  key={product.value}
+                  value={JSON.stringify({ value: product.value })}
+                >
                   {product.name}
                 </Option>
               ))}
@@ -225,11 +185,22 @@ const Products = props => {
           rowKey={record => record.id}
           columns={columns}
           loading={loading}
-          dataSource={listProduct}
+          dataSource={list}
+          pagination={false}
+        />
+        <Pagination
+          className="mp-pagination-table"
+          total={total}
+          showTotal={(total, range) =>
+            `${range[0]}-${range[1]} of ${total} items`
+          }
+          pageSize={pageSize}
+          defaultCurrent={1}
+          onChange={(page)=>actionChangePagination(page)}
         />
       </Card>
     </Fragment>
   );
 };
 
-export default Products;
+export default Customers;
