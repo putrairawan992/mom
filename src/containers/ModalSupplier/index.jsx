@@ -27,7 +27,7 @@ const copyClipboard = (
   `;
 };
 
-const ModalSupplier = ({ invoice, visible, onOk }) => {
+const ModalSupplier = ({ invoice, visible, onOk, onCancel }) => {
   const copyDetailOrder = () => {
     notification.info({
       message: "Copied to Clipboard",
@@ -55,6 +55,8 @@ const ModalSupplier = ({ invoice, visible, onOk }) => {
       visible={visible}
       footer={null}
       closable={false}
+      onCancel={onCancel}
+      centered
     >
       {invoice.order.orderItems.map(item => (
         <div key={item.id}>
@@ -66,21 +68,21 @@ const ModalSupplier = ({ invoice, visible, onOk }) => {
             </Col>
             <Col md={20} className="supplier__modal__detail-order__variant">
               <Row>
-                <Col md={14}>
+                <Col md={10}>
                   <p>
                     Invoice No. <span>{invoice.invoiceNumber}</span>
                   </p>
                   <b>{item.productSnapshot.nameChina}</b>
                   <p>{item.productSnapshot.name}</p>
                 </Col>
-                <Col md={10} className="supplier__modal__copy-detail">
+                <Col md={14} className="supplier__modal__copy-detail">
                   <CopyToClipboard
                     text={copyClipboard(
                       invoice.invoiceNumber,
                       item.productSnapshot.nameChina,
                       item.productSnapshot.variants,
                       item.productSnapshot.quantity,
-                      item.productSnapshot.priceCny,
+                      "$" + item.productSnapshot.priceCny,
                       item.productSnapshot.calculateTotalPriceCny,
                       item.note
                     )}
@@ -91,7 +93,7 @@ const ModalSupplier = ({ invoice, visible, onOk }) => {
                 </Col>
               </Row>
               <Row>
-                <Col md={14}>
+                <Col md={12}>
                   <OrderVariant
                     variants={item.productSnapshot.informations}
                     quantity={item.productSnapshot.quantity}
@@ -100,7 +102,7 @@ const ModalSupplier = ({ invoice, visible, onOk }) => {
                     withPrice={true}
                   />
                 </Col>
-                <Col md={10} className="supplier__modal__customer-note">
+                <Col md={12} className="supplier__modal__customer-note">
                   <span>Customer Note :</span>
                   <br />
                   {item.note}

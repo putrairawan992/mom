@@ -190,13 +190,17 @@ const ListNeedPurchased = props => {
     setRefInvoice(invoiceId);
     setVisibleConfirm(!visibleConfirm);
   };
-
+  
   const handleSupplierInfo = invoiceId => {
     const getInvoice = props.invoices.find(invoice => invoice.id === invoiceId);
     setInvoiceById(getInvoice);
     setVisibleSupplier(!visibleSupplier);
   };
-
+  
+  const actionCancelSupplier = () => {
+    setVisibleSupplier(!visibleSupplier)
+  };
+  
   const actionOk = () => {
     setVisibleSupplier(!visibleSupplier);
   };
@@ -387,6 +391,7 @@ const ListNeedPurchased = props => {
           invoice={invoiceById}
           visible={visibleSupplier}
           onOk={actionOk}
+          onCancel={actionCancelSupplier}
         />
       )}
       <ModalAddNote
