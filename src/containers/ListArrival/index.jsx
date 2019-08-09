@@ -207,7 +207,7 @@ const ListArrival = props => {
                         prevStatus="Shipped Time"
                         supplier={item.supplierSnapshot.name}
                         customer={invoice.order.customer.name}
-                        time={invoice.order.orderActivityDate.orderDate}
+                        time={invoice.order.orderActivityDate.actionDate}
                       />
                     </Col>
                     <Col md={12}>

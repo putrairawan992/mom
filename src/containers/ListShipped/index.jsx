@@ -165,7 +165,7 @@ const ListShipped = props => {
                             <td>
                               <span>
                                 {convertTimesTime.TypeMillisecondWithoutSecond(
-                                  invoice.order.orderActivityDate.orderDate
+                                  invoice.order.orderActivityDate.actionDate
                                 )}
                               </span>
                             </td>

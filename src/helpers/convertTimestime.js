@@ -5,7 +5,7 @@ const setDigit = value => {
 const separateValueDate = (datetimestamp, type, withSecond) => {
   var dt = new Date(datetimestamp * type);
   var date = setDigit(dt.getDate());
-  var month = setDigit(dt.getMonth());
+  var month = setDigit(dt.getMonth()+1);
   var year = dt.getFullYear();
   var hour = setDigit(dt.getHours());
   var minute = setDigit(dt.getMinutes());

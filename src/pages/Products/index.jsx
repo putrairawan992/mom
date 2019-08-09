@@ -3,14 +3,17 @@ import { Card, Table, Select, Icon, Input } from "antd";
 import { PATH_PRODUCT } from "../../services/path/product";
 import { apiGetWithoutToken } from "../../services/api";
 import { filterCategoryOption } from "../../dataSource/option_category";
-import { filterProductOption } from "../../dataSource/option_filter_product";
-import { sortOption } from "../../dataSource/option_sort";
+import { filterOption as  filter} from "../../dataSource/option_filter";
+import { sortOption as sort } from "../../dataSource/option_sort";
 import "./style.sass";
 import Button from "../../components/Button";
 import { currencyYuan } from "../../helpers/currency";
 
 const { Option } = Select;
 const { Search } = Input;
+const filterProductOption = filter.product;
+const sortOption = sort.customer;
+
 
 const Products = props => {
   const [loading, setLoading] = useState(false);

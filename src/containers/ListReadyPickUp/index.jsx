@@ -236,7 +236,7 @@ const ListReadyPickUp = props => {
                         prevStatus="Receipt Created"
                         supplier={item.supplierSnapshot.name}
                         customer={invoice.order.customer.name}
-                        time={invoice.order.orderActivityDate.orderDate}
+                        time={invoice.order.orderActivityDate.actionDate}
                       />
                     </Col>
                     <Col md={12}>

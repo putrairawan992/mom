@@ -95,7 +95,7 @@ const ListNeedResponse = props => {
                             <td>
                               <span>
                                 {convertTimesTime.TypeMillisecondWithoutSecond(
-                                  invoice.order.orderActivityDate.orderDate
+                                  invoice.order.orderActivityDate.paymentDate
                                 )}
                               </span>
                             </td>

@@ -10,6 +10,7 @@ const Measurement = (props) => {
   const [length, setLength] = useState("1")
   const [height, setHeight] = useState("1")
   const [volumetric, setVolumetric] = useState("0")
+  //const [isFragile, setIsFragile] = useState(false);
 
   useEffect(() => {
     let volume = Number(width) * Number(length) * Number(height)
@@ -160,14 +161,13 @@ const Measurement = (props) => {
             size="large"
             disabled
             status="disabled"
-            
           />
         </Col>
       </Row>
       <br/>
       <Row>
         <Col md={15} offset={7}>
-          <Checkbox >
+          <Checkbox name="isFragile" onClick={(e)=>props.setFieldValue('isFragile', e.target.checked)}>
             <span className="text-safety-orange">
               {strings.product_fragile} <Icon fill="red" type="info-circle"/>
             </span>

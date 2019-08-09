@@ -7,10 +7,11 @@ import Product from "../../pages/Product";
 import GlobalStateProduct from '../../context/GlobalStateProduct'
 import "./style.sass";
 import Products from "../../pages/Products";
+import Customers from "../../pages/Customers";
 
 const MenuAdminChina = props => {
   useEffect(() => {
-    changeMenu(3);
+    changeMenu(4);
   }, []);
 
   const menus = [
@@ -26,6 +27,10 @@ const MenuAdminChina = props => {
       icon: "shopping-cart",
       name: strings.order
     },
+    {
+      icon: "shopping-cart",
+      name: "Customer"
+    },
   ];
 
   const changeMenu = menu => {
@@ -35,12 +40,15 @@ const MenuAdminChina = props => {
         break;
       case 2:
         props.onChange(
-        <GlobalStateProduct>
+        <GlobalStateProduct status={true}>
           <Product />
         </GlobalStateProduct>);
         break;
       case 3:
         props.onChange(<OrderChina />);
+        break;
+      case 4:
+        props.onChange(<Customers />);
         break;
       default:
         props.onChange(<OrderChina />);
@@ -48,7 +56,7 @@ const MenuAdminChina = props => {
   };
 
   return (
-    <Menu theme="light" mode="inline" defaultSelectedKeys={["3"]}>
+    <Menu theme="light" mode="inline" defaultSelectedKeys={["4"]}>
       {menus.map((menu, idx) => {
         const menuIndex = idx + 1;
         return (
