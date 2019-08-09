@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useEffect, useContext } from "react";
 import { Card, Table, Select, Icon, Input, Pagination } from "antd";
 import { PATH_PRODUCT } from "../../services/path/product";
-import { apiGetWithoutToken } from "../../services/api";
+import { apiGetWithoutToken, apiDeleteWithToken } from "../../services/api";
 import { filterCategoryOption } from "../../dataSource/option_category";
 import { filterOption } from "../../dataSource/option_filter";
 import { sortOption as sort } from "../../dataSource/option_sort";
@@ -9,6 +9,7 @@ import Button from "../../components/Button";
 import { currencyYuan } from "../../helpers/currency";
 import ProductContext from "../../context/GlobalStateProduct/product-context";
 import "./style.sass";
+import ModalConfirm from "../../components/ModalConfirm";
 
 const { Option } = Select;
 const { Search } = Input;
@@ -23,6 +24,14 @@ const Products = props => {
   const [category, setCategory] = useState("");
   const pageSize = 5;
   const [total, setTotal] = useState(0);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [selectProduct, setSelectProduct] = useState({
+    id: "",
+    image: "",
+    nameIdn: "",
+    nameCny: "",
+    priceCny: ""
+  });
   const [parameter, setParameter] = useState({
     sortBy: "creationDate",
     direction: "desc",
@@ -128,7 +137,14 @@ const Products = props => {
             >
               <Icon className="mp-icon-product-action" type="edit" />
             </div>
-            <div className="mp-icon-wrap" onClick={() => alert(record.id)}>
+            <div
+              className="mp-icon-wrap"
+              onClick={() => {
+                setSelectProduct(record);
+                //console.log(response.data.data.find(data)=> data);
+                setShowDeleteConfirm(!showDeleteConfirm);
+              }}
+            >
               <Icon className="mp-icon-product-action" type="delete" />
             </div>
           </div>
@@ -141,6 +157,7 @@ const Products = props => {
     setLoading(true);
     try {
       const response = await apiGetWithoutToken(`${path}`, parameter);
+      console.log(response);
       setTotal(response.data.element);
       setListProduct(convertToSchemaProduct(response));
       setLoading(false);
@@ -148,6 +165,20 @@ const Products = props => {
       console.log(error);
       setListProduct(null);
       setLoading(false);
+    }
+  };
+
+  const deleteProduct = async () => {
+    setLoading(true);
+    try {
+      const response = await apiDeleteWithToken(`${path}/${selectProduct.id}`);
+      setLoading(false);
+      setShowDeleteConfirm(!showDeleteConfirm);
+      response && getListProduct();
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+      setShowDeleteConfirm(!showDeleteConfirm);
     }
   };
 
@@ -186,6 +217,42 @@ const Products = props => {
     const keyword = value;
     setParameter({ ...parameter, keyword: keyword, page: 0 });
   };
+
+  const descDeleteConfirmation = () => (
+    <table border={0} style={{ fontSize: 12 }}>
+      <tbody>
+        <tr>
+          <td rowSpan={4}>
+            <img
+              src={selectProduct.image}
+              alt={selectProduct.nameIdn}
+              style={{ width: 50, height: 50 }}
+            />
+          </td>
+          <td>
+            <span style={{ paddingLeft: 12 }}>{selectProduct.supplier}</span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <span style={{ paddingLeft: 12 }}>{`${selectProduct.nameCny} - ${
+              selectProduct.nameIdn
+            }`}</span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <span style={{ paddingLeft: 12 }}>{selectProduct.priceCny}</span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <span style={{ paddingLeft: 12 }}>{selectProduct.stock}</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  );
 
   return (
     <Fragment>
@@ -277,6 +344,14 @@ const Products = props => {
           onChange={page => actionChangePagination(page)}
         />
       </Card>
+      <ModalConfirm
+        title={"Delete Product"}
+        description={descDeleteConfirmation()}
+        onCancel={() => setShowDeleteConfirm(!showDeleteConfirm)}
+        visible={showDeleteConfirm}
+        onOk={deleteProduct}
+        loading={loading}
+      />
     </Fragment>
   );
 };

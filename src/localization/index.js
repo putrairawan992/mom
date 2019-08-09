@@ -71,6 +71,8 @@ const strings = new LocalizedStrings({
     product_name: 'Product Name',
     product_description: 'Product Description',
     product_images: 'Product Images',
+    product_video: 'Video Product',
+    video_url: 'Video URL',
     product_price: 'Product Price',
     product_variant: 'Product Variant',
     product_fragile: 'Product Is Fragile',
@@ -118,13 +120,8 @@ const strings = new LocalizedStrings({
     upload_image_error: 'You have to upload at least one image to create product.',
     actual_weight_error: 'Actual Weight is required',
     dimension_measurement_errro: 'Please fill all required measurement to calculate volumetric weight.',
-    quantity_error: 'Quantity is required'
-
-    
-
-
-
-
+    quantity_error: 'Quantity is required',
+    url_error: 'Your url videos does not match with url standards'
   }
 })
 

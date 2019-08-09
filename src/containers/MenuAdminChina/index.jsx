@@ -40,7 +40,7 @@ const MenuAdminChina = props => {
         break;
       case 2:
         props.onChange(
-        <GlobalStateProduct>
+        <GlobalStateProduct status={true}>
           <Product />
         </GlobalStateProduct>);
         break;

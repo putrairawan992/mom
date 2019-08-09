@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useState, useEffect} from 'react';
 import ProductContext from './product-context';
 import {apiGetWithoutToken, apiPostWithToken} from '../../services/api';
 import {PATH_PRODUCT} from '../../services/path/product';
@@ -32,6 +32,7 @@ const GlobalStateProduct = props => {
     rate: "",
     readyStock: true,
     quantity: "",
+    videoUrl: ""
   })
   const string = {
     name : "",
@@ -159,6 +160,7 @@ const GlobalStateProduct = props => {
       information.category = category
       information.measurement = measurement
       information.maxOrder = values.quantity
+      information.isFragile = values.isFragile
     let basePrice = {}
       basePrice.cny = values.basePrice
     let shipmentFee = {}
@@ -186,6 +188,7 @@ const GlobalStateProduct = props => {
       allDataProduct.isActive = true
       allDataProduct.images = images
       allDataProduct.variants = values.variants
+      allDataProduct.videoUrl = values.videoUrl;
       console.log("payload",allDataProduct)
       // setAllProduct(allDataProduct)
     //TODO fungsi post product

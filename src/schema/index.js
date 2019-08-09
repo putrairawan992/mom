@@ -1,6 +1,7 @@
 import * as Yup from 'yup';
 import strings from '../localization';
 
+const regexUrl = RegExp(/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/);
 export const schemaProduct = Yup.object().shape({
   variants: Yup.array(Yup.object().shape({
     // name: Yup.string().required(),
@@ -21,5 +22,6 @@ export const schemaProduct = Yup.object().shape({
   length: Yup.string().required(),
   height: Yup.string().required(),
   actualWeight: Yup.string().required(strings.actual_weight_error),
-  quantity: Yup.string().required(strings.quantity_error)
+  quantity: Yup.string().required(strings.quantity_error),
+  videoUrl: Yup.string().matches(regexUrl, strings.url_error)
 });
