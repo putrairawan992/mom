@@ -22,8 +22,6 @@ import OrderDetailIndonesia from "../../components/OrderDetailIndonesia";
 import LabelIndonesia from "../../components/LabelIndonesia";
 import contentNotification from "../../helpers/notification";
 
-import "../../sass/style.sass";
-import "./style.sass";
 import { PATH_BARCODE } from "../../services/path/barcode";
 
 const ListArrival = props => {

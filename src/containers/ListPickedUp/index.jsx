@@ -21,9 +21,6 @@ import OrderDetailIndonesia from "../../components/OrderDetailIndonesia";
 import { optionsUndo } from "../../dataSource/option_undo";
 import contentNotification from '../../helpers/notification';
 
-import "../../sass/style.sass";
-import "./style.sass";
-
 const ListPickedUp = props => {
   const [visibleUndo, setVisibleUndo] = useState(false);
   const [visibleAddNote, setVisibleAddNote] = useState(false);
