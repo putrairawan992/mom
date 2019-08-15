@@ -21,8 +21,8 @@ const ProductPrice = (props) => {
   useEffect(() => {
     const splitRate = exchangeRate.split(" ")
     const rate = splitRate[1]
-    let totalPriceBySea = ((convertNumber(basePrice) + convertNumber(domesticFee)) * Number(rate)) + convertNumber(feeBySea) + convertNumber(administration)
-    let totalPriceByAir = ((convertNumber(basePrice) + convertNumber(domesticFee)) * Number(rate)) + convertNumber(feeByAir) + convertNumber(administration)
+    let totalPriceBySea = ((convertToNumber(basePrice) + convertToNumber(domesticFee)) * Number(rate)) + convertToNumber(feeBySea) + convertToNumber(administration)
+    let totalPriceByAir = ((convertToNumber(basePrice) + convertToNumber(domesticFee)) * Number(rate)) + convertToNumber(feeByAir) + convertToNumber(administration)
     let ceilPriceBySea = formatCurrency(Math.ceil(totalPriceBySea/1000) * 1000)
     let ceilPriceByAir = formatCurrency(Math.ceil(totalPriceByAir/1000) * 1000)
     setPriceBySea(`Rp ${ceilPriceBySea}`)
@@ -47,21 +47,22 @@ const ProductPrice = (props) => {
   },[])
 
   const handleChange = (event,key,setState) => {
-    const toNumber = convertNumber(event.target.value)
-    let currency = toNumber.toLocaleString()
-    // let convert = currencyYuan(event.target.value)
-    const convert = event.target.value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-    // setState(`${convert}`)
-    setState(currency)
+    const value = event.target.value;
+    const toNumber = convertToNumber(value);
+    const convert = numberWithSeparator(toNumber);
+    setState(convert);
     props.setFieldValue(key,toNumber)
   }
 
-  const convertNumber = (string) =>{
+  const numberWithSeparator = (number) => {
+    var parts = number.toString().split(".");
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return parts.join(".");
+}
 
-    // const toNumber = Number(string.replace(/,/, ''));
-    // const toNumber = parseFloat(string.replace(/[^0-9-.]/g,''))
-    return string
-  }
+  const convertToNumber = (valueString) => (
+    Number(valueString.replace(/[^0-9]/g, ''))
+  );
 
   const formatCurrency = (price) => {
     let number = Number(price)
@@ -91,12 +92,11 @@ const ProductPrice = (props) => {
             props.errors.basePrice  && props.touched.basePrice?
             "error": "success"
           }>
-            <InputNumber
+            <Input
+              prefix={"¥"}
               value={basePrice}
               style={{width : "100%"}}
-              formatter={value => `¥ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-              parser={value => value.replace(/\¥\s?|(,*)/g, '')}
-              onChange={value => onChangeNumber(value,'basePrice',setBasePrice)}
+              onChange={value => handleChange(value,'basePrice',setBasePrice)}
               size="large"
               name="basePrice"
             />
@@ -123,17 +123,16 @@ const ProductPrice = (props) => {
             props.errors.domesticFee &&  props.touched.domesticFee ? 
             "error" : "success"
           }>
-            <InputNumber
+            <Input
+              prefix={"¥"}
               value={domesticFee}
               style={{width : "100%"}}
               name="domesticFee"
               onChange={value => {
-                onChangeNumber(value,'domesticFee',setDomesticFee)
+                handleChange(value,'domesticFee',setDomesticFee)
               }}
               onBlur={props.handleBlur}
               size="large"
-              formatter={value => `¥ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-              parser={value => value.replace(/\¥\s?|(,*)/g, '')}
             />
               {
               props.errors.domesticFee &&  props.touched.domesticFee ? 

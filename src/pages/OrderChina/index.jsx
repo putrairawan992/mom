@@ -159,6 +159,7 @@ const OrderChina = () => {
       const response = await apiGetWithToken(
         `${PATH_ORDER.STATUS}/SHP`, paramGetListInvoice(categorySearch, query)
       );
+      console.log(response)
       revertState("", false, response.data.data.total);
       setResListShipped(response.data.data.invoices);
     } catch (error) {

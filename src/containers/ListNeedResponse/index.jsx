@@ -40,7 +40,6 @@ const ListNeedResponse = props => {
       const response = await apiPatchWithToken(
         `${PATH_ORDER.NEXT}/${invoiceId}`
       );
-      console.log("respon", response);
       if (response) {
         tempLoading[index] = false
         setLoading(tempLoading);

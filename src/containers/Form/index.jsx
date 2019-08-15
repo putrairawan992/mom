@@ -29,7 +29,6 @@ const FormProduct = props => {
   };
 
   const handleSubmit = async values => {
-    console.log("values", values);
     const images = payloadImage.filter(image => {
       return image.largeUrl;
     });

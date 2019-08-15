@@ -78,7 +78,6 @@ const ListReadyPickUp = props => {
   const getBarcode = async() => {
     try{
       const response = await apiGetWithoutToken(PATH_BARCODE.BARCODE);
-      // console.log("waw", response.data);
       const barcode = response.data.data
       setBarcodeNumber(barcode)
     } catch(error) {
@@ -249,7 +248,7 @@ const ListReadyPickUp = props => {
                         </Button>
                         <ReactToPrint
                           trigger={() => (
-                            <Button onClick={getBarcode()} type="secondary">Print Receipt</Button>
+                            <Button onClick={getBarcode} type="secondary">Print Receipt</Button>
                           )}
                           content={() => componentRef[invoice.id]}
                           closeAfterPrint={true}
