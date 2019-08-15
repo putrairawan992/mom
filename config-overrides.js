@@ -1,4 +1,4 @@
-const { override, fixBabelImports, addLessLoader } = require('customize-cra');
+const { override, fixBabelImports, addLessLoader, addWebpackModuleRule } = require('customize-cra');
 
 module.exports = override(
   fixBabelImports('import', {
@@ -13,4 +13,15 @@ module.exports = override(
     '@error-color' : '#A8071A'
   },
  }),
+ addWebpackModuleRule({
+    test: /\.sass$/,
+    use: [
+      {
+        loader: 'sass-resources-loader',
+        options: {
+          resources: './src/sass/variable.sass'
+        },
+      },
+    ],
+ })
 );

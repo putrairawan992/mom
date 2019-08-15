@@ -25,9 +25,6 @@ import { optionsCancel } from "../../dataSource/option_cancle";
 import { optionsUndo } from "../../dataSource/option_undo";
 import contentNotification from '../../helpers/notification';
 
-import "../../sass/style.sass";
-import "./style.sass";
-
 const ListPurchased = props => {
   const [visibleUndo, setVisibleUndo] = useState(false);
   const [visibleCancel, setVisibleCancel] = useState(false);

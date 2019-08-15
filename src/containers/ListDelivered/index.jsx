@@ -19,7 +19,6 @@ import ModalDetailOrder from "../ModalDetailOrder";
 import contentNotification from "../../helpers/notification";
 import { PATH_BARCODE } from "../../services/path/barcode";
 import convertTimesTime from "../../helpers/convertTimestime";
-import "../../sass/style.sass";
 import "./style.sass";
 
 

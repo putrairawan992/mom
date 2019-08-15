@@ -25,9 +25,6 @@ import OrderDetailIndonesia from "../../components/OrderDetailIndonesia";
 import { PATH_BARCODE } from "../../services/path/barcode";
 import contentNotification from '../../helpers/notification';
 
-import "../../sass/style.sass";
-import "./style.sass";
-
 const ListReadyPickUp = props => {
   const [visibleUndo, setVisibleUndo] = useState(false);
   const [visibleAddNote, setVisibleAddNote] = useState(false);

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Row, Col, Card } from "antd";
-import "./style.sass";
 import OrderVariant from "../../components/OrderVariant";
 import Button from "../../components/Button";
 import TextInvoiceNumber from "../../components/TextInvoiceNumber";
