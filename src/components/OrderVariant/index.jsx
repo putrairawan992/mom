@@ -6,7 +6,6 @@ import { variantTemplate } from "../../helpers/variantTemplate";
 
 const OrderVariant = ({ variants, quantity, price, withPrice, width}) => {
   const names = variantTemplate(variants);
-  console.log(names);
   return (
     <table border={1} className="table-container" style={{width: `${width}%`}}>
       <tbody>

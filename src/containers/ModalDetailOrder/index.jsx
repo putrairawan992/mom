@@ -8,7 +8,6 @@ import LabelContent from "../../components/LabelContent";
 import LabelDetailJne from "../../components/LabelDetailJne";
 
 const ModalDetailOrder = ({ invoice, visible, onOk, barcodeNumber }) => {
-  console.log("invoice", invoice);
   return (
     <Modal
       centered

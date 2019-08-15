@@ -157,7 +157,6 @@ const Products = props => {
     setLoading(true);
     try {
       const response = await apiGetWithoutToken(`${path}`, parameter);
-      console.log(response);
       setTotal(response.data.element);
       setListProduct(convertToSchemaProduct(response));
       setLoading(false);

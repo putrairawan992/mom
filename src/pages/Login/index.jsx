@@ -43,7 +43,7 @@ const Login = props => {
               isSubmitting
             }) => (
               <Form onSubmit={handleSubmit}>
-                <Form.Item>
+                <Form.Item validateStatus={errors.username && touched.username}>
                   <Input
                     placeholder="Username"
                     name="username"
@@ -59,9 +59,9 @@ const Login = props => {
                     onChange={handleChange}
                     value={values.username}
                     onBlur={handleBlur}
-                    status={
-                      errors.username && touched.username ? "error" : "default"
-                    }
+                    // status={
+                    //   errors.username && touched.username ? "error" : "default"
+                    // }
                     className="mp-login-input-text"
                   />
                 </Form.Item>
