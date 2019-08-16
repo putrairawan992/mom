@@ -4,7 +4,6 @@ menu: Components
 ---
 
 import { Playground, Props } from 'docz'
-import "antd/dist/antd.css";
 import Button from './'
 
 # Button
