@@ -9,6 +9,7 @@ import { PATH_AUTHENTICATION } from "../../services/path/login";
 import Button from "../../components/Button";
 import Input from "../../components/Input";
 import logo from "../../assets/img/logo_monggopesen/ic_logo_bag_borderteal.png";
+import {useRootContext} from "../../hoc/RootContext";
 
 const schema = yup.object().shape({
   username: yup.string().required(),
@@ -16,6 +17,8 @@ const schema = yup.object().shape({
 });
 
 const Login = props => {
+  const {isAuthenticated, handleLogin} = useRootContext();
+  console.log("isAuthenticated", isAuthenticated);
   return (
     <div className="mp-login-container">
       <div className="mp-login-header-container">
@@ -96,6 +99,7 @@ const Login = props => {
                   >
                     Log in
                   </Button>
+                  <Button onClick={()=>handleLogin({token: "candra"})}>Test</Button>
                 </div>
               </Form>
             )}

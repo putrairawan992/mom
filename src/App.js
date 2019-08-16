@@ -4,14 +4,16 @@ import routes from "./routers/routes";
 import history from "./routers/history";
 import MainLayout from "./layouts/MainLayout";
 import FullLayout from "./layouts/FullLayout";
-
+import RootContextProvider from "./hoc/RootContext";
 
 class App extends Component {
   render() {
     const RouteWithLayout = ({ component: Component, layout: Layout,...rest }) => (
       <Route {...rest} render={props => (
         <Layout>
-          <Component {...props} />
+          <RootContextProvider>
+            <Component {...props} />
+          </RootContextProvider>
         </Layout>
       )} />
     );
