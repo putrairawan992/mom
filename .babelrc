@@ -1,4 +1,10 @@
 {
     "presets": ["@babel/preset-env"],
-    "plugins": ["emotion"]
+    "plugins": [
+        "emotion", 
+        ["import", {
+            "libraryName": "antd",
+            "style": true
+        }]
+    ]
 }

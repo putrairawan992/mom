@@ -4,23 +4,21 @@ import classNames from 'classnames';
 import propTypes from 'prop-types';
 import style from "./style.sass";
 
-class Button extends React.Component {
-    classNamesStyle = classNames.bind(style);
-    cssClasses = this.classNamesStyle({
-        'mp-btn-primary': (this.props.type === 'primary'),
-        'mp-btn-secondary': (this.props.type === 'secondary'),
-        'mp-btn-white': (this.props.type === 'white'),
-        'mp-btn-danger': (this.props.type === 'danger'),
-        'mp-btn-link' : (this.props.type === 'link'),
-        'mp-btn-width-full': (this.props.width === 'full'),
-        'mp-btn-size-large': (this.props.size === 'large'),
-        'mp-btn-size-small': (this.props.size === 'small'),
-        'mp-btn-grey' : (this.props.type === 'grey')
+export default function Button(props) {
+    let classNamesStyle = classNames.bind(style);
+    let cssClasses = classNamesStyle({
+        'mp-btn-primary': (props.type === 'primary'),
+        'mp-btn-secondary': (props.type === 'secondary'),
+        'mp-btn-white': (props.type === 'white'),
+        'mp-btn-danger': (props.type === 'danger'),
+        'mp-btn-link' : (props.type === 'link'),
+        'mp-btn-grey' : (props.type === 'grey'),
+        'mp-btn-width-full': (props.width === 'full'),
+        'mp-btn-size-large': (props.size === 'large'),
+        'mp-btn-size-small': (props.size === 'small')
     });
 
-    render(){
-        return <ButtonAnt className={this.cssClasses} {...this.props} >{this.props.children}</ButtonAnt>
-    };
+    return <ButtonAnt className={cssClasses} {...props} >{props.children}</ButtonAnt>
 }
 
 Button.propTypes = {
@@ -34,5 +32,3 @@ Button.defaultProps = {
     width: 'default',
     size: 'default'
 }
-
-export default Button;

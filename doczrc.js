@@ -1,7 +1,7 @@
 const path = require('path');
 const fs  = require('fs');
 const lessToJs = require('less-vars-to-js');
-const themeVariables = lessToJs(fs.readFileSync(path.join(__dirname, './src/ant-theme-vars.less'), 'utf8'));
+const themeVariables = lessToJs(fs.readFileSync(path.join(__dirname, './src/antd-config/antdThemeVars.less'), 'utf8'));
 
 export default {
   title: 'MOM',
@@ -23,6 +23,19 @@ export default {
     config.module.rules.push({
       test: /\.css$/,
       use: ["style-loader", "css-loader", "sass-loader"]
+    })
+    config.module.rules.push({
+      test: /\.less$/,
+      use: [
+        'style-loader', 'css-loader',
+        {
+          loader: "less-loader",
+          options: {
+            javascriptEnabled: true,
+            modifyVars: themeVariables
+          }
+        }
+      ]
     })
     return config
   },

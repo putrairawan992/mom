@@ -4,7 +4,7 @@ import { Modal, Button, Form, Row, Col } from "antd";
 import * as yup from "yup";
 import "./style.sass";
 import { Formik } from "formik";
-import TextArea from "../TextArea";
+import TextArea from "../../components/TextArea";
 
 const schema = yup.object().shape({
   note: yup.string().required("Please write some notes")

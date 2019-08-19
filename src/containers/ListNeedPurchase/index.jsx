@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Row, Col, Card } from "antd";
 import OrderVariant from "../../components/OrderVariant";
 import ModalSupplier from "../../containers/ModalSupplier";
-import ModalAddNote from "../../components/ModalAddNote";
+import ModalAddNote from "../../containers/ModalAddNote";
 import ButtonTextIcon from "../../components/ButtonTextIcon";
 import Button from "../../components/Button";
 import TextInvoiceNumber from "../../components/TextInvoiceNumber";
@@ -19,7 +19,7 @@ import ImageShipping from "../../components/ImageShipping";
 import strings from "../../localization";
 
 import LoaderItem from "../../components/LoaderItem";
-import ModalConfirm from "../../components/ModalConfirm";
+import ModalConfirm from "../../containers/ModalConfirm";
 import convertTimesTime from "../../helpers/convertTimestime";
 import { optionsCancel } from "../../dataSource/option_cancle";
 import { optionsUndo } from "../../dataSource/option_undo";
