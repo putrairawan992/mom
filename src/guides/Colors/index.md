@@ -4,20 +4,18 @@ menu: Guides
 ---
 
 import { Playground, Props } from 'docz'
-import "antd/dist/antd.css";
+import "antd/dist/antd.less";
 import Colors from "./";
 
 # Colors
 This is color guidelines of Monggopesen
 
 ## How To Use
-- Import colors from "../../sass/variable.sass"
 - Thereare several colors that you can use to build Monggopesen app
 
 ## Example
     style.sass
     -----------------
-    @import "../../sass/variable.sass"    
     .button
         background: $color-safety-orange
 
