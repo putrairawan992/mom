@@ -4,10 +4,8 @@ menu: Components
 ---
 
 import {Playground, Props } from 'docz'
-import 'antd/dist/antd.css';
+import 'antd/dist/antd.less';
 import Select from './'
-import {Select as SelectAnt} from 'antd'
-
 
 
 # Select

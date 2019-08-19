@@ -4,8 +4,8 @@ menu: Components
 ---
 
 import { Playground, Props } from 'docz'
-import "antd/dist/antd.css";
 import Button from './'
+import "antd/dist/antd.less"
 
 # Button
 This is button of Monggopesen

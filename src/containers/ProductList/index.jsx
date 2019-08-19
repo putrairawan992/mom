@@ -9,7 +9,7 @@ import Button from "../../components/Button";
 import { currencyYuan } from "../../helpers/currency";
 import ProductContext from "../../context/GlobalStateProduct/product-context";
 import "./style.sass";
-import ModalConfirm from "../../components/ModalConfirm";
+import ModalConfirm from "../../containers/ModalConfirm";
 
 const { Option } = Select;
 const { Search } = Input;
