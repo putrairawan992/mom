@@ -1,15 +1,13 @@
 import React from "react";
 import { Icon, Form } from "antd";
-import { connect } from "react-redux";
 import { Formik } from "formik";
 import * as yup from "yup";
 import "./style.sass";
-import { login } from "../../store/actions/authentication";
-import { PATH_AUTHENTICATION } from "../../services/path/login";
 import Button from "../../components/Button";
 import Input from "../../components/Input";
 import logo from "../../assets/img/logo_monggopesen/ic_logo_bag_borderteal.png";
 import {useRootContext} from "../../hoc/RootContext";
+import { withRouter } from "react-router-dom";
 
 const schema = yup.object().shape({
   email: yup.string().required(),
@@ -34,7 +32,6 @@ const Login = props => {
           <Formik
             initialValues={{ email: "", password: "" }}
             onSubmit={values => {
-              //props.login(PATH_AUTHENTICATION.LOGIN, values);
               handleLogin(values);
             }}
             validationSchema={schema}
@@ -108,4 +105,4 @@ const Login = props => {
   );
 };
 
-export default Login;
+export default (withRouter)(Login);

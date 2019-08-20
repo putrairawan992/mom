@@ -54,6 +54,15 @@ const RootContextProvider = ({ children }) => {
       setIsSubmitting(false);
     }
   };
+
+  const logout = () => {
+    window.localStorage.setItem(
+      "authenticated",JSON.stringify(initialState));
+      dispatch({
+        type: "logout"
+      })
+    
+  }
   return (
     <RootContext.Provider
       value={{
@@ -61,10 +70,9 @@ const RootContextProvider = ({ children }) => {
         handleLogin: payload => {
           login(payload);
         },
-        handleLogout: () =>
-          dispatch({
-            type: "logout"
-          }),
+        handleLogout: () =>{
+          logout()
+        },
         isSubmitting
       }}
     >

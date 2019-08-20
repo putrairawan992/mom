@@ -16,7 +16,7 @@ const { Search } = Input;
 const sortOption = sort.product;
 const filterProductOption = filterOption.product;
 
-const Products = props => {
+const ProductList = props => {
   const context = useContext(ProductContext);
   const [loading, setLoading] = useState(false);
   const [listProduct, setListProduct] = useState([]);
@@ -355,4 +355,4 @@ const Products = props => {
   );
 };
 
-export default Products;
+export default ProductList;

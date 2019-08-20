@@ -1,12 +1,9 @@
 import PATH_URL from "./path";
 import Login from "../pages/Login";
-import Home from "../pages/Home";
-import requiredAuth from '../hoc/requiredAuth';
-import notRequiredAuth from "../hoc/notRequiredAuth";
 import FullLayout from "../layouts/FullLayout";
 import MainLayout from "../layouts/MainLayout";
-import DashboardChina from "../pages/DashboardChina";
-//import MainLayout from "../layouts/MainLayout";
+import ProductList from "../containers/ProductList";
+import FormProduct from "../containers/Form";
 
 const routes = [
   {
@@ -15,21 +12,20 @@ const routes = [
     layout: FullLayout
   },
   {
-    path: PATH_URL.HOME,
-    component: Home,
+    path: PATH_URL.PRODUCT_LIST,
+    component: ProductList,
     layout: MainLayout
   },
   {
-    path: PATH_URL.DASHBOARD_CHINA,
-    component: DashboardChina,
+    path: PATH_URL.PRODUCT_CREATE,
+    component: FormProduct,
     layout: MainLayout
   },
   {
-    path: PATH_URL.DASHBOARD_INDONESIA,
-    component: DashboardChina,
-    layou: MainLayout
-  },
-
+    path: PATH_URL.PRODUCT_EDIT,
+    component: FormProduct,
+    layout: MainLayout
+  }
 ];
 
 export default routes;
