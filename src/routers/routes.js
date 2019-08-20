@@ -1,19 +1,31 @@
 import PATH_URL from "./path";
 import Login from "../pages/Login";
-import Home from "../pages/Home";
-import requiredAuth from '../hoc/requiredAuth';
-import notRequiredAuth from "../hoc/notRequiredAuth";
-//import MainLayout from "../layouts/MainLayout";
+import FullLayout from "../layouts/FullLayout";
+import MainLayout from "../layouts/MainLayout";
+import ProductList from "../pages/ProductList";
+import ProductCreate from "../pages/ProductCreate";
+import ProductEdit from "../pages/ProductEdit";
 
 const routes = [
   {
     path: PATH_URL.LOGIN,
-    component: notRequiredAuth(Login),
-    layoutName: 'fullLayout'
+    component: Login,
+    layout: FullLayout
   },
   {
-    path: PATH_URL.HOME,
-    component: requiredAuth(Home)
+    path: PATH_URL.PRODUCT_LIST,
+    component: ProductList,
+    layout: MainLayout
+  },
+  {
+    path: PATH_URL.PRODUCT_CREATE,
+    component: ProductCreate,
+    layout: MainLayout
+  },
+  {
+    path: PATH_URL.PRODUCT_EDIT,
+    component: ProductEdit,
+    layout: MainLayout
   }
 ];
 

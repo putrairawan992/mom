@@ -1,27 +1,23 @@
 import React, { Component } from "react";
-import { Switch, Route, Router } from "react-router-dom";
+import { Switch, Route, BrowserRouter as Router, Redirect } from "react-router-dom";
 import routes from "./routers/routes";
-import history from "./routers/history";
-import MainLayout from "./layouts/MainLayout";
-import FullLayout from "./layouts/FullLayout";
-
+import RootContextProvider from "./hoc/RootContext";
+import PATH_URL from "./routers/path";
 
 class App extends Component {
   render() {
     const RouteWithLayout = ({ component: Component, layout: Layout,...rest }) => (
       <Route {...rest} render={props => (
-        <Layout>
-          <Component {...props} />
-        </Layout>
+        <RootContextProvider>
+          <Layout>
+            <Component {...props} />
+          </Layout>
+        </RootContextProvider>
       )} />
     );
 
     const routeComponents =
-      routes.map(({ path, component, layoutName }, key) => {
-          let layout = MainLayout;
-          if(layoutName === "fullLayout") {
-            layout = FullLayout;
-          }
+      routes.map(({ path, component, layout }, key) => {
           return <RouteWithLayout 
             key={key} 
             exact 
@@ -33,8 +29,9 @@ class App extends Component {
       );
 
     return (
-      <Router history={history}>
+      <Router>
         <Switch>
+          <Route exact path="/" component={() => <Redirect to={PATH_URL.PRODUCT_LIST} />} />
           {routeComponents}
         </Switch>
       </Router>

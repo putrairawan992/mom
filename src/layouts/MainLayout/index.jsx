@@ -1,26 +1,28 @@
-import React, { useState } from "react";
-import { Layout } from "antd";
+import React, {useEffect} from "react";
+import { Layout, Menu, Icon } from "antd";
 import Header from "../../components/Header";
-import { connect } from "react-redux";
-import { logout } from "../../store/actions/authentication";
 import MenuProfile from "../../components/MenuProfile";
-
+import PATH_URL from "../../routers/path";
+import { useRootContext } from "../../hoc/RootContext";
+import { withRouter } from "react-router-dom";
+import GlobalStateProduct from "../../context/GlobalStateProduct";
+const {SubMenu} = Menu;
 const { Content, Sider } = Layout;
 
 const MainLayout = props => {
-  const [page, setPage] = useState([]);
-
-  const actionChangePage = page => {
-    setPage(page);
-  };
+  const {handleLogout, isAuthenticated} = useRootContext();
+  useEffect(()=>{
+    if(!isAuthenticated){
+      props.history.push('/login');
+    }
+  },[isAuthenticated]);
 
   const childrenWithProps = React.cloneElement(props.children, {
-    actionChangePage: actionChangePage,
     logout: props.logout
   });
 
   const actionLogout = ()=> {
-    props.logout();
+    handleLogout();
   }
 
   return (
@@ -43,11 +45,30 @@ const MainLayout = props => {
               code="AO012"
               logout={actionLogout}
             />
-            {childrenWithProps}
+            <Menu
+              mode="inline"
+              defaultSelectedKeys={["1"]}
+              defaultOpenKeys={["product"]}
+              style={{ height: "100%", borderRight: 0 }}
+            >
+              <SubMenu
+                key="product"
+                title={
+                  <span>
+                    <Icon type="shopping" />
+                    Product
+                  </span>
+                }
+              >
+                <Menu.Item key="1" onClick={()=>props.history.push(PATH_URL.PRODUCT_LIST)}>List Product</Menu.Item>
+                <Menu.Item key="2" onClick={()=>props.history.push(PATH_URL.PRODUCT_CREATE)}>Add Product</Menu.Item>
+                <Menu.Item key="3" onClick={()=>props.history.push(PATH_URL.PRODUCT_EDIT)}>Edit Product</Menu.Item>
+              </SubMenu>
+            </Menu>
           </Sider>
           <Layout style={{ marginLeft: 200 }}>
-            <Content style={{ margin: "24px 16px 0", overflow: "initial" }}>
-              <div style={{ padding: 12, background: "#fff" }}>{page}</div>
+            <Content>
+              <div style={{ padding: 12, background: "#fff" }}><GlobalStateProduct>{childrenWithProps}</GlobalStateProduct></div>
             </Content>
           </Layout>
         </Layout>
@@ -56,11 +77,6 @@ const MainLayout = props => {
   );
 };
 
-function mapStateToProps(state) {
-  return { isAuthenticated: state.authentication.isAuthenticated };
-}
 
-export default connect(
-  mapStateToProps,
-  { logout }
-)(MainLayout);
+
+export default (withRouter)(MainLayout);
