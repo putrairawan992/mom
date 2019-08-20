@@ -16,7 +16,7 @@ const { Search } = Input;
 const sortOption = sort.product;
 const filterProductOption = filterOption.product;
 
-const Products = props => {
+export default function ProductList() {
   const context = useContext(ProductContext);
   const [loading, setLoading] = useState(false);
   const [listProduct, setListProduct] = useState([]);
@@ -354,5 +354,3 @@ const Products = props => {
     </Fragment>
   );
 };
-
-export default Products;

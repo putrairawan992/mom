@@ -1,12 +1,10 @@
 import React, { useState, useContext } from 'react';
-import FormProduct from '../../containers/Form';
+import FormProduct from '../../containers/FormProduct';
 import {apiGetWithoutToken} from '../../services/api';
 import {PATH_PRODUCT} from '../../services/path/product';
 import ProductList from '../../containers/ProductList';
-import ProductContext from '../../context/GlobalStateProduct/product-context'
 
 const Product = () => {
-  const context = useContext(ProductContext)
   const [dataProduct, setDataProduct] = useState(null)
   const [labelButton, setLabelButton] = useState("")
   const toFormEdit = () => {
@@ -19,17 +17,10 @@ const Product = () => {
 
   return (
       <React.Fragment>
-        {
-          context.status ?
-          <ProductList
-            toFormCreate={toFormCreate}
-            toFormEdit={toFormEdit}
-          /> :
-          <FormProduct
-            dataProduct={dataProduct}
-            labelButton={labelButton}
-          />
-        }
+        <ProductList
+          toFormCreate={toFormCreate}
+          toFormEdit={toFormEdit}
+        />
       </React.Fragment>
   )
 }
