@@ -46,7 +46,7 @@ const MainLayout = props => {
             {childrenWithProps}
           </Sider>
           <Layout style={{ marginLeft: 200 }}>
-            <Content style={{ margin: "24px 16px 0", overflow: "initial" }}>
+            <Content>
               <div style={{ padding: 12, background: "#fff" }}>{page}</div>
             </Content>
           </Layout>

@@ -8,12 +8,12 @@ import notRequiredAuth from "../hoc/notRequiredAuth";
 const routes = [
   {
     path: PATH_URL.LOGIN,
-    component: notRequiredAuth(Login),
+    component: Login,
     layoutName: 'fullLayout'
   },
   {
     path: PATH_URL.HOME,
-    component: requiredAuth(Home)
+    component: Home
   }
 ];
 

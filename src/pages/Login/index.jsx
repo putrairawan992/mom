@@ -12,13 +12,15 @@ import logo from "../../assets/img/logo_monggopesen/ic_logo_bag_borderteal.png";
 import {useRootContext} from "../../hoc/RootContext";
 
 const schema = yup.object().shape({
-  username: yup.string().required(),
+  email: yup.string().required(),
   password: yup.string().required()
 });
 
 const Login = props => {
-  const {isAuthenticated, handleLogin} = useRootContext();
-  console.log("isAuthenticated", isAuthenticated);
+  const {isAuthenticated, handleLogin, isSubmitting} = useRootContext();
+  if(isAuthenticated){
+    props.history.push('/');
+  }
   return (
     <div className="mp-login-container">
       <div className="mp-login-header-container">
@@ -30,9 +32,10 @@ const Login = props => {
         <span>Admin Login</span>
         <div className="mp-form-login">
           <Formik
-            initialValues={{ username: "", password: "" }}
+            initialValues={{ email: "", password: "" }}
             onSubmit={values => {
-              props.login(PATH_AUTHENTICATION.LOGIN, values);
+              //props.login(PATH_AUTHENTICATION.LOGIN, values);
+              handleLogin(values);
             }}
             validationSchema={schema}
           >
@@ -42,14 +45,13 @@ const Login = props => {
               touched,
               handleChange,
               handleBlur,
-              handleSubmit,
-              isSubmitting
+              handleSubmit
             }) => (
               <Form onSubmit={handleSubmit}>
-                <Form.Item validateStatus={errors.username && touched.username}>
+                <Form.Item validateStatus={errors.email && touched.email}>
                   <Input
-                    placeholder="Username"
-                    name="username"
+                    placeholder="Email"
+                    name="email"
                     prefix={
                       <Icon
                         type="user"
@@ -60,11 +62,8 @@ const Login = props => {
                       />
                     }
                     onChange={handleChange}
-                    value={values.username}
+                    value={values.email}
                     onBlur={handleBlur}
-                    // status={
-                    //   errors.username && touched.username ? "error" : "default"
-                    // }
                     className="mp-login-input-text"
                   />
                 </Form.Item>
@@ -99,7 +98,6 @@ const Login = props => {
                   >
                     Log in
                   </Button>
-                  <Button onClick={()=>handleLogin({token: "candra"})}>Test</Button>
                 </div>
               </Form>
             )}
@@ -110,14 +108,4 @@ const Login = props => {
   );
 };
 
-const mapStateToProps = state => ({
-  isAuthenticated: state.authentication.isAuthenticated,
-  auth: state.authentication.auth,
-  messageError: state.authentication.messageError,
-  isError: state.authentication.checkError
-});
-
-export default connect(
-  mapStateToProps,
-  { login }
-)(Login);
+export default Login;
