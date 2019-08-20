@@ -6,7 +6,7 @@ import strings from "../../localization";
 import GlobalStateProduct from '../../context/GlobalStateProduct'
 import "./style.sass";
 import ProductList from "../../pages/ProductList";
-import Customers from "../../pages/Customers";
+import CustomerList from "../../pages/CustomerList";
 
 const MenuAdminChina = props => {
   useEffect(() => {
@@ -47,7 +47,7 @@ const MenuAdminChina = props => {
         props.onChange(<OrderChina />);
         break;
       case 4:
-        props.onChange(<Customers />);
+        props.onChange(<CustomerList />);
         break;
       default:
         props.onChange(<OrderChina />);
