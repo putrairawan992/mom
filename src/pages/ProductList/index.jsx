@@ -10,6 +10,7 @@ import { currencyYuan } from "../../helpers/currency";
 import ProductContext from "../../context/GlobalStateProduct/product-context";
 import "./style.sass";
 import ModalConfirm from "../../containers/ModalConfirm";
+import ButtonIcon from "../../components/ButtonIcon";
 
 const { Option } = Select;
 const { Search } = Input;
@@ -129,24 +130,11 @@ export default function ProductList() {
       render: (text, record) => (
         <span className="mp-table-product-action">
           <div className="mp-icon-container">
-            <div
-              className="mp-icon-wrap"
-              onClick={() => {
-                context.toFormEdit(record.id);
-              }}
-            >
-              <Icon className="mp-icon-product-action" type="edit" />
-            </div>
-            <div
-              className="mp-icon-wrap"
-              onClick={() => {
+            <ButtonIcon icon="edit" onClick={() => alert('refactor')}/>
+            <ButtonIcon icon="delete" onClick={() => {
                 setSelectProduct(record);
-                //console.log(response.data.data.find(data)=> data);
                 setShowDeleteConfirm(!showDeleteConfirm);
-              }}
-            >
-              <Icon className="mp-icon-product-action" type="delete" />
-            </div>
+            }}/>
           </div>
         </span>
       )

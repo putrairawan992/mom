@@ -3,10 +3,9 @@ import React, { useEffect } from "react";
 import { Menu, Icon } from "antd";
 import OrderChina from "../../pages/OrderChina";
 import strings from "../../localization";
-import Product from "../../pages/Product";
 import GlobalStateProduct from '../../context/GlobalStateProduct'
 import "./style.sass";
-import Products from "../../pages/Products";
+import ProductList from "../../pages/ProductList";
 import Customers from "../../pages/Customers";
 
 const MenuAdminChina = props => {
@@ -41,7 +40,7 @@ const MenuAdminChina = props => {
       case 2:
         props.onChange(
         <GlobalStateProduct status={true}>
-          <Product />
+          <ProductList />
         </GlobalStateProduct>);
         break;
       case 3:
