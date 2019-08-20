@@ -10,10 +10,11 @@ import "./index.css";
 import "./local"
 import "./localization"
 
+
 const app = (
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
-      <App />
+        <App />
     </PersistGate>
   </Provider>
 );
