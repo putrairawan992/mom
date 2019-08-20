@@ -1,4 +1,8 @@
-const { override, fixBabelImports, addLessLoader } = require('customize-cra');
+const { override, fixBabelImports, addLessLoader, addWebpackModuleRule } = require('customize-cra');
+const path = require('path');
+const fs  = require('fs');
+const lessToJs = require('less-vars-to-js');
+const themeVariables = lessToJs(fs.readFileSync(path.join(__dirname, './src/antd-config/antdThemeVars.less'), 'utf8'));
 
 module.exports = override(
   fixBabelImports('import', {
@@ -8,9 +12,17 @@ module.exports = override(
   }),
  addLessLoader({
    javascriptEnabled: true,
-   modifyVars: { 
-    '@primary-color': '#007E80',
-    '@error-color' : '#A8071A'
-  },
+   modifyVars: themeVariables
  }),
+ addWebpackModuleRule({
+    test: /\.sass$/,
+    use: [
+      {
+        loader: 'sass-resources-loader',
+        options: {
+          resources: './src/sass/variable.sass'
+        },
+      },
+    ],
+ })
 );

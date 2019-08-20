@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import { Row, Col, Card } from "antd";
 import OrderVariant from "../../components/OrderVariant";
-import ModalAddNote from "../../components/ModalAddNote";
+import ModalAddNote from "../../containers/ModalAddNote";
 import ButtonTextIcon from "../../components/ButtonTextIcon";
 import Button from "../../components/Button";
 import LoaderItem from "../../components/LoaderItem";
-import ModalConfirm from "../../components/ModalConfirm";
+import ModalConfirm from "../../containers/ModalConfirm";
 import TextInvoiceNumber from "../../components/TextInvoiceNumber";
 import TextProductName from "../../components/TextProductName";
 import ModalReason from "../../containers/ModalReason";
-import ModalHistory from "../ModalHistory";
+import ModalHistory from "../../containers/ModalHistory";
 import {
   apiPatchWithToken,
   apiPostWithToken,
@@ -20,9 +20,6 @@ import strings from "../../localization";
 import OrderDetailIndonesia from "../../components/OrderDetailIndonesia";
 import { optionsUndo } from "../../dataSource/option_undo";
 import contentNotification from '../../helpers/notification';
-
-import "../../sass/style.sass";
-import "./style.sass";
 
 const ListPickedUp = props => {
   const [visibleUndo, setVisibleUndo] = useState(false);

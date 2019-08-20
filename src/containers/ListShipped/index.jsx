@@ -15,7 +15,6 @@ import convertTimesTime from "../../helpers/convertTimestime";
 import { optionsUndo } from "../../dataSource/option_undo";
 import contentNotification from '../../helpers/notification';
 
-import "../../sass/style.sass";
 import "./style.sass";
 
 const StatusOrder = ({ status }) => {

@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { Row, Col, Card } from "antd";
 import OrderVariant from "../../components/OrderVariant";
-import ModalAddNote from "../../components/ModalAddNote";
-import ModalConfirmPrint from "../../components/ModalConfirmPrint";
+import ModalAddNote from "../../containers/ModalAddNote";
+import ModalConfirmPrint from "../../containers/ModalConfirmPrint";
 import ButtonTextIcon from "../../components/ButtonTextIcon";
 import Button from "../../components/Button";
 import LoaderItem from "../../components/LoaderItem";
 import LabelChina from "../../components/LabelChina";
-import ModalConfirm from "../../components/ModalConfirm";
+import ModalConfirm from "../../containers/ModalConfirm";
 import TextInvoiceNumber from "../../components/TextInvoiceNumber";
 import TextProductName from "../../components/TextProductName";
 import ModalReason from "../../containers/ModalReason";
@@ -24,9 +24,6 @@ import strings from "../../localization";
 import { optionsCancel } from "../../dataSource/option_cancle";
 import { optionsUndo } from "../../dataSource/option_undo";
 import contentNotification from '../../helpers/notification';
-
-import "../../sass/style.sass";
-import "./style.sass";
 
 const ListPurchased = props => {
   const [visibleUndo, setVisibleUndo] = useState(false);

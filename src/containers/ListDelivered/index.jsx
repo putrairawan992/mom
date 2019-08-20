@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { Row, Col, Card } from "antd";
-import ModalAddNote from "../../components/ModalAddNote";
+import ModalAddNote from "../../containers/ModalAddNote";
 import ButtonTextIcon from "../../components/ButtonTextIcon";
 import Button from "../../components/Button";
 import LoaderItem from "../../components/LoaderItem";
 import TextInvoiceNumber from "../../components/TextInvoiceNumber";
 import ModalReason from "../../containers/ModalReason";
-import ModalHistory from "../ModalHistory";
+import ModalHistory from "../../containers/ModalHistory";
 import {
   apiPostWithToken,
   apiGetWithToken,
@@ -19,7 +19,6 @@ import ModalDetailOrder from "../ModalDetailOrder";
 import contentNotification from "../../helpers/notification";
 import { PATH_BARCODE } from "../../services/path/barcode";
 import convertTimesTime from "../../helpers/convertTimestime";
-import "../../sass/style.sass";
 import "./style.sass";
 
 
