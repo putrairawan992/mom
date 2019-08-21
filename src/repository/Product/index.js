@@ -1,32 +1,39 @@
 import { PATH_PRODUCT } from "../../services/path/product";
 import { apiGetWithoutToken, apiDeleteWithToken } from "../../services/api";
 
-async function GetAll(parameters, setLoading = function(){}, category = "") {
+async function GetAll(props) {
+    const param = props.param;
+    const loading = props.loading ? props.loading : function() {};
+    const category = props.category ? props.category : "";
+
     let response = "";
-    setLoading(true);
+    loading(true);
     try {
         if(category === "") {
-            response = await apiGetWithoutToken(PATH_PRODUCT.PRODUCT, parameters);
+            response = await apiGetWithoutToken(PATH_PRODUCT.PRODUCT, param);
         } else {
-            response = await apiGetWithoutToken(`${PATH_PRODUCT.CATEGORY}/${category}`, parameters);
+            response = await apiGetWithoutToken(`${PATH_PRODUCT.CATEGORY}/${category}`, param);
         }
-        setLoading(false);
+        loading(false);
         return response;
     } catch (error) {
-        setLoading(false);
+        loading(false);
         return error; 
     }
 }
 
-async function Delete(id, setLoading = function(){}) {
+async function Delete(props) {
+    let id = props.id;
+    let loading = props.loading ? props.loading : function() {};
+
     let response = "";
-    setLoading(true);
+    loading(true);
     try {
         response = await apiDeleteWithToken(`${PATH_PRODUCT.PRODUCT}/${id}`);
-        setLoading(false);
+        loading(false);
         return response;
     } catch (error) {
-        setLoading(false);
+        loading(false);
         return error; 
     }
 }
