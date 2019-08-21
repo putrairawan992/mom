@@ -5,7 +5,7 @@ menu: Components
 
 import Input from './'
 import {Playground, Props } from 'docz'
-import "antd/dist/antd.less";
+import "antd/dist/antd.less"
 
 # Input
 This is input of Monggopesen

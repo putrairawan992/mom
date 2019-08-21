@@ -1,7 +1,6 @@
-import React, { Fragment, useState, useEffect, useContext } from "react";
+import React, { Fragment, useState, useEffect, useContext, useRef } from "react";
 import { Card, Table, Select, Icon, Input, Pagination } from "antd";
 import { PATH_PRODUCT } from "../../services/path/product";
-import { apiGetWithoutToken, apiDeleteWithToken } from "../../services/api";
 import { filterCategoryOption } from "../../dataSource/option_category";
 import { filterOption } from "../../dataSource/option_filter";
 import { sortOption as sort } from "../../dataSource/option_sort";
@@ -11,6 +10,7 @@ import ProductContext from "../../context/GlobalStateProduct/product-context";
 import "./style.sass";
 import ModalConfirm from "../../containers/ModalConfirm";
 import ButtonIcon from "../../components/ButtonIcon";
+import Product from "../../repository/Product";
 
 const { Option } = Select;
 const { Search } = Input;
@@ -20,13 +20,12 @@ const filterProductOption = filterOption.product;
 export default function ProductList() {
   const context = useContext(ProductContext);
   const [loading, setLoading] = useState(false);
-  const [listProduct, setListProduct] = useState([]);
-  const [path, setPath] = useState(PATH_PRODUCT.PRODUCT);
+  const [productList, setProductList] = useState([]);
   const [category, setCategory] = useState("");
   const pageSize = 5;
   const [total, setTotal] = useState(0);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [selectProduct, setSelectProduct] = useState({
+  const [selectedProduct, setSelectedProduct] = useState({
     id: "",
     image: "",
     nameIdn: "",
@@ -42,23 +41,16 @@ export default function ProductList() {
     page: 0
   });
 
+  const isInitialRender = useRef(true);
   useEffect(() => {
-    getListProduct();
+    getProductList();
   }, []);
 
   useEffect(() => {
-    getListProduct();
-  }, [parameter]);
+    isInitialRender.current ? isInitialRender.current = false : getProductList();
+  }, [parameter, category]);
 
-  useEffect(() => {
-    getListProduct();
-  }, [path]);
-
-  useEffect(() => {
-    setPathProductCategory();
-  }, [category]);
-
-  const schemaProducts = ({
+  const schemaTableProduct = ({
     id,
     image,
     nameChinese,
@@ -76,9 +68,9 @@ export default function ProductList() {
     stock: isReadyStock ? "Ready Stock" : "Out of Stock"
   });
 
-  const convertToSchemaProduct = response => {
-    const products = response.data.data;
-    return products.map(product => schemaProducts(product));
+  function convertToSchemaTableProductList(productListResponse) {
+    const productListData = productListResponse.data.data;
+    return productListData.map(product => schemaTableProduct(product));
   };
 
   const columns = [
@@ -127,61 +119,53 @@ export default function ProductList() {
       title: "Action",
       key: "action",
       width: 100,
-      render: (text, record) => (
+      render: (text, product) => (
         <span className="mp-table-product-action">
           <div className="mp-icon-container">
             <ButtonIcon icon="edit" onClick={() => alert('refactor')}/>
-            <ButtonIcon icon="delete" onClick={() => {
-                setSelectProduct(record);
-                setShowDeleteConfirm(!showDeleteConfirm);
-            }}/>
+            <ButtonIcon icon="delete" onClick={() => actionDelete(product)}/>
           </div>
         </span>
       )
     }
   ];
 
-  const getListProduct = async () => {
-    setLoading(true);
-    try {
-      const response = await apiGetWithoutToken(`${path}`, parameter);
-      setTotal(response.data.element);
-      setListProduct(convertToSchemaProduct(response));
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-      setListProduct(null);
-      setLoading(false);
-    }
-  };
+  function actionDelete(product) {
+    setSelectedProduct(product);
+    setShowDeleteConfirm(!showDeleteConfirm);
+  }
 
-  const deleteProduct = async () => {
-    setLoading(true);
-    try {
-      const response = await apiDeleteWithToken(`${path}/${selectProduct.id}`);
-      setLoading(false);
-      setShowDeleteConfirm(!showDeleteConfirm);
-      response && getListProduct();
-    } catch (error) {
-      console.error(error);
-      setLoading(false);
-      setShowDeleteConfirm(!showDeleteConfirm);
-    }
-  };
-
-  const setPathProductCategory = () => {
-    if (category === "") {
-      setPath(PATH_PRODUCT.PRODUCT);
+  async function getProductList() {
+    let productListResponse = await Product.getAll({
+      param: parameter, 
+      loading: setLoading, 
+      category
+    });
+    
+    if(productListResponse.status === 200) {
+      setTotal(productListResponse.data.element);
+      setProductList(convertToSchemaTableProductList(productListResponse));  
     } else {
-      setPath(`${PATH_PRODUCT.CATEGORY}/${category}`);
+      setProductList(null);
     }
   };
 
-  const actionChangePagination = value => {
+  async function deleteProduct() {
+    let deleteProductResponse = await Product.delete({
+      id: selectedProduct.id, 
+      loading: setShowDeleteConfirm
+    });
+
+    if(deleteProductResponse.status === 200) {
+      getProductList();
+    }
+  };
+
+  function actionChangePagination(value) {
     setParameter({ ...parameter, page: value - 1 });
   };
 
-  const actionSort = value => {
+  function actionSort(value) {
     const sort = JSON.parse(value);
     setParameter({
       ...parameter,
@@ -190,51 +174,50 @@ export default function ProductList() {
     });
   };
 
-  const actionFilterCategory = value => {
+  function actionFilterCategory(value) {
     setCategory(JSON.parse(value).value);
-    setPathProductCategory();
   };
 
-  const actionFilterProduct = value => {
+  function actionFilterProduct(value) {
     const filter = JSON.parse(value);
     setParameter({ ...parameter, filterBy: filter.value, page: 0 });
   };
 
-  const actionSearch = value => {
+  function actionSearch(value) {
     const keyword = value;
     setParameter({ ...parameter, keyword: keyword, page: 0 });
   };
 
-  const descDeleteConfirmation = () => (
+  const deleteConfirmationContent = () => (
     <table border={0} style={{ fontSize: 12 }}>
       <tbody>
         <tr>
           <td rowSpan={4}>
             <img
-              src={selectProduct.image}
-              alt={selectProduct.nameIdn}
+              src={selectedProduct.image}
+              alt={selectedProduct.nameIdn}
               style={{ width: 50, height: 50 }}
             />
           </td>
           <td>
-            <span style={{ paddingLeft: 12 }}>{selectProduct.supplier}</span>
+            <span style={{ paddingLeft: 12 }}>{selectedProduct.supplier}</span>
           </td>
         </tr>
         <tr>
           <td>
-            <span style={{ paddingLeft: 12 }}>{`${selectProduct.nameCny} - ${
-              selectProduct.nameIdn
+            <span style={{ paddingLeft: 12 }}>{`${selectedProduct.nameCny} - ${
+              selectedProduct.nameIdn
             }`}</span>
           </td>
         </tr>
         <tr>
           <td>
-            <span style={{ paddingLeft: 12 }}>{selectProduct.priceCny}</span>
+            <span style={{ paddingLeft: 12 }}>{selectedProduct.priceCny}</span>
           </td>
         </tr>
         <tr>
           <td>
-            <span style={{ paddingLeft: 12 }}>{selectProduct.stock}</span>
+            <span style={{ paddingLeft: 12 }}>{selectedProduct.stock}</span>
           </td>
         </tr>
       </tbody>
@@ -317,7 +300,7 @@ export default function ProductList() {
           rowKey={record => record.id}
           columns={columns}
           loading={loading}
-          dataSource={listProduct}
+          dataSource={productList}
           pagination={false}
         />
         <Pagination
@@ -333,7 +316,7 @@ export default function ProductList() {
       </Card>
       <ModalConfirm
         title={"Delete Product"}
-        description={descDeleteConfirmation()}
+        description={deleteConfirmationContent()}
         onCancel={() => setShowDeleteConfirm(!showDeleteConfirm)}
         visible={showDeleteConfirm}
         onOk={deleteProduct}
