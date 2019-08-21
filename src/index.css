@@ -58,3 +58,7 @@
 .mp-select-product-list {
     margin: 0 8px!important;
 }
+.mp-pagination-table {
+    float: right;
+    margin-top: 24px;
+}
