@@ -12,7 +12,7 @@ const { Search } = Input;
 const filterOption = filter.customer;
 const sortOption = sort.customer;
 
-export default function CustomerList() {
+const CustomerList = ()=> {
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState([]);
   const [total, setTotal] = useState(0);
@@ -202,3 +202,5 @@ export default function CustomerList() {
     </Fragment>
   );
 };
+
+export default CustomerList; 

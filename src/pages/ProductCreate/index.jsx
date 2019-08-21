@@ -1,6 +1,8 @@
 import React from "react";
 import FormProduct from "../../containers/FormProduct";
 
-export default function ProductCreate() {
+const ProductCreate = ()=> {
     return <FormProduct />
 }
+
+export default ProductCreate;

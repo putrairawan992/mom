@@ -1,5 +1,5 @@
 import React from "react";
-import { Icon, Form } from "antd";
+import { Icon, Form, Radio } from "antd";
 import { Formik } from "formik";
 import * as yup from "yup";
 import "./style.sass";
@@ -30,7 +30,7 @@ const Login = props => {
         <span>Admin Login</span>
         <div className="mp-form-login">
           <Formik
-            initialValues={{ email: "", password: "" }}
+            initialValues={{ email: "", password: "", role: "" }}
             onSubmit={values => {
               handleLogin(values);
             }}
@@ -85,6 +85,10 @@ const Login = props => {
                 {((errors.username && touched.username) || (errors.password && touched.password)) && (
                   <center className="mp-login-error-message"><span>Please don't be stupid! </span></center>
                 )}
+                <Radio.Group name="role" onChange={handleChange} value={values.role} defaultValue="china">
+                  <Radio value={"china"}>China</Radio>
+                  <Radio value={"indonesia"}>Indonesia</Radio>
+                </Radio.Group>
                 <div className="mp-login-button-submit">
                   <Button
                     type="primary"
