@@ -136,7 +136,12 @@ export default function ProductList() {
   }
 
   async function getProductList() {
-    let productListResponse = await Product.getAll(parameter, setLoading, category);
+    let productListResponse = await Product.getAll({
+      param: parameter, 
+      loading: setLoading, 
+      category
+    });
+    
     if(productListResponse.status === 200) {
       setTotal(productListResponse.data.element);
       setProductList(convertToSchemaTableProductList(productListResponse));  
@@ -146,7 +151,11 @@ export default function ProductList() {
   };
 
   async function deleteProduct() {
-    let deleteProductResponse = await Product.delete(selectedProduct.id, setShowDeleteConfirm);
+    let deleteProductResponse = await Product.delete({
+      id: selectedProduct.id, 
+      loading: setShowDeleteConfirm
+    });
+
     if(deleteProductResponse.status === 200) {
       getProductList();
     }
