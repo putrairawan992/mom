@@ -2,8 +2,8 @@ import { PATH_PRODUCT } from "../../services/path/product";
 import { apiGetWithoutToken, apiDeleteWithToken } from "../../services/api";
 
 async function GetAll(props) {
-    const param = props.param;
     const loading = props.loading ? props.loading : function() {};
+    const param = props.param;
     const category = props.category ? props.category : "";
 
     let response = "";
@@ -23,8 +23,8 @@ async function GetAll(props) {
 }
 
 async function Delete(props) {
-    let id = props.id;
-    let loading = props.loading ? props.loading : function() {};
+    const loading = props.loading ? props.loading : function() {};
+    const id = props.id;
 
     let response = "";
     loading(true);
