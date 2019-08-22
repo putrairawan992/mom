@@ -31,7 +31,7 @@ class App extends Component {
     return (
       <Router>
         <Switch>
-          <Route exact path="/" component={() => <Redirect to={PATH_URL.PRODUCT_LIST} />} />
+          <Route exact path="/" component={() => <Redirect to={PATH_URL.PRODUCT} />} />
           {routeComponents}
         </Switch>
       </Router>

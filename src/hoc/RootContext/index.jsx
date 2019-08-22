@@ -13,7 +13,7 @@ const RootContextProvider = ({ children }) => {
   const prevAuthenticated =
   JSON.parse(window.localStorage.getItem("authenticated")) || initialState;
   const reducer = (state, action) => {
-    console.log(action);
+    //console.log(action);
     switch (action.type) {
       case "login":
         return {
@@ -41,11 +41,10 @@ const RootContextProvider = ({ children }) => {
       );
       if (response) {
         const token = response.data.data.access_token;
-        window.localStorage.setItem(
-          "authenticated",JSON.stringify({ isAuthenticated: true, body: { token: "token" }}));
+        window.localStorage.setItem("authenticated",JSON.stringify({ isAuthenticated: true, body: { token: token, role: payload.role  }}));
         dispatch({
           type: "login",
-          payload: { token: token }
+          payload: { token: token, role: payload.role }
         });
       }
       setIsSubmitting(false);
@@ -61,7 +60,7 @@ const RootContextProvider = ({ children }) => {
       dispatch({
         type: "logout"
       })
-    
+
   }
   return (
     <RootContext.Provider
