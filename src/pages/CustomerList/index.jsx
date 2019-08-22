@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, { Fragment, useState, useEffect, useRef } from "react";
 import { Card, Table, Select, Input, Pagination } from "antd";
 import { apiGetWithToken } from "../../services/api";
 import { filterOption as filter } from "../../dataSource/option_filter";
@@ -6,13 +6,14 @@ import { sortOption as sort } from "../../dataSource/option_sort";
 import "./style.sass";
 import convertTimesTime from "../../helpers/convertTimestime";
 import { PATH_CUSTOMER } from "../../services/path/customer";
+import customer from "../../repository/customer";
 
 const { Option } = Select;
 const { Search } = Input;
 const filterOption = filter.customer;
 const sortOption = sort.customer;
 
-const CustomerList = ()=> {
+export default function CustomerList(){
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState([]);
   const [total, setTotal] = useState(0);
@@ -26,23 +27,27 @@ const CustomerList = ()=> {
     page: 0
   });
 
+  const isInitialRender = useRef(true);
+
   useEffect(() => {
     getList();
   }, []);
 
   useEffect(() => {
-    getList();
+    isInitialRender.current ? isInitialRender.current = false : getList();
   }, [parameter]);
 
-  const schemaList = ({ id, name, email, createdDate, status }) => ({
-    id: id,
-    name: name,
-    email: email,
-    createdDate: convertTimesTime.TypeMillisecondWithoutSecond(createdDate),
-    status: status
-  });
+  function schemaList({ id, name, email, createdDate, status }){
+    return {
+      id: id,
+      name: name,
+      email: email,
+      createdDate: convertTimesTime.TypeMillisecondWithoutSecond(createdDate),
+      status: status
+    }
+  }
 
-  const convertToSchema = response => {
+  function convertToSchema(response){
     const list = response.data.data;
     return list.map(data => schemaList(data));
   };
@@ -80,32 +85,29 @@ const CustomerList = ()=> {
     }
   ];
 
-  const getList = async () => {
-    setLoading(true);
-    try {
-      const response = await apiGetWithToken(
-        `${PATH_CUSTOMER.LIST}`,
-        parameter
-      );
-      console.log(response);
+  async function getList(){
+    let response = await customer.getAll({
+      param: parameter, 
+      loading: loading
+    })
+    if(response.status === 200){
       setTotal(response.data.element);
       setList(convertToSchema(response));
       setLoading(false);
-    } catch (error) {
-      console.log(error);
+    }else{
       setList(null);
       setLoading(false);
     }
   };
 
-  const actionChangePagination = (value)=> {
+  function actionChangePagination(value){
     setParameter({
       ...parameter,
       page: value-1
     });
   }
 
-  const actionSort = value => {
+  function actionSort(value){
     const sort = JSON.parse(value);
     setParameter({
       ...parameter,
@@ -114,12 +116,12 @@ const CustomerList = ()=> {
     });
   };
 
-  const actionFilterProduct = value => {
+  function actionFilterProduct(value){
     const filter = JSON.parse(value);
     setParameter({ ...parameter, filterBy: filter.value, page: 0 });
   };
 
-  const actionSearch = value => {
+  function actionSearch(value){
     const keyword = value;
     console.log(keyword)
     setParameter({ ...parameter, keyword: keyword, page: 0  });
@@ -202,5 +204,3 @@ const CustomerList = ()=> {
     </Fragment>
   );
 };
-
-export default CustomerList; 
