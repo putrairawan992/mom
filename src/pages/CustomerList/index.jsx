@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, { Fragment, useState, useEffect, useRef } from "react";
 import { Card, Table, Select, Input, Pagination } from "antd";
 import { apiGetWithToken } from "../../services/api";
 import { filterOption as filter } from "../../dataSource/option_filter";
@@ -13,7 +13,7 @@ const { Search } = Input;
 const filterOption = filter.customer;
 const sortOption = sort.customer;
 
-function CustomerList(){
+export default function CustomerList(){
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState([]);
   const [total, setTotal] = useState(0);
@@ -27,12 +27,14 @@ function CustomerList(){
     page: 0
   });
 
+  const isInitialRender = useRef(true);
+
   useEffect(() => {
     getList();
   }, []);
 
   useEffect(() => {
-    getList();
+    isInitialRender.current ? isInitialRender.current = false : getList();
   }, [parameter]);
 
   function schemaList({ id, name, email, createdDate, status }){
@@ -202,5 +204,3 @@ function CustomerList(){
     </Fragment>
   );
 };
-
-export default CustomerList; 
