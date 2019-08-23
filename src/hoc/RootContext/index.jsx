@@ -1,9 +1,10 @@
 import React, { useState, useReducer, useContext } from "react";
 import { apiPostWithoutToken } from "../../services/api";
 import { PATH_AUTHENTICATION } from "../../services/path/login";
+import { withRouter } from "react-router-dom";
 const RootContext = React.createContext();
 
-const RootContextProvider = ({ children }) => {
+const RootContextProvider = (props) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const initialState = {
     isAuthenticated: false,
@@ -13,7 +14,6 @@ const RootContextProvider = ({ children }) => {
   const prevAuthenticated =
   JSON.parse(window.localStorage.getItem("authenticated")) || initialState;
   const reducer = (state, action) => {
-    //console.log(action);
     switch (action.type) {
       case "login":
         return {
@@ -72,13 +72,14 @@ const RootContextProvider = ({ children }) => {
         handleLogout: () =>{
           logout()
         },
-        isSubmitting
+        isSubmitting,
+        history: props.history
       }}
     >
-      {children}
+      {props.children}
     </RootContext.Provider>
   );
 };
 const useRootContext = () => useContext(RootContext);
-export default (RootContextProvider);
+export default (withRouter)(RootContextProvider);
 export { RootContext, useRootContext };
