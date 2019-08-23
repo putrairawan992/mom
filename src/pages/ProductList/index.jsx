@@ -1,6 +1,5 @@
 import React, { Fragment, useState, useEffect, useContext, useRef } from "react";
 import { Card, Table, Select, Icon, Input, Pagination } from "antd";
-import { PATH_PRODUCT } from "../../services/path/product";
 import { filterCategoryOption } from "../../dataSource/option_category";
 import { filterOption } from "../../dataSource/option_filter";
 import { sortOption as sort } from "../../dataSource/option_sort";
@@ -20,6 +19,7 @@ const filterProductOption = filterOption.product;
 export default function ProductList() {
   const context = useContext(ProductContext);
   const [loading, setLoading] = useState(false);
+  const [loadingDelete, setLoadingDelete] = useState(false);
   const [productList, setProductList] = useState([]);
   const [category, setCategory] = useState("");
   const pageSize = 5;
@@ -150,10 +150,15 @@ export default function ProductList() {
     }
   };
 
+  function updateLoadingDelete(value) {
+    setLoadingDelete(value);
+    setShowDeleteConfirm(value);
+  }
+
   async function deleteProduct() {
     let deleteProductResponse = await Product.delete({
       id: selectedProduct.id, 
-      loading: setShowDeleteConfirm
+      loading: updateLoadingDelete
     });
 
     if(deleteProductResponse.status === 200) {
@@ -320,7 +325,7 @@ export default function ProductList() {
         onCancel={() => setShowDeleteConfirm(!showDeleteConfirm)}
         visible={showDeleteConfirm}
         onOk={deleteProduct}
-        loading={loading}
+        loading={loadingDelete}
       />
     </Fragment>
   );
