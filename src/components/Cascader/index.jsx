@@ -4,7 +4,7 @@ import propTypes, { object } from 'prop-types'
 import classNames from 'classnames'
 import style from './style.sass'
 
-const Cascader = props => {
+export default function Cascader(props) {
   const classNamesStyle = classNames.bind(style)
   const cssClasses = classNamesStyle({
     'mp-cascader-default' : (props.type === 'default'),
@@ -16,11 +16,6 @@ const Cascader = props => {
         {...props}
         className={cssClasses}
       >
-        {/* <Input
-          className={cssClasses}
-          value={props.selectedCategory}
-          size={props.size}
-        /> */}
       </CascaderAnt> 
   )
 }
@@ -33,5 +28,3 @@ Cascader.propTypes = {
 Cascader.defaultProps = {
   type: 'default'
 }
-
-export default Cascader

@@ -5,17 +5,17 @@ import { Formik } from "formik";
 import { Form } from "antd";
 import Button from "../../components/Button";
 import ProductPrice from "../../containers/ProductPrice";
-import ProductInfo from "./ProductInfo";
-import SupplierInfo from "./SupplierInfo";
+import ProductInfo from "../../containers/ProductInfo";
+import Supplier from "../../containers/AllSupplier";
 
 import Measurement from "../../containers/Measurement";
 import StockManagement from "../../containers/StockManagement";
 import ProductContext from "../../context/GlobalStateProduct/product-context";
-import { schemaProduct } from "./schemaProduct";
+import { schemaProduct } from "../../schema";
 import "./style.sass";
 import VideoProduct from "../VideoProduct";
 
-export default function FormProduct(props) {
+const FormProduct = props => {
   const context = useContext(ProductContext);
   const [payloadImage, setPayloadImage] = useState([]);
   const grid = {
@@ -28,13 +28,11 @@ export default function FormProduct(props) {
     setPayloadImage(dataImage);
   };
 
-  function handleSubmit(values) {
-      console.log(values);
-
-    // const images = payloadImage.filter(image => {
-    //   return image.largeUrl;
-    // });
-    // return context.addProduct(values, images);
+  const handleSubmit = async values => {
+    const images = payloadImage.filter(image => {
+      return image.largeUrl;
+    });
+    return context.addProduct(values, images);
   };
 
   return (
@@ -46,7 +44,7 @@ export default function FormProduct(props) {
         onSubmit={values => {
           handleSubmit(values);
         }}
-        // validationSchema={schemaProduct}
+        validationSchema={schemaProduct}
       >
         {({
           values,
@@ -62,7 +60,7 @@ export default function FormProduct(props) {
         }) => (
           <Form onSubmit={handleSubmit}>
             <Form.Item>
-              <SupplierInfo
+              <Supplier
                 handleBlur={handleBlur}
                 setFieldValue={setFieldValue}
                 errors={errors}
@@ -73,6 +71,7 @@ export default function FormProduct(props) {
             </Form.Item>
             <Form.Item>
               <ProductInfo
+                handleChange={handleChange}
                 handleBlur={handleBlur}
                 errors={errors}
                 setFieldValue={setFieldValue}
@@ -82,7 +81,7 @@ export default function FormProduct(props) {
                 dataProduct={props.dataProduct}
               />
             </Form.Item>
-            {/* <Form.Item>
+            <Form.Item>
               <UploadImages
                 maxImage={5}
                 getPayloadImage={getPayloadImage}
@@ -148,15 +147,12 @@ export default function FormProduct(props) {
               <Button type="primary" size="large" htmlType="submit">
                 {context.labelButton}
               </Button>
-            </div> */}
-            <div style={{ textAlign: "right" }}>
-              <Button type="primary" size="large" htmlType="submit">
-                Save
-              </Button>
             </div>
-        </Form>
+          </Form>
         )}
       </Formik>
     </div>
   );
 };
+
+export default FormProduct;

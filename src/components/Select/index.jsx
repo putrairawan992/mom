@@ -6,7 +6,7 @@ import style from "./style.sass";
 
 const Option = SelectAnt.Option;
 
-const Select = props => {
+export default function Select(props) {
   const classNamesStyle = classNames.bind(style);
   const cssClasses = classNamesStyle({
     'mp-select-default' : (props.type === 'default'),
@@ -35,5 +35,3 @@ Select.defaultProps = {
   type: "default",
   option: "default"
 };
-
-export default Select;

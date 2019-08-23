@@ -1,20 +1,24 @@
 import React, { useEffect, useState, useContext } from 'react';
-import Cascader from '../../components/Cascader';
+import Cascader from '../../../components/Cascader';
 import {Card, Row, Col, Tag} from 'antd';
-import {PATH_CATEGORY} from '../../services/path/category';
-import {apiGetWithoutToken} from '../../services/api';
-import Input from '../../components/Input';
-import TextArea from '../../components/TextArea';
-import strings from '../../localization';
-import ProductContext from '../../context/GlobalStateProduct/product-context'
+import {PATH_CATEGORY} from '../../../services/path/category';
+import {apiGetWithoutToken} from '../../../services/api';
+import Input from '../../../components/Input';
+import TextArea from '../../../components/TextArea';
+import strings from '../../../localization';
+import Category from '../../../repository/Category';
+import _ from 'lodash';
 
-const ProductInfo = (props) => {
-  const context = useContext(ProductContext)
+export default function ProductInfo(props) {
   const [allCategory,setAllCategory] = useState([])
-  const [category, setCategory] = useState([])
-  // const [category, setCategory] = useState(['7a8e64a9-2dce-41d0-bdcd-e0da053c8f4e','09afa381-7442-4239-960f-02f93702e026','d0c97895-0375-474c-8971-936555073dc6'])
-  const converter = (response) => {
-    response.forEach((respSub,index) => {
+
+  useEffect(() => {
+    getAllCategory();
+  },[])
+
+  function convertCategoryToSchemaInput(response) {
+    let allCategory = response;
+    allCategory.forEach((respSub) => {
       if(respSub.categorySubResponses){
         respSub.children = respSub.categorySubResponses
         respSub.categorySubResponses.forEach((resp) => {
@@ -22,69 +26,39 @@ const ProductInfo = (props) => {
         })
       }
     })
-    return response
+    return allCategory;
   }
   
   const filter = (inputValue, path) => {
     return path.some(option => option.name.toLowerCase().indexOf(inputValue.toLowerCase()) > -1);
   }
 
-  const onChange = async(value,setFieldValue) => {
-    setFieldValue("category",value)
+  async function getAllCategory() {
+    const allCategoryResp = await Category.getAll();
+
+    if(allCategoryResp.status === 200) {
+      const allCategory = convertCategoryToSchemaInput(allCategoryResp.data.data);
+      setAllCategory(allCategory);
+    } else {
+      setAllCategory([]);
+    }
+  }
+
+
+  function handleChangeCategory(value) {
+    console.log(value);
+    let category = [];
     const changeValue = value.map((val) => {
       return [...category, val]
     })
-    setCategory(value)
+    console.log(category);
+
+
+    // props.setFieldValue('category', value);
   }
 
-  useEffect(() => {
-    const getAllCategory = async() =>{
-      try {
-        const response = await apiGetWithoutToken(PATH_CATEGORY.ALL_CATEGORY)
-        const arrResponseCategory = response.data.data
-        const arrCategory = converter(arrResponseCategory)
-        if(context.initialValues.category){
-          const contextCategory = context.initialValues.category
-          const id = await getResponseCategory(arrResponseCategory,contextCategory)
-          setCategory(id)
-        }
-        setAllCategory([...arrCategory])
-      } catch (error) {
-        console.log(error.response)
-        setAllCategory([])
-      }
-    }
-    getAllCategory()
-  },[])
-
-  const getResponseCategory = async(category,context) => {
-    let arrCategoryId = []      
-    if(context.level === 'LEVEL1'){
-      arrCategoryId.push(context.id)
-    }else if(context.level === 'LEVEL3'){
-      const t = category.filter(cat => {
-        let subRespone = cat.categorySubResponses
-        if(subRespone){
-          for(let i = 0; i< subRespone.length ; i++){
-            if(subRespone[i].id === context.parent){
-              return true
-            }else{
-              return false
-            }
-          }
-        }
-      })
-      let [data] = t
-      arrCategoryId.push(data.id,context.parent,context.id)
-    }else{
-      arrCategoryId.push(context.parent,context.id)
-    }
-    return arrCategoryId
-  }
-
-  const handleChange = (event,key) => {
-    // setState(event.target.value)
-    props.setFieldValue(key,event.target.value)
+  function handleChange(key, value) {
+    props.setFieldValue(key, value)
   }
 
   return(
@@ -101,10 +75,7 @@ const ProductInfo = (props) => {
           <Input
             name="productNameOriginal"
             value={props.values.productNameOriginal}
-            onChange={(e) => {
-              handleChange(e,'productNameOriginal')
-              
-            }}
+            onChange={event => handleChange('productNameOriginal', event.target.value)}
             onBlur={props.handleBlur}
             size="large"
             status={
@@ -133,10 +104,7 @@ const ProductInfo = (props) => {
         <Col md={props.grid.right} className="col-height">
           <Input
             name="productName"
-            // onChange={props.handleChange}
-            onChange={
-              (e) =>handleChange(e,'productName')
-            }
+            onChange={event => handleChange('productName', event.target.value)}
             onBlur={props.handleBlur}
             value={props.values.productName}
             size="large"
@@ -166,9 +134,7 @@ const ProductInfo = (props) => {
             autosize={{ minRows: 6, maxRows: 6}}
             maxLength={2000}
             value={props.values.description}
-            onChange={
-              (e) => handleChange(e,'description')
-            }
+            onChange={ event => handleChange('description', event.target.value) }
           />
         </Col>
       </Row>
@@ -186,17 +152,14 @@ const ProductInfo = (props) => {
             fieldNames={{label: 'name', value :'id'}}
             expandTrigger="hover"
             name="category"
-            // onBlur={props.handleBlur}
-            value ={category}
             placeholder="Choose Category"
-            onChange={(value,selected)=>onChange(value, props.setFieldValue)}
+            onChange={(value,selected)=>handleChangeCategory(value)}
             showSearch={{filter}}
             size="large"
             type={
               props.errors.category && props.touched.category?
               "error" : "default"
             }
-            // selectedCategory={selectedCategory}
           />
           {
             props.errors.category && props.touched.category? 
@@ -210,5 +173,3 @@ const ProductInfo = (props) => {
   )
 
 }
-
-export default ProductInfo
