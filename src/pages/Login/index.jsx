@@ -7,7 +7,6 @@ import Button from "../../components/Button";
 import Input from "../../components/Input";
 import logo from "../../assets/img/logo_monggopesen/ic_logo_bag_borderteal.png";
 import {useRootContext} from "../../hoc/RootContext";
-import { withRouter } from "react-router-dom";
 
 const schema = yup.object().shape({
   email: yup.string().required(),
@@ -15,9 +14,9 @@ const schema = yup.object().shape({
 });
 
 const Login = props => {
-  const {isAuthenticated, handleLogin, isSubmitting} = useRootContext();
+  const {isAuthenticated, handleLogin, isSubmitting, history} = useRootContext();
   if(isAuthenticated){
-    props.history.push('/');
+    history.push('/');
   }
   return (
     <div className="mp-login-container">
@@ -109,4 +108,4 @@ const Login = props => {
   );
 };
 
-export default (withRouter)(Login);
+export default Login;

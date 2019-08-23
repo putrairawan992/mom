@@ -4,16 +4,15 @@ import Header from "../../components/Header";
 import MenuProfile from "../../components/MenuProfile";
 import PATH_URL from "../../routers/path";
 import { useRootContext } from "../../hoc/RootContext";
-import { withRouter } from "react-router-dom";
 import GlobalStateProduct from "../../context/GlobalStateProduct";
 const {SubMenu} = Menu;
 const { Content, Sider } = Layout;
 
 const MainLayout = props => {
-  const {handleLogout, isAuthenticated} = useRootContext();
+  const {handleLogout, isAuthenticated, history} = useRootContext();
   useEffect(()=>{
     if(!isAuthenticated){
-      props.history.push('/login');
+      history.push('/login');
     }
   },[isAuthenticated]);
 
@@ -59,7 +58,7 @@ const MainLayout = props => {
                   </span>
                 }
               >
-                <Menu.Item key="1" onClick={()=>props.history.push(PATH_URL.DASHBOARD)}>Dashboard</Menu.Item>
+                <Menu.Item key="1" onClick={()=>history.push(PATH_URL.DASHBOARD)}>Dashboard</Menu.Item>
               </SubMenu>
               <SubMenu
                 key="product"
@@ -70,10 +69,10 @@ const MainLayout = props => {
                   </span>
                 }
               >
-                <Menu.Item key="2" onClick={()=>props.history.push(PATH_URL.PRODUCT)}>List Product</Menu.Item>
-                <Menu.Item key="3" onClick={()=>props.history.push(PATH_URL.PRODUCT_CREATE)}>Add Product</Menu.Item>
-                <Menu.Item key="4" onClick={()=>props.history.push(PATH_URL.PRODUCT_EDIT)}>Categories</Menu.Item>
-                <Menu.Item key="8" onClick={()=>props.history.push(PATH_URL.PRODUCT_QUESTIONS)}>Product Questions</Menu.Item>
+                <Menu.Item key="2" onClick={()=>history.push(PATH_URL.PRODUCT)}>List Product</Menu.Item>
+                <Menu.Item key="3" onClick={()=>history.push(PATH_URL.PRODUCT_CREATE)}>Add Product</Menu.Item>
+                <Menu.Item key="4" onClick={()=>history.push(PATH_URL.PRODUCT_EDIT)}>Categories</Menu.Item>
+                <Menu.Item key="8" onClick={()=>history.push(PATH_URL.PRODUCT_QUESTIONS)}>Product Questions</Menu.Item>
               </SubMenu>
               <SubMenu
                 key="order"
@@ -84,9 +83,9 @@ const MainLayout = props => {
                   </span>
                 }
               >
-                <Menu.Item key="9" onClick={()=>props.history.push(PATH_URL.ORDER)}>List Order</Menu.Item>
-                <Menu.Item key="10" onClick={()=>props.history.push(PATH_URL.ORDER_CANCLE)}>Cancle Order</Menu.Item>
-                <Menu.Item key="11" onClick={()=>props.history.push(PATH_URL.ORDER_COMPLETED)}>Completed Order</Menu.Item>
+                <Menu.Item key="9" onClick={()=> history.push(PATH_URL.ORDER)}>List Order</Menu.Item>
+                <Menu.Item key="10" onClick={()=>history.push(PATH_URL.ORDER_CANCLE)}>Cancle Order</Menu.Item>
+                <Menu.Item key="11" onClick={()=>history.push(PATH_URL.ORDER_COMPLETED)}>Completed Order</Menu.Item>
                 
               </SubMenu>
               <SubMenu
@@ -98,7 +97,7 @@ const MainLayout = props => {
                   </span>
                 }
               >
-                <Menu.Item key="12" onClick={()=>props.history.push(PATH_URL.SUPPLIER)}>Supplier List</Menu.Item>
+                <Menu.Item key="12" onClick={()=>history.push(PATH_URL.SUPPLIER)}>Supplier List</Menu.Item>
               </SubMenu>
               <SubMenu
                 key="customer"
@@ -109,8 +108,8 @@ const MainLayout = props => {
                   </span>
                 }
               >
-                <Menu.Item key="13" onClick={()=>props.history.push(PATH_URL.CUSTOMER)}>Customer List</Menu.Item>
-                <Menu.Item key="14" onClick={()=>props.history.push(PATH_URL.CUSTOMER_GROUPS)}>Customer Groups</Menu.Item>
+                <Menu.Item key="13" onClick={()=>history.push(PATH_URL.CUSTOMER)}>Customer List</Menu.Item>
+                <Menu.Item key="14" onClick={()=>history.push(PATH_URL.CUSTOMER_GROUPS)}>Customer Groups</Menu.Item>
               </SubMenu>
             </Menu>
           </Sider>
@@ -127,4 +126,4 @@ const MainLayout = props => {
 
 
 
-export default (withRouter)(MainLayout);
+export default MainLayout;
