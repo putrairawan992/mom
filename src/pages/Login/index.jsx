@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { Icon, Form, Radio } from "antd";
 import { Formik } from "formik";
 import * as yup from "yup";
@@ -13,11 +13,15 @@ const schema = yup.object().shape({
   password: yup.string().required()
 });
 
-const Login = props => {
+export default function Login(props) {
   const {isAuthenticated, handleLogin, isSubmitting, history} = useRootContext();
-  if(isAuthenticated){
-    history.push('/');
-  }
+
+  useEffect(() => {
+    if(isAuthenticated){
+      history.push('/');
+    }  
+  })
+
   return (
     <div className="mp-login-container">
       <div className="mp-login-header-container">
@@ -107,5 +111,3 @@ const Login = props => {
     </div>
   );
 };
-
-export default Login;

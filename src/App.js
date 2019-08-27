@@ -29,7 +29,7 @@ class App extends Component {
 
     return (
       <Router>
-        <RootContextProvider>          
+        <RootContextProvider>      
             <Route exact path="/" component={() => <Redirect to={PATH_URL.PRODUCT} />} />
             {routeComponents}
         </RootContextProvider>

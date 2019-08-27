@@ -15,12 +15,13 @@ export default function MainLayout(props) {
     logout: props.logout
   });
 
-  const actionLogout = ()=> {
-    handleLogout();
-  }
+  useEffect(() => {
+    if(props.needAuthenticated && !isAuthenticated) {
+      history.push('/login');
+    }
+  })
 
   if(props.needAuthenticated && !isAuthenticated){
-    history.push('/login');
     return null;
   } else {
     return (
@@ -41,7 +42,7 @@ export default function MainLayout(props) {
                 admin="Darmawan"
                 photo={require("../../assets/img/logo_monggopesen/ic_logo_bag_borderteal.png")}
                 code="AO012"
-                logout={actionLogout}
+                logout={() => handleLogout()}
               />
               <Menu
                 mode="inline"
