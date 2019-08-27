@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useContext } from 'react';
-import Cascader from '../../../components/Cascader';
+import Cascader from '../../components/Cascader';
 import {Card, Row, Col, Tag} from 'antd';
-import {PATH_CATEGORY} from '../../../services/path/category';
-import {apiGetWithoutToken} from '../../../services/api';
-import Input from '../../../components/Input';
-import TextArea from '../../../components/TextArea';
-import strings from '../../../localization';
-import Category from '../../../repository/Category';
+import {PATH_CATEGORY} from '../../services/path/category';
+import {apiGetWithoutToken} from '../../services/api';
+import Input from '../../components/Input';
+import TextArea from '../../components/TextArea';
+import strings from '../../localization';
+import Category from '../../repository/Category';
 import _ from 'lodash';
 
 export default function ProductInfo(props) {

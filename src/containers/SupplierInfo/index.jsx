@@ -1,8 +1,8 @@
 import React, {useState} from 'react'
 import {Row, Col, Spin, Card, Tag} from 'antd'
-import Select from '../../../components/Select'
-import strings from '../../../localization'
-import Supplier from "../../../repository/Supplier"
+import Select from '../../components/Select'
+import strings from '../../localization'
+import Supplier from "../../repository/Supplier"
 
 export default function SupplierInfo(props) {
   const [loading, setLoading] = useState(false)
@@ -25,7 +25,7 @@ export default function SupplierInfo(props) {
     }
   }
 
-  const change = (value) => {
+  const handleChange = (value) => {
     props.setFieldValue("supplier",value)
   }
 
@@ -42,7 +42,7 @@ export default function SupplierInfo(props) {
           <Col md={props.grid.right} className="col-height">
           <Select
             showSearch
-            onChange={(value) => change(value)}
+            onChange={(value) => handleChange(value)}
             onSearch={(value) => getSuppliersByKeyword(value)}
             name="supplier"
             placeholder={strings.placeholder_supplier}

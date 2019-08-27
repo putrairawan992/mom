@@ -4,7 +4,7 @@ import { PATH_AUTHENTICATION } from "../../services/path/login";
 import { withRouter } from "react-router-dom";
 const RootContext = React.createContext();
 
-const RootContextProvider = (props) => {
+function RootContextProvider(props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const initialState = {
     isAuthenticated: false,
