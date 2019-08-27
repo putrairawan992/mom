@@ -1,4 +1,4 @@
-import React, { useState, useReducer, useContext } from "react";
+import React, { useState, useReducer, useContext, useRef, useEffect } from "react";
 import { apiPostWithoutToken } from "../../services/api";
 import { PATH_AUTHENTICATION } from "../../services/path/login";
 import { withRouter } from "react-router-dom";
@@ -62,20 +62,20 @@ function RootContextProvider(props) {
       })
 
   }
+  const value = {
+    ...state,
+    handleLogin: payload => {
+      login(payload);
+    },
+    handleLogout: () =>{
+      logout()
+    },
+    isSubmitting: isSubmitting,
+    history: props.history
+  }
+  
   return (
-    <RootContext.Provider
-      value={{
-        ...state,
-        handleLogin: payload => {
-          login(payload);
-        },
-        handleLogout: () =>{
-          logout()
-        },
-        isSubmitting,
-        history: props.history
-      }}
-    >
+    <RootContext.Provider value={value}>
       {props.children}
     </RootContext.Provider>
   );
