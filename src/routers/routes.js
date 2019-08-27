@@ -14,7 +14,8 @@ const routes = [
   {
     path: PATH_URL.LOGIN,
     component: Login,
-    layout: FullLayout
+    layout: FullLayout,
+    needAuthenticated: false
   },
   {
     path: PATH_URL.PRODUCT,
@@ -25,37 +26,44 @@ const routes = [
   {
     path: PATH_URL.PRODUCT_CREATE,
     component: ProductCreate,
-    layout: MainLayout
+    layout: MainLayout,
+    needAuthenticated: true
   },
   {
     path: PATH_URL.PRODUCT_EDIT,
     component: ProductEdit,
-    layout: MainLayout
+    layout: MainLayout,
+    needAuthenticated: true
   },
   {
     path: PATH_URL.ORDER,
     component: Order,
-    layout: MainLayout
+    layout: MainLayout,
+    needAuthenticated: true
   },
   {
     path: PATH_URL.ORDER_COMPLETED,
     component: "",
-    layout: MainLayout
+    layout: MainLayout,
+    needAuthenticated: true
   },
   {
     path: PATH_URL.ORDER_CANCLE,
     component: "",
-    layout: MainLayout
+    layout: MainLayout,
+    needAuthenticated: true
   },
   {
     path: PATH_URL.CUSTOMER,
     component: CustomerList,
-    layout: MainLayout
+    layout: MainLayout,
+    needAuthenticated: true
   },
   {
     path: PATH_URL.DASHBOARD,
     component: Dashboard,
-    layout: MainLayout
+    layout: MainLayout,
+    needAuthenticated: true
   }
 ];
 
