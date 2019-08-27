@@ -1,9 +1,13 @@
-import React, { Component } from "react";
+import React from "react";
+import { useRootContext } from "../../hoc/RootContext";
 
-class FullLayout extends Component {
-  render() {
-    return <div>{this.props.children}</div>;
+export default function FullLayout(props) {  
+  const {isAuthenticated, history} = useRootContext();
+
+  if(props.needAuthenticated && !isAuthenticated){
+    history.push('/login');
+    return null;
+  } else {
+    return <div>{props.children}</div>;
   }
 }
-
-export default FullLayout;

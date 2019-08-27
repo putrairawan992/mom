@@ -19,7 +19,8 @@ const routes = [
   {
     path: PATH_URL.PRODUCT,
     component: ProductList,
-    layout: MainLayout
+    layout: MainLayout,
+    needAuthenticated: true
   },
   {
     path: PATH_URL.PRODUCT_CREATE,

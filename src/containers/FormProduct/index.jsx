@@ -5,8 +5,8 @@ import { Formik } from "formik";
 import { Form } from "antd";
 import Button from "../../components/Button";
 import ProductPrice from "../../containers/ProductPrice";
-import ProductInfo from "./ProductInfo";
-import SupplierInfo from "./SupplierInfo";
+import ProductInfo from "../../containers/ProductInfo";
+import SupplierInfo from "../../containers/SupplierInfo";
 
 import Measurement from "../../containers/Measurement";
 import StockManagement from "../../containers/StockManagement";

@@ -4,36 +4,35 @@ import routes from "./routers/routes";
 import RootContextProvider from "./hoc/RootContext";
 import PATH_URL from "./routers/path";
 
-class App extends Component {
+class App extends Component {  
   render() {
-    const RouteWithLayout = ({ component: Component, layout: Layout,...rest }) => (
+    const RouteWithLayout = ({ component: Component, layout: Layout, needAuthenticated: needAuthenticated, ...rest }) => (
       <Route {...rest} render={props => (
-        <RootContextProvider>
-          <Layout>
-            <Component {...props} />
-          </Layout>
-        </RootContextProvider>
+        <Layout needAuthenticated={needAuthenticated}>
+          <Component {...props} />
+        </Layout>       
       )} />
-    );
+    )
 
     const routeComponents =
-      routes.map(({ path, component, layout }, key) => {
+      routes.map(({ path, component, layout, needAuthenticated = false }, key) => {
           return <RouteWithLayout 
             key={key} 
             exact 
             path={path}
             layout={layout}
             component={component}
+            needAuthenticated={needAuthenticated}
           />
         }
       );
 
     return (
       <Router>
-        <Switch>
-          <Route exact path="/" component={() => <Redirect to={PATH_URL.PRODUCT} />} />
-          {routeComponents}
-        </Switch>
+        <RootContextProvider>          
+            <Route exact path="/" component={() => <Redirect to={PATH_URL.PRODUCT} />} />
+            {routeComponents}
+        </RootContextProvider>
       </Router>
     );
   }
