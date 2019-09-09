@@ -3,14 +3,17 @@ import { Switch, Route, BrowserRouter as Router, Redirect } from "react-router-d
 import routes from "./routers/routes";
 import RootContextProvider from "./hoc/RootContext";
 import PATH_URL from "./routers/path";
+import AppLayout from "./layouts/AppLayout";
 
 class App extends Component {  
   render() {
     const RouteWithLayout = ({ component: Component, layout: Layout, needAuthenticated: needAuthenticated, ...rest }) => (
       <Route {...rest} render={props => (
-        <Layout needAuthenticated={needAuthenticated}>
-          <Component {...props} />
-        </Layout>       
+        <AppLayout needAuthenticated={needAuthenticated}>
+          <Layout>
+            <Component {...props} />
+          </Layout>
+        </AppLayout>
       )} />
     )
 
