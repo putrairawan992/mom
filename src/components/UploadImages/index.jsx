@@ -1,5 +1,5 @@
 import React,{useState, useEffect, useContext} from 'react'
-import Upload from '../../components/Upload'
+import UploadImage from '../UploadImage'
 import { apiPostWithToken } from '../../services/api'
 import {PATH_UPLOAD} from '../../services/path/upload'
 import propTypes from 'prop-types'
@@ -243,7 +243,7 @@ const UploadImages = (props) => {
                 render={arrayHelpers => (
                   arrImage.map((image,index) => {
                     return (
-                      <Upload
+                      <UploadImage
                         imageUrl={imageUrl[index]}
                         className="upload"
                         onBlur={props.handleBlur}
@@ -289,7 +289,7 @@ const UploadImages = (props) => {
   )
 }
 
-Upload.propTypes = {
+UploadImages.propTypes = {
   maxImage: propTypes.number,
   getPayloadImage: propTypes.func
 }

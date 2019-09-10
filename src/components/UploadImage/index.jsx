@@ -4,7 +4,7 @@ import Button from '../Button'
 import propTypes from 'prop-types'
 import './style.sass'
 
-const Upload = props => {
+const UploadImage = props => {
   const uploadButton = (
     <div>
       <Icon type={props.loading ? 'loading' : 'plus'}></Icon>
@@ -68,7 +68,7 @@ const Upload = props => {
   )
 }
 
-Upload.propTypes = {
+UploadImage.propTypes = {
   customeRequest: propTypes.func,
   action :propTypes.string,
   changeDefault: propTypes.func,
@@ -79,4 +79,4 @@ Upload.propTypes = {
   onChange: propTypes.func
 }
 
-export default Upload
+export default UploadImage

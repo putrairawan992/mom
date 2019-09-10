@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import UploadImages from "../../containers/UploadImages";
+import UploadImages from "../../components/UploadImages";
 import Variants from "../../containers/Variants";
 import { Formik } from "formik";
 import { Form } from "antd";
@@ -11,7 +11,7 @@ import SupplierInfo from "../../containers/SupplierInfo";
 import Measurement from "../../containers/Measurement";
 import StockManagement from "../../containers/StockManagement";
 import ProductContext from "../../context/GlobalStateProduct/product-context";
-import { schemaProduct } from "./schemaProduct";
+import { schema } from "./schema";
 import "./style.sass";
 import VideoProduct from "../VideoProduct";
 

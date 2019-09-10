@@ -2,7 +2,7 @@ import React,{useState, useContext} from 'react'
 import {Card, Row, Col} from 'antd'
 import Button from '../../components/Button'
 import ButtonTextIcon from '../../components/ButtonTextIcon'
-import Upload from '../../components/Upload'
+import UploadImage from '../../components/UploadImage'
 import Input from '../../components/Input'
 import { apiPostWithToken } from '../../services/api'
 import { PATH_UPLOAD } from '../../services/path/upload';
@@ -185,7 +185,7 @@ const Variant = (props) => {
                 return (
                 <Row key={i} type="flex" align="middle" justify="center">
                   <Col md={4}>
-                    <Upload
+                    <UploadImage
                       type="no-style"
                       loading={loading[i]}
                       className={`mp-upload-variant-${props.index}`}
