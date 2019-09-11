@@ -46,7 +46,7 @@ export default function FormProduct(props) {
         onSubmit={values => {
           handleSubmit(values);
         }}
-        // validationSchema={schemaProduct}
+        // validationSchema={schema}
       >
         {({
           values,
