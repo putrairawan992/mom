@@ -24,7 +24,7 @@ const customer = [
   },
   {
     value: "VRFI",
-    name: "Out of Stock"
+    name: "Not Yet Confirmed"
   }
 ];
 
