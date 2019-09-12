@@ -1,12 +1,11 @@
 import React, { Fragment, useState, useEffect, useRef } from "react";
-import { Card, Table, Select, Input, Pagination } from "antd";
-import { apiGetWithToken } from "../../services/api";
+import { Card, Table, Select, Input, Pagination, Tag } from "antd";
 import { filterOption as filter } from "../../dataSource/option_filter";
 import { sortOption as sort } from "../../dataSource/option_sort";
 import "./style.sass";
 import convertTimesTime from "../../helpers/convertTimestime";
-import { PATH_CUSTOMER } from "../../services/path/customer";
 import customer from "../../repository/customer";
+import schema from './schema';
 
 const { Option } = Select;
 const { Search } = Input;
@@ -17,15 +16,7 @@ export default function CustomerList(){
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState([]);
   const [total, setTotal] = useState(0);
-  const pageSize = 5;
-  const [parameter, setParameter] = useState({
-    sortBy: "",
-    direction: "",
-    filterBy: "",
-    keyword: "",
-    limit: pageSize,
-    page: 0
-  });
+  const [parameter, setParameter] = useState(schema);
 
   const isInitialRender = useRef(true);
 
@@ -77,9 +68,9 @@ export default function CustomerList(){
       width: 100,
       render: text => {
         if (text.status === "ACTV") {
-          return <span>Confirmed</span>;
+          return <Tag color="green">Confirmed</Tag>;
         } else if (text.status === "VRFI") {
-          return <span>Not Yet Confirmed</span>;
+          return <Tag color="red">Not Yet Confirmed</Tag>;
         }
       }
     }
@@ -123,7 +114,6 @@ export default function CustomerList(){
 
   function actionSearch(value){
     const keyword = value;
-    console.log(keyword)
     setParameter({ ...parameter, keyword: keyword, page: 0  });
   };
 
@@ -196,7 +186,7 @@ export default function CustomerList(){
           showTotal={(total, range) =>
             `${range[0]}-${range[1]} of ${total} items`
           }
-          pageSize={pageSize}
+          pageSize={schema.limit}
           defaultCurrent={1}
           onChange={(page)=>actionChangePagination(page)}
         />
