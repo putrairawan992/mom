@@ -17,6 +17,7 @@ export default function CustomerList(){
   const [list, setList] = useState([]);
   const [total, setTotal] = useState(0);
   const [parameter, setParameter] = useState(schema);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const isInitialRender = useRef(true);
 
@@ -96,6 +97,7 @@ export default function CustomerList(){
       ...parameter,
       page: value-1
     });
+    setCurrentPage(value);
   }
 
   function actionSort(value){
@@ -105,17 +107,24 @@ export default function CustomerList(){
       sortBy: sort.value,
       direction: sort.direction
     });
+    resetPage();
   };
 
   function actionFilterProduct(value){
     const filter = JSON.parse(value);
     setParameter({ ...parameter, status: filter.value, page: 0 });
+    resetPage();
   };
 
   function actionSearch(value){
     const keyword = value;
     setParameter({ ...parameter, keyword: keyword, page: 0  });
+    resetPage();
   };
+
+  function resetPage() {
+    setCurrentPage(1);
+  }
 
   return (
     <Fragment>
@@ -187,7 +196,7 @@ export default function CustomerList(){
             `${range[0]}-${range[1]} of ${total} items`
           }
           pageSize={schema.limit}
-          defaultCurrent={1}
+          current={currentPage}
           onChange={(page)=>actionChangePagination(page)}
         />
       </Card>
