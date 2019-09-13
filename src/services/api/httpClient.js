@@ -1,5 +1,5 @@
 import axios from 'axios';
-const REACT_APP_API_SERVICE = process.env.REACT_APP_API_DUMMY_SERVICE;
+const REACT_APP_API_SERVICE = process.env.REACT_APP_API_MAIN_SERVICE;
 const getToken = () => {
   return JSON.parse(window.localStorage.getItem("authenticated")).body;
 }
