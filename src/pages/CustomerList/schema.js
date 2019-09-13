@@ -1,7 +1,7 @@
 const schema = {
     sortBy: "",
     direction: "",
-    filterBy: "",
+    status: "",
     keyword: "",
     limit: 20,
     page: 0

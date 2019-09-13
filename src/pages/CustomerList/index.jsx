@@ -109,7 +109,7 @@ export default function CustomerList(){
 
   function actionFilterProduct(value){
     const filter = JSON.parse(value);
-    setParameter({ ...parameter, filterBy: filter.value, page: 0 });
+    setParameter({ ...parameter, status: filter.value, page: 0 });
   };
 
   function actionSearch(value){
