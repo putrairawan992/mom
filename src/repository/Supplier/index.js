@@ -1,5 +1,5 @@
 import { PATH_SUPPLIER } from "../../services/path/supplier";
-import { apiGetWithToken, apiDeleteWithToken } from "../../services/api";
+import { apiGetWithToken } from "../../services/api";
 
 async function GetAll(props) {
     const loading = props && props.loading ? props.loading : function() {};

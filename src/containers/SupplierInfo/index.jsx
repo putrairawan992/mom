@@ -1,34 +1,9 @@
-import React, {useState} from 'react'
+import React from 'react'
 import {Row, Col, Spin, Card, Tag} from 'antd'
 import Select from '../../components/Select'
 import strings from '../../localization'
-import Supplier from "../../repository/Supplier"
 
 export default function SupplierInfo(props) {
-  const [loading, setLoading] = useState(false)
-  const [supplierOptions, setSupplierOptions] = useState([])
-
-  async function getSuppliersByKeyword(keyword) {
-    setSupplierOptions([]);
-    const suppliersResp  = await Supplier.getAll({
-      loading: setLoading
-    });
-
-    if(suppliersResp.status === 200) {
-      const suppliers = suppliersResp.data.data
-      const supplierOptions = suppliers.map(supplier =>({
-        ...supplier, name : `${supplier.code} - ${supplier.name}`
-      }))
-      setSupplierOptions(supplierOptions);
-    } else {
-      setSupplierOptions([]);
-    }
-  }
-
-  const handleChange = (value) => {
-    props.setFieldValue("supplier",value)
-  }
-
   return(
     <React.Fragment>
       <Card className="card" title={<div className="card-title">{strings.supplier_info}</div>}>
@@ -42,16 +17,16 @@ export default function SupplierInfo(props) {
           <Col md={props.grid.right} className="col-height">
           <Select
             showSearch
-            onChange={(value) => handleChange(value)}
-            onSearch={(value) => getSuppliersByKeyword(value)}
+            onChange={(value) => props.handleChangeValue(value, 'supplier')}
+            onSearch={(value) => props.getSuppliersByKeyword(value)}
             name="supplier"
             placeholder={strings.placeholder_supplier}
             size="large"
             onBlur={props.handleBlur}
-            notFoundContent={loading ? <Spin size="small" /> : null}
+            notFoundContent={props.loading ? <Spin size="small" /> : null}
             filterOption={false}
             labelInvalue
-            options={supplierOptions}
+            options={props.supplierOptions}
             type={ props.errors.supplier ? 'error' : 'default' }
           />
           { props.errors.supplier && <div className="text-error-message">{props.errors.supplier }</div> }

@@ -6,7 +6,9 @@ import { Form } from "antd";
 import Button from "../../components/Button";
 import ProductPrice from "../../containers/ProductPrice";
 import ProductInfo from "../../containers/ProductInfo";
+import ProductInfoContainer from "../../containers/ProductInfo/ProductInfoContainer"
 import SupplierInfo from "../../containers/SupplierInfo";
+import SupplierContainer from "../../containers/SupplierInfo/supplierContainer"
 
 import Measurement from "../../containers/Measurement";
 import StockManagement from "../../containers/StockManagement";
@@ -18,6 +20,28 @@ import VideoProduct from "../VideoProduct";
 export default function FormProduct(props) {
   const context = useContext(ProductContext);
   const [payloadImage, setPayloadImage] = useState([]);
+  const [initialValues,setInitialValues] = useState({
+    administration: "",
+    actualWeight: "",
+    variants: [],
+    listImages: [],
+    supplier: "",
+    basePrice: "",
+    domesticFee: "",
+    feeBySea: "",
+    feeByAir: "",
+    productNameOriginal: "",
+    productName: "",
+    category: [],
+    description: "",
+    width: "",
+    length: "",
+    height: "",
+    rate: "",
+    readyStock: true,
+    quantity: "",
+    videoUrl: ""
+  })
   const grid = {
     left: 7,
     right: 17,
@@ -27,6 +51,19 @@ export default function FormProduct(props) {
   const getPayloadImage = dataImage => {
     setPayloadImage(dataImage);
   };
+
+  function handleChangeValue (value , name) {
+    setInitialValues({
+      ...initialValues, [name] : value
+    })
+  }
+
+  function handleChangeCategory (value) {
+    const selectedValue = value[value.length -1]
+    setInitialValues({
+      ...initialValues, category : selectedValue
+    })
+  }
 
   function handleSubmit(values) {
       console.log(values);
@@ -41,7 +78,7 @@ export default function FormProduct(props) {
     <div className="containerProduct">
       <p className="title-page">{context.titleForm}</p>
       <Formik
-        initialValues={context.initialValues}
+        initialValues={initialValues}
         enableReinitialize
         onSubmit={values => {
           handleSubmit(values);
@@ -62,26 +99,45 @@ export default function FormProduct(props) {
         }) => (
           <Form onSubmit={handleSubmit}>
             <Form.Item>
-              <SupplierInfo
-                handleBlur={handleBlur}
-                setFieldValue={setFieldValue}
-                errors={errors}
-                touched={touched}
-                grid={grid}
-                dataProduct={props.dataProduct}
-              />
+              <SupplierContainer>
+                {(props) => (
+                  <SupplierInfo
+                    handleBlur={handleBlur}
+                    errors={errors}
+                    touched={touched}
+                    grid={grid}
+                    handleChangeValue={handleChangeValue}
+                    {...props}
+                  />
+                )}
+              </SupplierContainer>
             </Form.Item>
-            <Form.Item>
-              <ProductInfo
-                handleBlur={handleBlur}
-                errors={errors}
-                setFieldValue={setFieldValue}
-                touched={touched}
-                values={values}
-                grid={grid}
-                dataProduct={props.dataProduct}
-              />
-            </Form.Item>
+              <ProductInfoContainer setFieldValue={setFieldValue}>
+                {(props) =>(
+                  <ProductInfo
+                    handleBlur={handleBlur}
+                    handleChangeValue={handleChangeValue}
+                    errors={errors}
+                    touched={touched}
+                    values={values}
+                    grid={grid}
+                    handleChangeCategory={handleChangeCategory}
+                    dataProduct={props.dataProduct}
+                    {...props}
+                 />
+                )}
+              </ProductInfoContainer>
+              <Form.Item>
+                <UploadImages
+                  maxImage={5}
+                  getPayloadImage={getPayloadImage}
+                  setFieldValue={setFieldValue}
+                  errors={errors}
+                  handleBlur={handleBlur}
+                  touched={touched}
+                  dataProduct={props.dataProduct}
+                />
+              </Form.Item>
             {/* <Form.Item>
               <UploadImages
                 maxImage={5}

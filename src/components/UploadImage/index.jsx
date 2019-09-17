@@ -33,7 +33,7 @@ const UploadImage = props => {
           <img src={props.imageUrl}  alt="avatar"/>
           <div className="top-icon">
           <Icon type="camera" onClick={() => props.editImage(props.index)} className="cameraIcon"/>
-          <Icon onClick={() => props.remove(props.index)} type="delete" className="deleteIcon"/>
+          <Icon onClick={() => props.remove(props.image)} type="delete" className="deleteIcon"/>
           </div>
           {
             props.loadingEdit ?
@@ -42,7 +42,7 @@ const UploadImage = props => {
             </div>   : null
           }
           <Button width="full"
-            onClick={() => props.changeDefault(props.index,props)} 
+            onClick={() => props.changeDefault(props.image)} 
             className={props.type === 'default' ? 'mp-btn-upload' : 'mp-btn-upload-non-default'}
             >
             {props.type === 'default' ? 'Default' : 'Set Default' }

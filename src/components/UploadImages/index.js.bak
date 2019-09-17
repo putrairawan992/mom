@@ -12,8 +12,8 @@ import ProductContext from '../../context/GlobalStateProduct/product-context';
 const UploadImages = (props) => {
   const context = useContext(ProductContext)
   const {initialValues} =  context
-  const [imageUrl, setImageUrl] = useState({})
-  const [loading, setLoading] = useState({})
+  const [imageUrl, setImageUrl] = useState([])
+  const [loading, setLoading] = useState([])
   const [disable, setDisable] = useState([])
   const [arrImage, setArrImage] = useState([])
   const [count, setCount] = useState(0)
@@ -45,7 +45,7 @@ const UploadImages = (props) => {
         arr.push(obj)
       }
       console.log("ini obj", tempObj)
-      setArrImage(tempObj)
+      setArrImage(arr)
       // if(initialValues.listImages){
       //   const injectArrImage = arr.map((image,index) => {
       //     if(initialValues.listImages[index]){
@@ -83,6 +83,8 @@ const UploadImages = (props) => {
     props.getPayloadImage(arrImage)
   },[arrImage,disable])
 
+ 
+
   const beforeUpload = (file) => {
     const isPng = file.type === 'image/png'
     const isJpeg = file.type === 'image/jpeg'
@@ -105,35 +107,35 @@ const UploadImages = (props) => {
     }, time)
   }
 
-  const changeDefault = (key) => {
-    let temp = {...arrImage}
-    Object.keys(temp).forEach(img => {
-      if(img === key){
-        temp = {...temp , [img] : {  ...temp[img] , isDefault : true } }
-      }else{
-        temp = {...temp , [img] : {  ...temp[img] , isDefault : false } }
-      }
-    })
-    setArrImage(temp)
-  }
-
-  function saveImageOnState (file, key) {
-    if(count === 0){
-      setArrImage({
-        ...arrImage , [key] : { 
-          largeUrl : file.largeUrl , mediumUrl : file.mediumUrl , smallUrl : file.smallUrl , isDefault : true
+  const changeDefault = (index) => {
+    setArrImage(()=>(
+      arrImage.map((image, idx)=>{
+        if(idx === index){
+          return {...image, isDefault: true}
+        }else{
+          return {...image, isDefault: false}
         }
       })
-    }else{
-      setArrImage({
-        ...arrImage , [key] : file
-      })
-    }
-    setCount(count + 1)
+    ))
   }
 
-  console.log("arrimage",arrImage)
-  console.log("url",imageUrl)
+  const pushImageToArray = (response,index,arrayHelpers) => {
+    arrayHelpers.push({largeUrl: response.largeUrl, mediumUrl: response.mediumUrl, smallUrl: response.smallUrl})
+    setArrImage(()=>(
+      arrImage.map((image, idx)=>{
+        if(idx === index){
+          if(count === 0){
+            return {...image, largeUrl: response.largeUrl, mediumUrl: response.mediumUrl, smallUrl: response.smallUrl, isDefault: true}
+          }else{
+            return {...image, largeUrl: response.largeUrl, mediumUrl: response.mediumUrl, smallUrl: response.smallUrl}
+          }
+        }else{
+          return {...image}
+        }
+      })
+    ));
+    setCount(count + 1)
+  }
 
   const removeImageInArray = (index) => {
     setCount(count -1)
@@ -148,58 +150,73 @@ const UploadImages = (props) => {
     ))
   }
 
-  const handleChange = (info,key,arrayHelpers) => {
-    let loadingTemp = {...loading}
+  const handleChange = (info,index,arrayHelpers) => {
+    let loadingTemp = [...loading]
     if (info.file.status === 'uploading') {
-      loadingTemp[key] = true
+      loadingTemp[index] = true
       setLoading(loadingTemp)
       return;
     }
     if (info.file.status === 'done' ) {
-        let imageUrlTemp = {...imageUrl}
+        let imageUrlTemp = [...imageUrl]
         let disableTemp = [...disable]
         getBase64(info.file.originFileObj, function() {
-          imageUrlTemp[key]=info.file.response.mediumUrl;
-          loadingTemp[key] = false;
-          disableTemp[key] = true;
+          imageUrlTemp[index]=info.file.response.mediumUrl;
+          loadingTemp[index] = false;
+          disableTemp[index] = true;
           setImageUrl(imageUrlTemp);
           setLoading(loadingTemp);
           setDisable(disableTemp);
-          saveImageOnState(info.file.response, key)
-          // pushImageToArray(info.file.response,index,arrayHelpers);
+          pushImageToArray(info.file.response,index,arrayHelpers);
         });
     }
   };
 
   const uploadImage = async ({onError, onSuccess,file},index) => {
-    // let tempLoadingEdit = [...loadingEdit]
-    // tempLoadingEdit[index] = true
-    // setLoadingEdit(tempLoadingEdit)
+    let tempLoadingEdit = [...loadingEdit]
+    tempLoadingEdit[index] = true
+    setLoadingEdit(tempLoadingEdit)
     try {
       var formData = new FormData();
       formData.append("file",file);
-      // const isDimension = await checkDimension(file)
-      const response = await apiPostWithToken(PATH_UPLOAD.UPLOAD,formData);
-      onSuccess(response.data.data)
-      // console.log(response)
+      const isDimension = await checkDimension(file)
+      if(isDimension.width > 450 && isDimension.height > 450){
+        const response = await apiPostWithToken(PATH_UPLOAD.UPLOAD,formData);
+        onSuccess(response.data.data)
+        tempLoadingEdit[index] = false
+        setLoadingEdit(tempLoadingEdit)
+        if(countLoading > 90) {
+          setCountLoading(100)
+        }
+      }else{
+        tempLoadingEdit[index] = false
+        setLoadingEdit(tempLoadingEdit)
+        timeOut(setDimension, 5000)
+        let loadingTemp = [...loading]
+        loadingTemp[index] = false
+        setLoading(loadingTemp)
+        
+      }
     } catch (error) {
-      console.log(error)
       onError(error)
+      let loadingTemp = [...loading]
+      loadingTemp[index] = false
+      setLoading(loadingTemp)
+      console.log(error.response)
     }
   }
 
-  const remove = (key) => {
-    console.log("==",key)
-    // let tempImageUrl = [...imageUrl]
-    // if(!arrImage[index].isDefault){
-    //   arrayHelpers.remove(0)
-    //   tempImageUrl[index] = ''
-    //   setImageUrl(tempImageUrl)
-    //   let statusDisable = [...disable]
-    //   statusDisable[index] = false
-    //   setDisable(statusDisable)
-    //   removeImageInArray(index)
-    // }
+  const remove = (index,arrayHelpers) => {
+    let tempImageUrl = [...imageUrl]
+    if(!arrImage[index].isDefault){
+      arrayHelpers.remove(0)
+      tempImageUrl[index] = ''
+      setImageUrl(tempImageUrl)
+      let statusDisable = [...disable]
+      statusDisable[index] = false
+      setDisable(statusDisable)
+      removeImageInArray(index)
+    }
   }
 
   const editImage = (index) => {
@@ -229,27 +246,47 @@ const UploadImages = (props) => {
               <FieldArray
                 name="listImages"
                 render={arrayHelpers => (
-                  Object.keys(arrImage).map(image => {
+                  arrImage.map((image,index) => {
                     return (
                       <UploadImage
-                        key={image}
-                        image={image}
-                        remove={remove}
-                        imageUrl={imageUrl[image]}
+                        imageUrl={imageUrl[index]}
                         className="upload"
-                        loading={loading[image]}
-                        disabled={disable[image]}
+                        onBlur={props.handleBlur}
+                        name={"images"}
+                        key={index}
+                        onChange={(info) => handleChange(info,index,arrayHelpers)}
+                        type={image.isDefault ? "default": "non-default"}
+                        loading={loading[index]}
+                        disabled={disable[index]}
+                        remove={() => remove(index,arrayHelpers)}
+                        customRequest={({onError, onSuccess,file}) => uploadImage({onError, onSuccess,file},index)}
                         changeDefault={changeDefault}
-                        type={arrImage[image].isDefault ? "default" : "non-default" }
-                        onChange={(info) => handleChange(info,image,arrayHelpers)}
-                        customRequest={({onError, onSuccess,file}) => uploadImage({onError, onSuccess,file},image)}
-                      />
-                      
+                        index={index}
+                        beforeUpload={beforeUpload}
+                        editImage={editImage}
+                        loadingEdit={loadingEdit[index]}
+                    />
                     )
                   })
                 )}
               />
             </Row>
+            {
+              statusFile ? 
+              (<div className="text-error-message">{strings.type_image_error}</div>): null
+            }
+            {
+              statusSize ? 
+              <div className="text-error-message">{strings.size_image_error}</div> : null
+            }
+            {
+              props.errors.listImages && props.touched.listImages ?
+              <div className="text-error-message">{props.errors.listImages}</div> : null
+            }
+            {
+              dimension ?
+              (<div className="text-error-message">{strings.frame_image_error}</div>) : null
+            }
           </Col>
         </Row>
       </Card>
@@ -257,9 +294,9 @@ const UploadImages = (props) => {
   )
 }
 
-// UploadImages.propTypes = {
-//   maxImage: propTypes.number,
-//   getPayloadImage: propTypes.func
-// }
+UploadImages.propTypes = {
+  maxImage: propTypes.number,
+  getPayloadImage: propTypes.func
+}
 
 export default UploadImages
