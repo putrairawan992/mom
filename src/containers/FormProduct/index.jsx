@@ -1,16 +1,18 @@
 import React, { useState, useContext } from "react";
 import UploadImages from "../../components/UploadImages";
+import ImagesContainer from "../../components/UploadImages/ImagesContainer"
 import Variants from "../../containers/Variants";
 import { Formik } from "formik";
 import { Form } from "antd";
 import Button from "../../components/Button";
 import ProductPrice from "../../containers/ProductPrice";
+import ProductPriceContainer from "../../containers/ProductPrice/productPriceContainer"
 import ProductInfo from "../../containers/ProductInfo";
 import ProductInfoContainer from "../../containers/ProductInfo/ProductInfoContainer"
 import SupplierInfo from "../../containers/SupplierInfo";
 import SupplierContainer from "../../containers/SupplierInfo/supplierContainer"
-
 import Measurement from "../../containers/Measurement";
+import MeasurementContainer from "../../containers/Measurement/measurementContainer"
 import StockManagement from "../../containers/StockManagement";
 import ProductContext from "../../context/GlobalStateProduct/product-context";
 import { schema } from "./schema";
@@ -49,7 +51,13 @@ export default function FormProduct(props) {
   };
 
   const getPayloadImage = dataImage => {
-    setPayloadImage(dataImage);
+    let payloadArray = Object.keys(dataImage).map(key => {
+      return dataImage[key]
+    })
+    const filterPayload = payloadArray.filter(pay => {
+      return pay.largeUrl
+    })
+    setPayloadImage(filterPayload)
   };
 
   function handleChangeValue (value , name) {
@@ -67,7 +75,7 @@ export default function FormProduct(props) {
 
   function handleSubmit(values) {
       console.log(values);
-
+      console.log(payloadImage)
     // const images = payloadImage.filter(image => {
     //   return image.largeUrl;
     // });
@@ -83,7 +91,7 @@ export default function FormProduct(props) {
         onSubmit={values => {
           handleSubmit(values);
         }}
-        // validationSchema={schema}
+        validationSchema={schema}
       >
         {({
           values,
@@ -112,7 +120,7 @@ export default function FormProduct(props) {
                 )}
               </SupplierContainer>
             </Form.Item>
-              <ProductInfoContainer setFieldValue={setFieldValue}>
+              <ProductInfoContainer setFieldValue={setFieldValue}  >
                 {(props) =>(
                   <ProductInfo
                     handleBlur={handleBlur}
@@ -127,17 +135,76 @@ export default function FormProduct(props) {
                  />
                 )}
               </ProductInfoContainer>
+              <br/>
               <Form.Item>
-                <UploadImages
-                  maxImage={5}
-                  getPayloadImage={getPayloadImage}
-                  setFieldValue={setFieldValue}
-                  errors={errors}
-                  handleBlur={handleBlur}
-                  touched={touched}
-                  dataProduct={props.dataProduct}
-                />
+                <ImagesContainer maxImage={5}  getPayloadImage={getPayloadImage}>
+                  {(props) => (
+                    <UploadImages
+                      errors={errors}
+                      touched={touched}
+                      {...props}
+                    />
+                  )}
+                </ImagesContainer>
               </Form.Item>
+              <Form.Item>
+                <VideoProduct
+                  handleChange={handleChange}
+                  errors={errors}
+                  setFieldValue={setFieldValue}
+                  touched={touched}
+                  handleBlur={handleBlur}
+                  grid={grid}
+                  values={values}
+                />
+            </Form.Item>
+            <Form.Item>
+              <ProductPriceContainer setFieldValue={setFieldValue} >
+                {(props) => (
+                  <ProductPrice
+                    errors={errors}
+                    setFieldValue={setFieldValue}
+                    touched={touched}
+                    handleBlur={handleBlur}
+                    grid={grid}
+                    {...props}
+                  />
+                )}
+              </ProductPriceContainer>
+            </Form.Item>
+            <Form.Item>
+              <MeasurementContainer setFieldValue={setFieldValue}  >
+                {(props) => (
+                  <Measurement
+                    errors={errors}
+                    setFieldValue={setFieldValue}
+                    touched={touched}
+                    handleBlur={handleBlur}
+                    dataProduct={props.dataProduct}
+                    values={values}
+                    {...props}
+                  />
+                )}
+              </MeasurementContainer>
+            </Form.Item>
+              <StockManagement
+                setFieldValue={setFieldValue}
+                grid={grid}
+                handleChange={handleChange}
+                handleBlur={handleBlur}
+                values={values}
+                errors={errors}
+                touched={touched}
+              />
+              {/* <Measurement
+                errors={errors}
+                setFieldValue={setFieldValue}
+                touched={touched}
+                handleBlur={handleBlur}
+                dataProduct={props.dataProduct}
+                values={values}
+              /> */}
+           
             {/* <Form.Item>
               <UploadImages
                 maxImage={5}

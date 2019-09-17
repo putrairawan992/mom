@@ -70,10 +70,8 @@ const ProductPrice = (props) => {
   }
 
   const onChangeNumber = (value,key,setState) => {
-    // const rx = /^[0-9\b]+$/;
     setState(value)
     props.setFieldValue(key,value)
-    
   }
 
   return(

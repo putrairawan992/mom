@@ -32,7 +32,7 @@ const UploadImage = props => {
         <>
           <img src={props.imageUrl}  alt="avatar"/>
           <div className="top-icon">
-          <Icon type="camera" onClick={() => props.editImage(props.index)} className="cameraIcon"/>
+          <Icon type="camera" onClick={() => props.editImage(props.image)} className="cameraIcon"/>
           <Icon onClick={() => props.remove(props.image)} type="delete" className="deleteIcon"/>
           </div>
           {

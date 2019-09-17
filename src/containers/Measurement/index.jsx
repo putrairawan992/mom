@@ -1,34 +1,9 @@
-import React,{useState, useEffect} from 'react';
-import {Row, Col, Card, Tag, Checkbox, Icon} from 'antd';
+import React from 'react';
+import {Row, Col, Card, Tag, Checkbox, Icon, Form} from 'antd';
 import Input from '../../components/Input';
 import strings from '../../localization'
 
 const Measurement = (props) => {
-
-  const [actualWeight, setActualWeight] = useState("")
-  const [width, setWidth] = useState("1")
-  const [length, setLength] = useState("1")
-  const [height, setHeight] = useState("1")
-  const [volumetric, setVolumetric] = useState("0")
-  //const [isFragile, setIsFragile] = useState(false);
-
-  useEffect(() => {
-    let volume = Number(width) * Number(length) * Number(height)
-    let volumetricWeight = volume/6000
-    let roundVolumetricWeight = Math.round(volumetricWeight * 100) / 100
-    if(volume === 1){
-      setVolumetric("0")
-    }else{
-      setVolumetric(`${roundVolumetricWeight}`)
-    }
-  },[actualWeight,width,length,volumetric,height])
-
-  useEffect(() => {
-    if(props.dataProduct){
-      const information = props.dataProduct.information
-      setHeight(information.measurement.dimension.height)
-    }
-  })
 
   return (
     <Card className="card" title={<div className="card-title">{strings.measurement}</div>}>
@@ -48,28 +23,29 @@ const Measurement = (props) => {
           </Row>
         </Col>
         <Col md={8} className="col-height">
-          <Input
-            placeholder={strings.placeholder_weight}
-            name="actualWeight"
-            onChange={e => {
-              setActualWeight(e.target.value)
-              props.setFieldValue("actualWeight",e.target.value)
-            }}
-            type="number"
-            onBlur={props.handleBlur}
-            value={props.values.actualWeight}
-            size="large"
-            suffix={<div style={{fontSize: "14px"}}>{strings.kg}</div>}
-            status={
+          <Form.Item
+            validateStatus={
               props.errors.actualWeight && props.touched.actualWeight ?
-              "error" : "default"
+              "error" : "success"
             }
-          />
-            {
-            (props.errors.actualWeight && props.touched.actualWeight) ? 
-            (<div className="text-error-message">{props.errors.actualWeight}</div>) :
-            null
-          }
+            help={
+              (props.errors.actualWeight && props.touched.actualWeight) ?  props.errors.actualWeight : null
+            }
+          >
+            <Input
+              placeholder={strings.placeholder_weight}
+              name="actualWeight"
+              onChange={e => {
+                props.setActualWeight(e.target.value)
+                props.setFieldValue("actualWeight",e.target.value)
+              }}
+              type="number"
+              onBlur={props.handleBlur}
+              value={props.values.actualWeight}
+              size="large"
+              suffix={<div style={{fontSize: "14px"}}>{strings.kg}</div>}
+            />
+          </Form.Item>
         </Col>
       </Row>
       <br/>
@@ -88,7 +64,7 @@ const Measurement = (props) => {
                   defaultValue=""
                   name="width"
                   onChange={e => {
-                    setWidth(e.target.value)
+                    props.setWidth(e.target.value)
                     props.setFieldValue('width', e.target.value)
                   }}
                   type="number"
@@ -107,7 +83,7 @@ const Measurement = (props) => {
                 placeholder={strings.placeholder_length}
                 name="length"
                 onChange={e => {
-                  setLength(e.target.value)
+                  props.setLength(e.target.value)
                   props.setFieldValue('length', e.target.value)
                 }}
                 type="number"
@@ -126,7 +102,7 @@ const Measurement = (props) => {
                 placeholder={strings.placeholder_height}
                 name="height"
                 onChange={e => {
-                  setHeight(e.target.value)
+                  props.setHeight(e.target.value)
                   props.setFieldValue('height', e.target.value)
                 }}
                 type="number"
@@ -156,7 +132,7 @@ const Measurement = (props) => {
         </Col>
         <Col md={12}>
           <Input
-            value={volumetric}
+            value={props.volumetric}
             suffix={<div style={{fontSize: "14px"}}>{strings.kg}</div>}
             size="large"
             disabled

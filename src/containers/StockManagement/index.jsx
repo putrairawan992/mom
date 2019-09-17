@@ -40,7 +40,7 @@ const StockManagement = (props) => {
             value={props.values.quantity}
           />
           {
-            ( typeof props.errors.quantity === 'string' && props.touched.quantity) ? 
+            (typeof props.errors.quantity === 'string' && props.touched.quantity) ? 
              <div className="text-error-message">{props.errors.quantity}</div> : null
           }
         </Col>

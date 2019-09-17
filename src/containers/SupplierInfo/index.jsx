@@ -27,9 +27,9 @@ export default function SupplierInfo(props) {
             filterOption={false}
             labelInvalue
             options={props.supplierOptions}
-            type={ props.errors.supplier ? 'error' : 'default' }
+            type={ (props.errors.supplier && props.touched.supplier )  ? 'error' : 'default' }
           />
-          { props.errors.supplier && <div className="text-error-message">{props.errors.supplier }</div> }
+          { (props.errors.supplier && props.touched.supplier ) ? <div className="text-error-message">{props.errors.supplier }</div> : null  }
           </Col>
         </Row>
       </Card>
