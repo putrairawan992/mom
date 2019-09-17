@@ -9,6 +9,7 @@ import OrderChina from "../pages/OrderChina";
 import CustomerList from "../pages/CustomerList";
 import Dashboard from "../pages/Dashboard";
 import Order from "../pages/Order";
+import FormProduct from "../containers/NewFormProduct";
 
 const routes = [
   {
@@ -64,6 +65,12 @@ const routes = [
     component: Dashboard,
     layout: MainLayout,
     needAuthenticated: true
+  },
+  {
+    path: "/development",
+    component: FormProduct,
+    layout: MainLayout,
+    needAuthenticated: false
   }
 ];
 
