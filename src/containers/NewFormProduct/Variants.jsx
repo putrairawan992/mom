@@ -1,6 +1,7 @@
 import React from "react";
 import VariantItems from "./VariantItems";
 import { Card, Input } from "antd";
+import { ErrorMessage } from "formik";
 
 export default function Variants({
   initialValues,
@@ -28,10 +29,25 @@ export default function Variants({
                   <React.Fragment key={variantId}>
                     <Card
                       title="variant Type"
-                      extra={<Input placeholder="type variant" name={`${pathVariant}.name`} />}
+                      extra={
+                        <React.Fragment>
+                          <Input
+                            placeholder="type variant"
+                            name={`${pathVariant}.name`}
+                          />
+                          <ErrorMessage
+                            name={`${pathVariant}.name`}
+                            render={message => (
+                              <span>
+                                {message}
+                              </span>
+                            )}
+                          />
+                        </React.Fragment>
+                      }
                     >
                       <VariantItems
-                        pathVariant ={pathVariant}
+                        pathVariant={pathVariant}
                         variant={variant}
                         addVariantItems={() => {
                           addVariantItems(variantId);

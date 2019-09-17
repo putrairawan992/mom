@@ -11,46 +11,82 @@ export default function VariantsContainer({
   setFieldValue
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const variantItems = {
-    [uuidv4()]: {
-      name: "",
-      image: {}
-    }
+
+  const newVariants = function() {
+    const idVariantItem = uuidv4();
+    const values = {
+      variants: variants(idVariantItem),
+      variantItems: variantItems(idVariantItem)
+    };
+    return values;
   };
-  const variants = {
-    [uuidv4()]: {
-      name: "",
-      variantItems: { ...variantItems }
-    }
+
+  const newVariantItem = function() {
+    const idVariantItem = uuidv4();
+    const values = {
+      id: idVariantItem,
+      variantItems: variantItems(idVariantItem)
+    };
+    return values;
   };
+
+  const variantItems = function(idVariantItem) {
+    return {
+      [idVariantItem]: {
+        name: "",
+        image: {}
+      }
+    };
+  };
+
+  const variants = function(idVariantItem) {
+    return {
+      [uuidv4()]: {
+        name: "",
+        variantItems: [idVariantItem]
+      }
+    };
+  };
+
   const openVariants = function() {
     setIsOpen(!isOpen);
+    const variants = newVariants();
     let tempInitialValues = { ...initialValues };
-    tempInitialValues = { ...tempInitialValues, variants: { ...variants } };
+    tempInitialValues = { ...tempInitialValues, ...variants };
     updateInitialValues(tempInitialValues);
   };
 
   const addVariant = function() {
+    const variants = newVariants();
     let tempInitialValues = { ...initialValues };
     tempInitialValues = {
       ...tempInitialValues,
-      variants: { ...tempInitialValues.variants, ...variants }
+      variants: { ...tempInitialValues.variants, ...variants.variants },
+      variantItems: {
+        ...tempInitialValues.variantItems,
+        ...variants.variantItems
+      }
     };
     updateInitialValues(tempInitialValues);
   };
 
   const addVariantItems = function(id) {
+    const variants = newVariantItem();
     let tempInitialValues = {
       ...initialValues,
       variants: {
         ...initialValues.variants,
         [id]: {
           ...initialValues.variants[id],
-          variantItems: {
+          variantItems: [
             ...initialValues.variants[id].variantItems,
-            ...variantItems
-          }
+            variants.id
+          ]
         }
+      },
+      variantItems: {
+        ...initialValues.variantItems,
+        ...variants.variantItems
       }
     };
     updateInitialValues(tempInitialValues);

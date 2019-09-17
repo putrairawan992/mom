@@ -8,7 +8,8 @@ import { Form, Button } from "antd";
 export default function FormProduct() {
   const [initialValues, setInitialValues] = useState({
     product: "",
-    variants: {}
+    variants: {},
+    variantItems: {}
   });
 
   const handleSubmit = function() {};
