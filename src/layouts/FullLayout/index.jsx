@@ -1,5 +1,4 @@
-import React, {useEffect} from "react";
-import { useRootContext } from "../../hoc/RootContext";
+import React from "react";
 
 export default function FullLayout(props) {  
   return <div>{props.children}</div>;

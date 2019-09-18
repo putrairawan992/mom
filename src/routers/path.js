@@ -1,6 +1,7 @@
 const LOGIN = '/login';
 const DASHBOARD = `/dashboard`;
 const PRODUCT = `/product`;
+const PRDOUCT_ANSWER_QUESTION_DETAIL = `${PRODUCT}/question-answer/:id`;
 const PRODUCT_CREATE = `${PRODUCT}/create`;
 const PRODUCT_EDIT = `${PRODUCT}/edit`;
 const PRODUCT_QUESTIONS = `${PRODUCT}/questions`;
@@ -25,6 +26,7 @@ const PATH_URL = {
     CUSTOMER: CUSTOMER,
     CUSTOMER_GROUPS: CUSTOMER_GROUPS,
     SUPPLIER: SUPPLIER,
+    PRDOUCT_ANSWER_QUESTION_DETAIL:PRDOUCT_ANSWER_QUESTION_DETAIL
 
 }
 
