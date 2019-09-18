@@ -1,10 +1,9 @@
-import React, {useEffect} from "react";
+import React from "react";
 import { Layout, Menu, Icon } from "antd";
 import Header from "../../components/Header";
 import MenuProfile from "../../components/MenuProfile";
 import PATH_URL from "../../routers/path";
 import { useRootContext } from "../../hoc/RootContext";
-import GlobalStateProduct from "../../context/GlobalStateProduct";
 const {SubMenu} = Menu;
 const { Content, Sider } = Layout;
 

@@ -1,0 +1,30 @@
+ [
+            {
+                "question": "Tes ",
+                "answer": "answer",
+                "like": 1,
+                "dislike": 0,
+                "id": "7088b207-3029-4bf1-a053-27191e1f6aaa"
+            },
+            {
+                "question": "Question3 ",
+                "answer": "answer1",
+                "like": 77,
+                "dislike": 0,
+                "id": "0bb9e83f-88e2-4020-ad0f-8c4604fbf06e"
+            },
+            {
+                "question": "Question3 ",
+                "answer": "answer1",
+                "like": 1,
+                "dislike": 0,
+                "id": "bd0652a5-b038-4b41-bafe-80df814424e1"
+            },
+            {
+                "question": "Question4 ",
+                "answer": "answer1",
+                "like": 0,
+                "dislike": 1,
+                "id": "852e32dc-96c6-487c-ab6a-716af127236f"
+            }
+        ]

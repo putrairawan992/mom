@@ -9,6 +9,8 @@ import OrderChina from "../pages/OrderChina";
 import CustomerList from "../pages/CustomerList";
 import Dashboard from "../pages/Dashboard";
 import Order from "../pages/Order";
+import QuestionAnswer from "../pages/QuestionAnswer";
+import QuestionAnswerDetail from "../pages/QuestionAnswerDetail";
 
 const routes = [
   {
@@ -34,6 +36,19 @@ const routes = [
     component: ProductEdit,
     layout: MainLayout,
     needAuthenticated: true
+  },
+  {
+    path: PATH_URL.PRODUCT_QUESTIONS,
+    component: QuestionAnswer,
+    layout: MainLayout,
+    needAuthenticated: true
+  },
+  {
+    path: PATH_URL.PRDOUCT_ANSWER_QUESTION_DETAIL,
+    component : QuestionAnswerDetail,
+    layout: MainLayout,
+    needAuthenticated: true
+
   },
   {
     path: PATH_URL.ORDER,
