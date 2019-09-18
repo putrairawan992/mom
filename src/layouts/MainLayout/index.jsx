@@ -58,7 +58,7 @@ export default function MainLayout(props) {
                 <Menu.Item key="2" onClick={()=>history.push(PATH_URL.PRODUCT)}>List Product</Menu.Item>
                 <Menu.Item key="3" onClick={()=>history.push(PATH_URL.PRODUCT_CREATE)}>Add Product</Menu.Item>
                 <Menu.Item key="4" onClick={()=>history.push(PATH_URL.PRODUCT_EDIT)}>Categories</Menu.Item>
-                <Menu.Item key="8" onClick={()=>history.push(PATH_URL.PRODUCT_QUESTIONS)}>Product Questions</Menu.Item>
+                <Menu.Item key="8" onClick={()=>history.push(PATH_URL.QUESTION_ANSWER)}>Product Questions</Menu.Item>
               </SubMenu>
               <SubMenu
                 key="order"

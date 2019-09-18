@@ -11,11 +11,10 @@ function FormQuestionAnswer(props) {
     const [initialValues, setInitialValues] = useState();
     useEffect(() => {
         props.action === "create" ? questionAnswerQuestionCreate() : questionAnswerQuestionUpdate();
-    }, [props.questionAnswer])
+    },[props.questionAnswer])
 
     function questionAnswerQuestionCreate() {
         const initValue = convertSchemaToInit(schema);
-        console.log({ ...initValue });
         setInitialValues({ ...initValue });
     }
 
@@ -29,7 +28,7 @@ function FormQuestionAnswer(props) {
         let response =
             props.action === "create"
                 ? await submitCreate(params)
-                : await submitUpdate(params);
+                : await submitUpdate(params)
         if (response.status === 200) {
             props.onSuccess({ ...params });
             resetForm();
@@ -49,7 +48,6 @@ function FormQuestionAnswer(props) {
             params: params
         });
         return response;
-
     }
 
     return (
