@@ -6,7 +6,7 @@
     "antd": "^3.17.0",
     "axios": "^0.18.0",
     "currency-formatter": "^1.5.3",
-    "formik": "^1.5.4",
+    "formik": "^1.5.8",
     "less": "^3.9.0",
     "less-loader": "^5.0.0",
     "lodash": "^4.17.11",
@@ -24,6 +24,7 @@
     "redux": "^4.0.1",
     "redux-persist": "^5.10.0",
     "redux-thunk": "^2.3.0",
+    "uuid": "^3.3.3",
     "yup": "^0.27.0"
   },
   "scripts": {
