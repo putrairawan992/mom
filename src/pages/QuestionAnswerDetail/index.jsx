@@ -18,7 +18,7 @@ export default function QuestionAnswerDetail(props) {
     const [currentPage, setCurrentPage] = useState(0)
     const [questionAnswer, setQuestionAnswer] = useState([])
     const [questionAnswers, setQuestionAnswers] = useState({})
-    const [visibleCreateAddress, setVisibleCreateAddress] = useState(false);
+    const [visibleCreateQuestionAnswer, setVisibleCreateQuestionAnswer] = useState(false);
     const [visibleEditQuestionAnswer, setvisibleEditQuestionAnswer] = useState(false);
     const [nameProduct, setNameProduct] = useState("")
     const { Search } = Input;
@@ -109,11 +109,11 @@ export default function QuestionAnswerDetail(props) {
     };
 
     function actionShowCreateQuestionAnswer() {
-        setVisibleCreateAddress(!visibleCreateAddress);
+        setVisibleCreateQuestionAnswer(!visibleCreateQuestionAnswer);
     }
 
     function updateQuestionAnswer(questionAnswer) {
-        setVisibleCreateAddress(!visibleCreateAddress);
+        setVisibleCreateQuestionAnswer(!visibleCreateQuestionAnswer);
         getQuestionAnswerDetail();
     }
 
@@ -227,14 +227,14 @@ export default function QuestionAnswerDetail(props) {
                 </Col>
             </Row>
             <Modal
-                visible={visibleCreateAddress}
+                visible={visibleCreateQuestionAnswer}
                 footer={null}
-                onCancel={() => setVisibleCreateAddress(!visibleCreateAddress)}>
+                onCancel={() => setVisibleCreateQuestionAnswer(!visibleCreateQuestionAnswer)}>
                 <h4>Add Question</h4>
                 <p>for "{nameProduct}"</p>
                 <FormQuestionAnswer
                     action={"create"}
-                    onCancel={() => setVisibleCreateAddress(!visibleCreateAddress)}
+                    onCancel={() => setVisibleCreateQuestionAnswer(!visibleCreateQuestionAnswer)}
                     onSuccess={()=>updateQuestionAnswer()}
                     id={props.match.params.id}
                 />
