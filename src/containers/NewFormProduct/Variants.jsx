@@ -1,18 +1,17 @@
 import React from "react";
 import VariantItems from "./VariantItems";
-import { Card, Input } from "antd";
-import { ErrorMessage } from "formik";
+import { Card, Form, Input } from "antd";
+import {get} from 'lodash';
 
-export default function Variants({
+export default React.memo(function Variants({
   initialValues,
   isOpen,
   openVariants,
   addVariant,
   addVariantItems,
+  onChange,
   values,
-  errors,
-  touched,
-  setFieldValue
+  errors
 }) {
   return (
     <React.Fragment>
@@ -23,36 +22,44 @@ export default function Variants({
           <React.Fragment>
             {initialValues.variants &&
               Object.keys(initialValues.variants).map(variantId => {
-                const variant = initialValues.variants[variantId];
+                const variantItems = get(initialValues, `variants.${variantId}.variantItems`);
                 const pathVariant = `variants.${variantId}`;
+                const pathVariantName = `${pathVariant}.name`;
                 return (
                   <React.Fragment key={variantId}>
                     <Card
                       title="variant Type"
                       extra={
-                        <React.Fragment>
+                        <Form.Item
+                          validateStatus={
+                            get(errors, pathVariantName) ? "error" : "success"
+                          }
+                          help={get(errors, pathVariantName)}
+                        >
                           <Input
-                            placeholder="type variant"
-                            name={`${pathVariant}.name`}
+                            value={get(values, pathVariantName)}
+                            name={pathVariantName}
+                            onChange={e => onChange(pathVariantName, e.target.value)}
                           />
-                          <ErrorMessage
-                            name={`${pathVariant}.name`}
-                            render={message => (
-                              <span>
-                                {message}
-                              </span>
-                            )}
-                          />
-                        </React.Fragment>
+                        </Form.Item>
                       }
                     >
-                      <VariantItems
-                        pathVariant={pathVariant}
-                        variant={variant}
-                        addVariantItems={() => {
-                          addVariantItems(variantId);
-                        }}
-                      />
+                      {variantItems.map(item => {
+                        return (
+                          <VariantItems
+                            key={item}
+                            item={item}
+                            errors={errors}
+                            values={values}
+                            onChange={onChange}
+                          />
+                        );
+                      })}
+                      <br />
+                      <br />
+                      <button onClick={() => addVariantItems(variantId)}>
+                        Add Variant Item
+                      </button>
                     </Card>
                   </React.Fragment>
                 );
@@ -63,4 +70,4 @@ export default function Variants({
       </Card>
     </React.Fragment>
   );
-}
+})

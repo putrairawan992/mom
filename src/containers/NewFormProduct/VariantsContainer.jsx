@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import uuidv4 from "uuid/v4";
 
 export default function VariantsContainer({
@@ -7,10 +7,16 @@ export default function VariantsContainer({
   updateInitialValues,
   values,
   errors,
-  touched,
-  setFieldValue
+  setFieldValue,
+  handleChange,
+  // onChange
 }) {
   const [isOpen, setIsOpen] = useState(false);
+  useEffect(()=>{
+    if(isOpen){
+      initVariants();
+    }
+  },[isOpen])
 
   const newVariants = function() {
     const idVariantItem = uuidv4();
@@ -50,11 +56,13 @@ export default function VariantsContainer({
 
   const openVariants = function() {
     setIsOpen(!isOpen);
-    const variants = newVariants();
-    let tempInitialValues = { ...initialValues };
-    tempInitialValues = { ...tempInitialValues, ...variants };
-    updateInitialValues(tempInitialValues);
   };
+
+  const initVariants = function(){
+    const variants = newVariants();
+    const tempInitialValues = { ...initialValues, ...variants };
+    updateInitialValues(tempInitialValues);
+  }
 
   const addVariant = function() {
     const variants = newVariants();
@@ -92,6 +100,22 @@ export default function VariantsContainer({
     updateInitialValues(tempInitialValues);
   };
 
+  const onChange = function(key, value) {
+    const splitKeys = key.split(".");
+    const variant = splitKeys[0];
+    const id = splitKeys[1];
+    const name = splitKeys[2];
+    let tempValues = { ...initialValues };
+    tempValues = {
+      ...tempValues,
+      [variant]: {
+        ...tempValues[variant],
+        [id]: { ...tempValues[variant][id], [name]: value }
+      }
+    };
+    updateInitialValues(tempValues);
+  };
+
   return (
     <React.Fragment>
       {children({
@@ -102,8 +126,9 @@ export default function VariantsContainer({
         isOpen,
         values,
         errors,
-        touched,
-        setFieldValue
+        setFieldValue,
+        handleChange,
+        onChange,
       })}
     </React.Fragment>
   );

@@ -12,10 +12,15 @@ export default function FormProduct() {
     variantItems: {}
   });
 
-  const handleSubmit = function() {};
-  const updateInitialValues = function(values){
+  // const handleSubmit = function(value) {
+  //   console.log(value);
+  // };
+
+  const updateInitialValues = function(values) {
+    console.count("init");
     setInitialValues(values);
-  }
+  };
+
   return (
     <React.Fragment>
       <Formik
@@ -23,41 +28,31 @@ export default function FormProduct() {
         enableReinitialize
         validationSchema={schema}
         onSubmit={values => {
-          handleSubmit(values);
+          //handleSubmit(values);
         }}
+        validateOnChange={false}
       >
-        {({
-          values,
-          errors,
-          touched,
-          handleChange,
-          handleBlur,
-          handleSubmit,
-          setFieldValue
-        }) => {
+        {({ values, errors, handleSubmit, setFieldValue }) => {
           return (
             <Form onSubmit={handleSubmit}>
-              {console.log(errors)}
+              {console.log({
+                values: values,
+                initialValues: initialValues
+              })}
               <Form.Item>
                 <VariantsContainer
                   initialValues={initialValues}
                   updateInitialValues={values => {
-                    console.log(values);
                     updateInitialValues(values);
-                    
                   }}
                   values={values}
                   errors={errors}
-                  touched={touched}
                   setFieldValue={setFieldValue}
-                  handleChange={handleChange}
                 >
                   {props => <Variants {...props} />}
                 </VariantsContainer>
               </Form.Item>
-              <Button type="primary" htmlType="submit">
-                Submit
-              </Button>
+             <button type="submit">Test</button>
             </Form>
           );
         }}

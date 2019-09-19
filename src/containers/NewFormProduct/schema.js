@@ -18,7 +18,7 @@ export const schema = Yup.object().shape({
     Yup.object(
       mapValues(obj, () => {
         return Yup.object().shape({
-          name: Yup.string().required(),
+          name: Yup.string().required('variant items'),
           image: Yup.object().required()
         });
       })
