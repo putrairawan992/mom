@@ -30,14 +30,12 @@ export default function FormProduct() {
         onSubmit={values => {
           //handleSubmit(values);
         }}
-        validateOnChange={false}
       >
         {({ values, errors, handleSubmit, setFieldValue }) => {
           return (
             <Form onSubmit={handleSubmit}>
               {console.log({
-                values: values,
-                initialValues: initialValues
+                errors: errors
               })}
               <Form.Item>
                 <VariantsContainer
@@ -52,7 +50,7 @@ export default function FormProduct() {
                   {props => <Variants {...props} />}
                 </VariantsContainer>
               </Form.Item>
-             <button type="submit">Test</button>
+             <Button htmlType="submit">Submit</Button>
             </Form>
           );
         }}

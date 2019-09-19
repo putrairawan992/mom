@@ -1,6 +1,6 @@
 import React from "react";
 import VariantItems from "./VariantItems";
-import { Card, Form, Input } from "antd";
+import { Card, Form, Input, Button } from "antd";
 import {get} from 'lodash';
 
 export default React.memo(function Variants({
@@ -9,15 +9,17 @@ export default React.memo(function Variants({
   openVariants,
   addVariant,
   addVariantItems,
-  onChange,
+  removeVariant,
+  removeVariantItem,
   values,
-  errors
+  errors,
+  setFieldValue
 }) {
   return (
     <React.Fragment>
       <Card>
         {!isOpen ? (
-          <button onClick={openVariants}>Open</button>
+          <Button onClick={openVariants}>Open</Button>
         ) : (
           <React.Fragment>
             {initialValues.variants &&
@@ -39,7 +41,7 @@ export default React.memo(function Variants({
                           <Input
                             value={get(values, pathVariantName)}
                             name={pathVariantName}
-                            onChange={e => onChange(pathVariantName, e.target.value)}
+                            onChange={e => setFieldValue(pathVariantName, e.target.value)}
                           />
                         </Form.Item>
                       }
@@ -51,20 +53,22 @@ export default React.memo(function Variants({
                             item={item}
                             errors={errors}
                             values={values}
-                            onChange={onChange}
+                            onChange={(path, value) => setFieldValue(path, value)}
+                            onRemove={()=>removeVariantItem(variantId, item)}
                           />
                         );
                       })}
                       <br />
                       <br />
-                      <button onClick={() => addVariantItems(variantId)}>
+                      <Button onClick={() => addVariantItems(variantId)}>
                         Add Variant Item
-                      </button>
+                      </Button>
+                      <Button onClick={()=>removeVariant(variantId)}>Remove Variant</Button>
                     </Card>
                   </React.Fragment>
                 );
               })}
-            <button onClick={addVariant}>Add Variant</button>
+            <Button onClick={addVariant}>Add Variant</Button>
           </React.Fragment>
         )}
       </Card>

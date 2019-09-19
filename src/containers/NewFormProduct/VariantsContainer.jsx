@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import uuidv4 from "uuid/v4";
+import { omit, pull } from "lodash";
 
 export default function VariantsContainer({
   children,
@@ -7,16 +8,14 @@ export default function VariantsContainer({
   updateInitialValues,
   values,
   errors,
-  setFieldValue,
-  handleChange,
-  // onChange
+  setFieldValue
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  useEffect(()=>{
-    if(isOpen){
+  useEffect(() => {
+    if (isOpen) {
       initVariants();
     }
-  },[isOpen])
+  }, [isOpen]);
 
   const newVariants = function() {
     const idVariantItem = uuidv4();
@@ -58,15 +57,15 @@ export default function VariantsContainer({
     setIsOpen(!isOpen);
   };
 
-  const initVariants = function(){
+  const initVariants = function() {
     const variants = newVariants();
     const tempInitialValues = { ...initialValues, ...variants };
     updateInitialValues(tempInitialValues);
-  }
+  };
 
   const addVariant = function() {
     const variants = newVariants();
-    let tempInitialValues = { ...initialValues };
+    let tempInitialValues = { ...values };
     tempInitialValues = {
       ...tempInitialValues,
       variants: { ...tempInitialValues.variants, ...variants.variants },
@@ -78,42 +77,76 @@ export default function VariantsContainer({
     updateInitialValues(tempInitialValues);
   };
 
+  const removeVariantItems = function(items, variantItems) {
+    let tempVariantItems = { ...variantItems };
+    items.forEach(id => {
+      tempVariantItems = omit(variantItems, [id]);
+    });
+    return tempVariantItems;
+  };
+
+  const removeVariant = function(id) {
+    let tempInitialValues = { ...values };
+    const newVariants = omit(tempInitialValues.variants, [id]);
+    const newVariantItems = removeVariantItems(
+      tempInitialValues.variants[id].variantItems,
+      tempInitialValues.variantItems
+    );
+    tempInitialValues = {
+      ...tempInitialValues,
+      variants: { ...newVariants },
+      variantItems: { ...newVariantItems }
+    };
+    updateInitialValues(tempInitialValues);
+  };
+
   const addVariantItems = function(id) {
     const variants = newVariantItem();
-    let tempInitialValues = {
-      ...initialValues,
+    let tempInitialValues = { ...values };
+    tempInitialValues = {
+      ...tempInitialValues,
       variants: {
-        ...initialValues.variants,
+        ...tempInitialValues.variants,
         [id]: {
-          ...initialValues.variants[id],
+          ...tempInitialValues.variants[id],
           variantItems: [
-            ...initialValues.variants[id].variantItems,
+            ...tempInitialValues.variants[id].variantItems,
             variants.id
           ]
         }
       },
       variantItems: {
-        ...initialValues.variantItems,
+        ...tempInitialValues.variantItems,
         ...variants.variantItems
       }
     };
     updateInitialValues(tempInitialValues);
   };
 
-  const onChange = function(key, value) {
-    const splitKeys = key.split(".");
-    const variant = splitKeys[0];
-    const id = splitKeys[1];
-    const name = splitKeys[2];
-    let tempValues = { ...initialValues };
-    tempValues = {
-      ...tempValues,
-      [variant]: {
-        ...tempValues[variant],
-        [id]: { ...tempValues[variant][id], [name]: value }
-      }
+  const removeVariantItemsFromVariant = function(
+    variants,
+    idVariant,
+    idVariantItem
+  ) {
+    let tempVariants = variants;
+    pull(variants[idVariant].variantItems, idVariantItem);
+    return tempVariants;
+  };
+
+  const removeVariantItem = function(idVariant, idVariantItem) {
+    let tempInitialValues = { ...values };
+    const newVariantItems = omit(tempInitialValues.variantItems, [idVariantItem]);
+    const newVariants = removeVariantItemsFromVariant(
+      tempInitialValues.variants,
+      idVariant,
+      idVariantItem
+    );
+    tempInitialValues = {
+      ...tempInitialValues,
+      variants: { ...tempInitialValues.variants, ...newVariants },
+      variantItems: { ...tempInitialValues.variantItems, ...newVariantItems }
     };
-    updateInitialValues(tempValues);
+    updateInitialValues(tempInitialValues);
   };
 
   return (
@@ -123,12 +156,12 @@ export default function VariantsContainer({
         openVariants,
         addVariant,
         addVariantItems,
+        removeVariant,
+        removeVariantItem,
         isOpen,
         values,
         errors,
-        setFieldValue,
-        handleChange,
-        onChange,
+        setFieldValue
       })}
     </React.Fragment>
   );

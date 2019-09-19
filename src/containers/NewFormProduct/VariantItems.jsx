@@ -1,8 +1,8 @@
 import React from "react";
-import { Form, Input ,Row, Col } from "antd";
+import { Form, Input, Button } from "antd";
 import {get} from 'lodash';
 
-export default function VariantItems({ item, errors, values, onChange }) {
+export default function VariantItems({ item, errors, values, onChange, onRemove }) {
   const variantItem = `variantItems.${item}`;
   const variantItemName = `${variantItem}.name`;
   return (
@@ -16,6 +16,7 @@ export default function VariantItems({ item, errors, values, onChange }) {
           name={variantItemName}
           onChange={e => onChange(variantItemName, e.target.value)}
         />
+        <Button onClick={onRemove}>Remove VariantItems</Button>
       </Form.Item>
     </React.Fragment>
   );
