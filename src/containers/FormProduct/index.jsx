@@ -91,7 +91,7 @@ export default function FormProduct(props) {
         onSubmit={values => {
           handleSubmit(values);
         }}
-        validationSchema={schema}
+        // validationSchema={schema}
       >
         {({
           values,
@@ -163,6 +163,7 @@ export default function FormProduct(props) {
                 {(props) => (
                   <ProductPrice
                     errors={errors}
+                    handleChangeValue={handleChangeValue}
                     setFieldValue={setFieldValue}
                     touched={touched}
                     handleBlur={handleBlur}
@@ -195,15 +196,8 @@ export default function FormProduct(props) {
                 values={values}
                 errors={errors}
                 touched={touched}
+                handleChangeValue={handleChangeValue}
               />
-              {/* <Measurement
-                errors={errors}
-                setFieldValue={setFieldValue}
-                touched={touched}
-                handleBlur={handleBlur}
-                dataProduct={props.dataProduct}
-                values={values}
-              /> */}
            
             {/* <Form.Item>
               <UploadImages

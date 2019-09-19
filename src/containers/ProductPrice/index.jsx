@@ -38,7 +38,7 @@ const ProductPrice = (props) => {
           return rate.currencyFrom === 'CNY'
         })
         setExchangeRate(`Rp ${currencyFromChina.value}`)
-        props.setFieldValue('rate',currencyFromChina)
+        props.handleChangeValue(currencyFromChina, 'rate')
       } catch (error) {
         console.log(error.response)
       }
@@ -51,7 +51,8 @@ const ProductPrice = (props) => {
     const toNumber = convertToNumber(value);
     const convert = numberWithSeparator(toNumber);
     setState(convert);
-    props.setFieldValue(key,toNumber)
+    props.handleChangeValue(toNumber, key)
+    // props.setFieldValue(key,toNumber)
   }
 
   const numberWithSeparator = (number) => {

@@ -1,6 +1,4 @@
 import {useState, useEffect} from 'react'
-import { apiPostWithToken } from '../../services/api'
-import {PATH_UPLOAD} from '../../services/path/upload'
 
 export default function ImagesContainer (props) {
   const [imageUrl, setImageUrl] = useState({})
@@ -42,46 +40,59 @@ export default function ImagesContainer (props) {
     props.getPayloadImage(arrImage)
   },[arrImage])
 
-  const checkDimension = (file) => {
-    return new Promise(resolve => {
-      let _URL = window.URL || window.webkitURL;
-      var image = new Image();
-      image.src = _URL.createObjectURL(file)
-      image.onload = function(e ) {
-        let dimension = {}
-          dimension.width = image.naturalWidth
-          dimension.height = image.naturalHeight
-        resolve(dimension)   
-      };
-    })
-  }
+  // const checkDimension = (file) => {
+  //   return new Promise((resolve, reject) => {
+  //     let _URL = window.URL || window.webkitURL;
+  //     var image = new Image();
+  //     image.src = _URL.createObjectURL(file)
+  //     image.onload = function( ) {
+  //       let width = image.naturalWidth
+  //       let height = image.naturalHeight
+  //       if(width > 450  && height >450 ){
+  //         resolve(true)
+  //       }else{
+  //         reject(false)
+  //       }
+  //     };
+  //   })
+  // }
   
-  const getBase64 = (img, callback) => {
-    const reader = new FileReader();
-    reader.addEventListener('load', () => callback(reader.result));
-    reader.readAsDataURL(img);
-  }
+  // const getBase64 = (img, callback) => {
+  //   const reader = new FileReader();
+  //   reader.addEventListener('load', () => callback(reader.result));
+  //   reader.readAsDataURL(img);
+  // }
 
-  const beforeUpload = (file) => {
-    const isPng = file.type === 'image/png'
-    const isJpeg = file.type === 'image/jpeg'
-    const isJPG = file.type === 'image/jpg';
-    const isLt2M = file.size <= 3145728;
-    if( !isJPG && !isJpeg && !isPng ) {
-      timeOut(setStatusFile, 5000)
-      return false
-    }
-    if(!isLt2M){
-      timeOut(setStatusSize, 5000)
-      return false
-    }      
-  }
+  // const beforeUpload = (file) => {
+  //   const isPng = file.type === 'image/png'
+  //   const isJpeg = file.type === 'image/jpeg'
+  //   const isJPG = file.type === 'image/jpg';
+  //   const isLt2M = file.size <= 3145728;
+  //   if( !isJPG && !isJpeg && !isPng ) {
+  //     timeOut(setStatusFile, 5000)
+  //     return false
+  //   }
+  //   if(!isLt2M){
+  //     timeOut(setStatusSize, 5000)
+  //     return false
+  //   }      
+  // }
 
   const timeOut = (setState, time) => {
     setState(true)
     setTimeout(() => {
       setState(false)
     }, time)
+  }
+
+  const errorType = function (type) {
+    switch (type) {
+      case 'type' : return timeOut(setStatusFile, 4000);
+      break;
+      case 'size' : return timeOut(setStatusSize, 4000)
+      break;
+      case 'dimension' : return timeOut(setDimension, 4000)
+    }
   }
 
   const changeDefault = (key) => {
@@ -113,50 +124,73 @@ export default function ImagesContainer (props) {
     setCount(count + 1)
   }
 
-  const handleChange = (info,key,arrayHelpers) => {
-    let loadingTemp = {...loading}
-    if (info.file.status === 'uploading') {
-      loadingTemp[key] = true
-      setLoading(loadingTemp)
-      return;
-    }
-    if (info.file.status === 'done' ) {
-        let disableTemp = {...disable}
-        getBase64(info.file.originFileObj, function() {
-          let temp = info.file.response.mediumUrl
-          loadingTemp[key] = false;
-          disableTemp[key] = true;
-          setImageUrl({
-            ...imageUrl , [key] : temp
-          })
-          setLoading(loadingTemp);
-          setDisable(disableTemp);
-          saveImageOnState(info.file.response, key)
-        });
-    }
-  };
+  // const handleChange = (info,key,arrayHelpers) => {
+  //   let loadingTemp = {...loading}
+  //   if (info.file.status === 'uploading') {
+  //     loadingTemp[key] = true
+  //     setLoading(loadingTemp)
+  //     return;
+  //   }
+  //   if (info.file.status === 'done' ) {
+  //       let disableTemp = {...disable}
+  //       getBase64(info.file.originFileObj, function() {
+  //         let temp = info.file.response.mediumUrl
+  //         loadingTemp[key] = false;
+  //         disableTemp[key] = true;
+  //         setImageUrl({
+  //           ...imageUrl , [key] : temp
+  //         })
+  //         setLoading(loadingTemp);
+  //         setDisable(disableTemp);
+  //         saveImageOnState(info.file.response, key)
+  //       });
+  //   }
+  // };
 
-  const uploadImage = async ({onError, onSuccess,file},index) => {
+  // const uploadImage = async ({onError, onSuccess,file},index) => {
+  //   let tempLoadingEdit = {...loadingEdit}
+  //   tempLoadingEdit[index] = true
+  //   setLoadingEdit(tempLoadingEdit)
+  //     let formData = new FormData();
+  //     formData.append("file",file);
+  //     return checkDimension(file)
+  //       .then(() => {return ImageRepo.upload({params : formData})})
+  //       .then(response => {
+  //         onSuccess(response.data.data)
+  //         tempLoadingEdit[index] = false
+  //         setLoadingEdit(tempLoadingEdit)
+  //       })
+  //       .catch ((error) => {
+  //         onError(error)
+  //         setError(index)
+  //         timeOut(setDimension,500)
+  //       })
+  // }
+
+  const successUpload = function (responseImage, key){
+    let loadingTemp = {...loading}
+    let disableTemp = {...disable}
+    let loadingEditTemp = {...loadingEdit}
+    loadingTemp[key] = false
+    disableTemp[key] = true
+    loadingEditTemp[key] = false
+    setImageUrl({
+      ...imageUrl , [key] : responseImage.mediumUrl
+    })
+    setLoading(loadingTemp)
+    setDisable(disableTemp)
+    setLoadingEdit(loadingEditTemp)
+    saveImageOnState(responseImage, key)
+  }
+
+  const loadingUpload = function (key) {
+    let loadingTemp = {...loading}
     let tempLoadingEdit = {...loadingEdit}
-    tempLoadingEdit[index] = true
+    loadingTemp[key] = true
+    tempLoadingEdit[key] = true
+    setLoading(loadingTemp)
     setLoadingEdit(tempLoadingEdit)
-    try {
-      var formData = new FormData();
-      formData.append("file",file);
-      const isDimension = await checkDimension(file)
-      if(isDimension.width > 450 && isDimension.height > 450){
-        const response = await apiPostWithToken(PATH_UPLOAD.UPLOAD,formData);
-        onSuccess(response.data.data)
-        tempLoadingEdit[index] = false
-        setLoadingEdit(tempLoadingEdit)
-      }else{
-        timeOut(setDimension, 5000)
-        setError(index)
-      }
-    } catch (error) {
-      onError(error)
-      setError(index)
-    }
+
   }
 
   const setError = (key) => {
@@ -191,7 +225,8 @@ export default function ImagesContainer (props) {
   }
 
   return props.children({
-    editImage , remove , uploadImage, handleChange, changeDefault, beforeUpload ,
-    statusFile, statusSize, dimension, arrImage , imageUrl, loading, loadingEdit ,disable
+    editImage , remove , changeDefault ,
+    statusFile, statusSize, dimension, arrImage , imageUrl, loading, loadingEdit ,disable, 
+    successUpload, loadingUpload, errorType, setError
   })
 }

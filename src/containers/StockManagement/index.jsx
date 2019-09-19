@@ -53,7 +53,7 @@ const StockManagement = (props) => {
         </Col>
         <Col>
           <Switch
-            defaultChecked={readyStock}
+            defaultChecked={props.values.readyStock}
             onChange={handleChange}
           />
         </Col>

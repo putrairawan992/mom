@@ -33,6 +33,10 @@ const UploadImages = (props) => {
                   Object.keys(props.arrImage).map(image => {
                     return (
                       <UploadImage
+                        successUpload={props.successUpload}
+                        loadingUpload={props.loadingUpload}
+                        setError={props.setError}
+                        errorType={props.errorType}
                         key={image}
                         image={image}
                         remove={props.remove}
@@ -45,8 +49,8 @@ const UploadImages = (props) => {
                         changeDefault={props.changeDefault}
                         beforeUpload={props.beforeUpload}
                         type={props.arrImage[image].isDefault ? "default" : "non-default" }
-                        onChange={(info) => props.handleChange(info,image,arrayHelpers)}
-                        customRequest={({onError, onSuccess,file}) => props.uploadImage({onError, onSuccess,file},image)}
+                        // onChange={(info) => props.handleChange(info,image,arrayHelpers)}
+                        // customRequest={({onError, onSuccess,file}) => props.uploadImage({onError, onSuccess,file},image)}
                       />
                     )
                   })
