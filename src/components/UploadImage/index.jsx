@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import { Upload as UploadAnt, Icon } from 'antd'
 import Button from '../Button'
 import propTypes from 'prop-types'
@@ -6,6 +6,7 @@ import ImageRepo from "../../repository/Image"
 import './style.sass'
 
 const UploadImage = props => {
+  
   const uploadButton = (
     <div>
       <Icon type={props.loading ? 'loading' : 'plus'}></Icon>
@@ -82,7 +83,6 @@ const UploadImage = props => {
       let responseImage = info.file.response
       props.successUpload(responseImage, props.image)
     }
-
   }
 
   const beforeUpload = (file) => {
@@ -99,7 +99,7 @@ const UploadImage = props => {
       return false
     }      
   }
-
+  
   const uploadImage = function ({onError, onSuccess,file}) {
     let formData = new FormData();
     formData.append("file", file)
@@ -122,7 +122,7 @@ const UploadImage = props => {
       listType="picture-card"
       showUploadList={false}
       beforeUpload={beforeUpload}
-      >
+    >
       <div className="inside-upload">
       {props.imageUrl ? imageUpload : uploadButton}
       </div>

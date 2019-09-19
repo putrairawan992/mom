@@ -1,7 +1,7 @@
 import React from 'react'
 import UploadImage from '../UploadImage'
 // import propTypes from 'prop-types'
-import {Card, Row, Col, Tag} from 'antd';
+import {Card, Row, Col, Tag, Form} from 'antd';
 import {FieldArray} from 'formik';
 import strings from '../../localization'
 

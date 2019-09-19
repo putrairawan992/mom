@@ -37,7 +37,13 @@ export default function ImagesContainer (props) {
   },[])
 
   useEffect(() => {
-    props.getPayloadImage(arrImage)
+    let payloadArray = Object.keys(arrImage).map(key => {
+      return arrImage[key]
+    })
+    const filterPayload = payloadArray.filter(pay => {
+      return pay.largeUrl
+    })
+    props.handleChangeValue(filterPayload, 'listImages')
   },[arrImage])
 
   // const checkDimension = (file) => {
