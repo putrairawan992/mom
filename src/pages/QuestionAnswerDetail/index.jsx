@@ -6,8 +6,10 @@ import QuestionAnswer from '../../repository/QuestionAnswer';
 import FormQuestionAnswer from '../../containers/FormQuestionAnswer';
 import ButtonIcon from '../../components/ButtonIcon';
 import "./style.sass";
+import Product from '../../repository/Product';
+import PATH_URL from '../../routers/path';
 
-const {Text} = Typography
+const { Text } = Typography
 
 const { confirm } = Modal;
 
@@ -16,8 +18,9 @@ export default function QuestionAnswerDetail(props) {
     const [currentPage, setCurrentPage] = useState(0)
     const [questionAnswer, setQuestionAnswer] = useState([])
     const [questionAnswers, setQuestionAnswers] = useState({})
-    const [visibleCreateAddress, setVisibleCreateAddress] = useState(false);
+    const [visibleCreateQuestionAnswer, setVisibleCreateQuestionAnswer] = useState(false);
     const [visibleEditQuestionAnswer, setvisibleEditQuestionAnswer] = useState(false);
+    const [nameProduct, setNameProduct] = useState("")
     const { Search } = Input;
     const columns = [{
         title: 'Question',
@@ -42,7 +45,17 @@ export default function QuestionAnswerDetail(props) {
 
     useEffect(() => {
         getQuestionAnswerDetail()
+        getProduct()
     }, [])
+
+    async function getProduct() {
+        let product = await Product.get({
+            productId: id
+        })
+        if (product.status === 200) {
+            setNameProduct(product.data.data.information.name)
+        }
+    }
 
     async function getQuestionAnswerDetail() {
         let questionAnswer = await QuestionAnswer.get({
@@ -76,7 +89,7 @@ export default function QuestionAnswerDetail(props) {
             id: id
         })
         let typeText = {
-            type : "success",
+            type: "success",
             description: "Customers can't see questions that have been deleted.",
             title: "The question was deleted"
         }
@@ -96,17 +109,17 @@ export default function QuestionAnswerDetail(props) {
     };
 
     function actionShowCreateQuestionAnswer() {
-        setVisibleCreateAddress(!visibleCreateAddress);
+        setVisibleCreateQuestionAnswer(!visibleCreateQuestionAnswer);
     }
 
-    function updateQuestionAnswer() {
-        setVisibleCreateAddress(!visibleCreateAddress);
+    function updateQuestionAnswer(questionAnswer) {
+        setVisibleCreateQuestionAnswer(!visibleCreateQuestionAnswer);
         getQuestionAnswerDetail();
     }
 
     function handleSuccessEdit() {
         let typeText = {
-            type : "success",
+            type: "success",
             description: "Question has been changed and saved",
             title: "The question was edited"
         }
@@ -145,11 +158,11 @@ export default function QuestionAnswerDetail(props) {
                         <Row>
                             <Col md={19} offset={3}>
                                 <span style={{ fontSize: 20 }}>
-                                    <Icon type="like" 
-                                    style={{ padding: "0px 10px 0px 0px" }} />
+                                    <Icon type="like"
+                                        style={{ padding: "0px 10px 0px 0px" }} />
                                     {qna.like}
-                                    <Icon type="dislike" 
-                                    style={{ padding: "0px 10px 0px 10px" }} />
+                                    <Icon type="dislike"
+                                        style={{ padding: "0px 10px 0px 10px" }} />
                                     {qna.dislike}
                                 </span>
                             </Col>
@@ -170,10 +183,10 @@ export default function QuestionAnswerDetail(props) {
             <Row className="mp-question-answer-detail-heading">
                 <Col md={20}>
                     <h2>Question</h2>
-                    <p>for "{props.location.state.nameIdn}"</p>
+                    <p>for "{nameProduct}"</p>
                 </Col>
                 <Col md={3} offset={1}>
-                    <Link to="/product/questions">
+                    <Link to={PATH_URL.QUESTION_ANSWER}>
                         <Button type="link">
                             <span className="mp-question-answer-detail-heading__back">Back</span>
                         </Button>
@@ -186,7 +199,6 @@ export default function QuestionAnswerDetail(props) {
                         value={search}
                         placeholder="Search"
                         onChange={onChangeSearch}
-                        size="medium"
                     />
                 </Col>
                 <Col md={3} offset={4}>
@@ -215,15 +227,15 @@ export default function QuestionAnswerDetail(props) {
                 </Col>
             </Row>
             <Modal
-                visible={visibleCreateAddress}
+                visible={visibleCreateQuestionAnswer}
                 footer={null}
-                onCancel={() => setVisibleCreateAddress(!visibleCreateAddress)}>
+                onCancel={() => setVisibleCreateQuestionAnswer(!visibleCreateQuestionAnswer)}>
                 <h4>Add Question</h4>
-                <p>for "{props.location.state.nameIdn}"</p>
+                <p>for "{nameProduct}"</p>
                 <FormQuestionAnswer
                     action={"create"}
-                    onCancel={() => setVisibleCreateAddress(!visibleCreateAddress)}
-                    onSuccess={updateQuestionAnswer}
+                    onCancel={() => setVisibleCreateQuestionAnswer(!visibleCreateQuestionAnswer)}
+                    onSuccess={()=>updateQuestionAnswer()}
                     id={props.match.params.id}
                 />
 
