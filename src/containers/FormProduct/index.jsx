@@ -1,7 +1,8 @@
 import React, { useState, useContext } from "react";
 import UploadImages from "../../components/UploadImages";
 import ImagesContainer from "../../components/UploadImages/ImagesContainer"
-// import Variants from "../../containers/Variants";
+import Variants from "../../containers/Variants";
+import VariantsContainer from "../../containers/Variants/variantsContainer"
 import { Formik } from "formik";
 import { Form } from "antd";
 import Button from "../../components/Button";
@@ -15,7 +16,7 @@ import Measurement from "../../containers/Measurement";
 import MeasurementContainer from "../../containers/Measurement/measurementContainer"
 import StockManagement from "../../containers/StockManagement";
 import ProductContext from "../../context/GlobalStateProduct/product-context";
-// import { schema } from "./schema";
+import { schema } from "./schema";
 import "./style.sass";
 import VideoProduct from "../VideoProduct";
 
@@ -24,7 +25,8 @@ export default function FormProduct(props) {
   const [initialValues,setInitialValues] = useState({
     administration: "",
     actualWeight: "",
-    variants: [],
+    variants: {},
+    variantItems : {},
     listImages: [],
     supplier: "",
     basePrice: "",
@@ -64,6 +66,11 @@ export default function FormProduct(props) {
 
   function handleSubmit(values) {
       console.log(values);
+  };
+
+  const updateInitialValues = function(values) {
+    console.count("init");
+    setInitialValues(values);
   };
 
   return (
@@ -120,6 +127,19 @@ export default function FormProduct(props) {
                 )}
               </ProductInfoContainer>
               <br/>
+              <Form.Item>
+                <VariantsContainer
+                  initialValues={initialValues}
+                  updateInitialValues={values => {
+                    updateInitialValues(values);
+                  }}
+                  values={values}
+                  errors={errors}
+                  setFieldValue={setFieldValue}
+                >
+                    {props => <Variants {...props} />}
+                </VariantsContainer>
+              </Form.Item>
               <Form.Item>
                 <ImagesContainer maxImage={5} handleChangeValue={handleChangeValue}>
                   {(props) => (
@@ -182,25 +202,7 @@ export default function FormProduct(props) {
                 touched={touched}
                 handleChangeValue={handleChangeValue}
               />
-           
-            {/*
-            <Form.Item>
-              <Variants
-                setFieldValue={setFieldValue}
-                handleChange={handleChange}
-                errors={errors}
-                handleBlur={handleBlur}
-                values={values.variants}
-                handleReset={handleReset}
-                touched={touched}
-                onReset={onReset}
-              />
-            </Form.Item>
-            <div style={{ textAlign: "right" }}>
-              <Button type="primary" size="large" htmlType="submit">
-                {context.labelButton}
-              </Button>
-            </div> */}
+        
             <div style={{ textAlign: "right" }}>
               <Button type="primary" size="large" htmlType="submit">
                 Save

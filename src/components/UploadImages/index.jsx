@@ -6,7 +6,7 @@ import {FieldArray} from 'formik';
 import strings from '../../localization'
 
 const UploadImages = (props) => {
- 
+
   return (
     <React.Fragment>
       <Card className="card" title={<div className="card-title">{strings.product_images}</div>} >

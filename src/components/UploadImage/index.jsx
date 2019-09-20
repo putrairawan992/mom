@@ -12,6 +12,8 @@ const UploadImage = props => {
       <Icon type={props.loading ? 'loading' : 'plus'}></Icon>
     </div>
   )
+
+  // console.log("ini props",props)
   
   const imageUpload = (
     <div className="containerUpload">

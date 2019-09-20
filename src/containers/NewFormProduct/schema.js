@@ -1,5 +1,5 @@
 import * as Yup from "yup";
-import strings from "../../localization";
+// import strings from "../../localization";
 import mapValues from "lodash/mapValues";
 
 export const schema = Yup.object().shape({
