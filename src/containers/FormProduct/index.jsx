@@ -211,7 +211,7 @@ export default function FormProduct(props) {
   }
 
   async function handleSubmit(values, resetForm) {
-    console.log({values})
+    // console.log({values})
     const payload = mapper(values)
     props.actionSave(payload, resetForm )
   };
@@ -359,7 +359,6 @@ export default function FormProduct(props) {
                     <UploadImages
                       errors={errors}
                       touched={touched}
-                      
                       {...props}
                     />
                   )}
@@ -375,7 +374,7 @@ export default function FormProduct(props) {
                   grid={grid}
                   values={values}
                 />
-            </Form.Item>
+              </Form.Item>
             <Form.Item>
               <ProductPriceContainer 
                 setFieldValue={setFieldValue}
@@ -385,7 +384,6 @@ export default function FormProduct(props) {
                 {(props) => (
                   <ProductPrice
                     errors={errors}
-                    
                     handleChangeValue={handleChangeValue}
                     setFieldValue={setFieldValue}
                     touched={touched}
