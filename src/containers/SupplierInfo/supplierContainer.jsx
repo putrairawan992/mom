@@ -5,6 +5,7 @@ export default function SupplierContainer (props) {
   const [loading, setLoading] = useState(false)
   const [supplierOptions, setSupplierOptions] = useState([])
 
+
   async function getSuppliersByKeyword(keyword) {
     setSupplierOptions([]);
     const suppliersResp  = await Supplier.getAll({
@@ -23,6 +24,6 @@ export default function SupplierContainer (props) {
   }
 
   return props.children({
-    loading, supplierOptions, getSuppliersByKeyword
+    loading, supplierOptions, getSuppliersByKeyword, values : props.values
   })
 }

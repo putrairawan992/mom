@@ -4,7 +4,6 @@ import Input from '../../components/Input';
 import strings from '../../localization'
 
 const Measurement = (props) => {
-
   return (
     <Card className="card" title={<div className="card-title">{strings.measurement}</div>}>
       <Row type="flex" align="middle">
@@ -143,7 +142,7 @@ const Measurement = (props) => {
       <br/>
       <Row>
         <Col md={15} offset={7}>
-          <Checkbox name="isFragile" onClick={(e)=>props.setFieldValue('isFragile', e.target.checked)}>
+          <Checkbox name="isFragile" checked={props.values.isFragile}  onClick={(e)=>props.setFieldValue('isFragile', e.target.checked)}>
             <span className="text-safety-orange">
               {strings.product_fragile} <Icon fill="red" type="info-circle"/>
             </span>

@@ -1,79 +1,10 @@
-import React, {useState, useEffect, useContext} from 'react'
+import React from 'react'
 import {Card, Row, Col, Tag, Checkbox, Icon} from 'antd';
 import Input from '../../components/Input';
-import {apiGetWithoutToken} from '../../services/api';
-import {PATH_EXCHANGE} from '../../services/path/rate'
 import strings from '../../localization';
-import {InputNumber, Form} from 'antd';
-import ProductContext from '../../context/GlobalStateProduct/product-context'
+import { Form } from 'antd';
 
 const ProductPrice = (props) => {
-  const context = useContext(ProductContext)
-  const [basePrice, setBasePrice] = useState("")
-  const [domesticFee, setDomesticFee] = useState("")
-  const [feeBySea, setFeeBySea] = useState("")
-  const [feeByAir, setFeeByAir] = useState("")
-  const [administration, setAdministration] = useState("")
-  const [priceByAir, setPriceByAir] = useState("Rp 0")
-  const [priceBySea, setPriceBySea] = useState("Rp 0")
-  const [exchangeRate,setExchangeRate] = useState("Rp 0")
-  
-  useEffect(() => {
-    const splitRate = exchangeRate.split(" ")
-    const rate = splitRate[1]
-    let totalPriceBySea = ((convertToNumber(basePrice) + convertToNumber(domesticFee)) * Number(rate)) + convertToNumber(feeBySea) + convertToNumber(administration)
-    let totalPriceByAir = ((convertToNumber(basePrice) + convertToNumber(domesticFee)) * Number(rate)) + convertToNumber(feeByAir) + convertToNumber(administration)
-    let ceilPriceBySea = formatCurrency(Math.ceil(totalPriceBySea/1000) * 1000)
-    let ceilPriceByAir = formatCurrency(Math.ceil(totalPriceByAir/1000) * 1000)
-    setPriceBySea(`Rp ${ceilPriceBySea}`)
-    setPriceByAir(`Rp ${ceilPriceByAir}`)
-  },[basePrice,domesticFee,administration,feeBySea,feeByAir,exchangeRate])
-
-  useEffect(() => {
-    const getRate = async() => {
-      try {
-        const response = await apiGetWithoutToken(PATH_EXCHANGE.RATE)
-        const responseRate = response.data.data
-        const currencyFromChina = responseRate.reduce(rate => {
-          return rate.currencyFrom === 'CNY'
-        })
-        setExchangeRate(`Rp ${currencyFromChina.value}`)
-        props.handleChangeValue(currencyFromChina, 'rate')
-      } catch (error) {
-        console.log(error.response)
-      }
-    }
-    getRate()
-  },[])
-
-  const handleChange = (event,key,setState) => {
-    const value = event.target.value;
-    const toNumber = convertToNumber(value);
-    const convert = numberWithSeparator(toNumber);
-    setState(convert);
-    props.handleChangeValue(toNumber, key)
-    // props.setFieldValue(key,toNumber)
-  }
-
-  const numberWithSeparator = (number) => {
-    var parts = number.toString().split(".");
-    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    return parts.join(".");
-}
-
-  const convertToNumber = (valueString) => (
-    Number(valueString.replace(/[^0-9]/g, ''))
-  );
-
-  const formatCurrency = (price) => {
-    let number = Number(price)
-    return price.toLocaleString()
-  }
-
-  const onChangeNumber = (value,key,setState) => {
-    setState(value)
-    props.setFieldValue(key,value)
-  }
 
   return(
     <Card className="card" title={<div className="card-title">{strings.product_price}</div>}>
@@ -93,9 +24,9 @@ const ProductPrice = (props) => {
           }>
             <Input
               prefix={"¥"}
-              value={basePrice}
+              value={props.basePrice}
               style={{width : "100%"}}
-              onChange={value => handleChange(value,'basePrice',setBasePrice)}
+              onChange={value => props.handleChange(value,'basePrice',props.setBasePrice)}
               size="large"
               name="basePrice"
             />
@@ -124,11 +55,11 @@ const ProductPrice = (props) => {
           }>
             <Input
               prefix={"¥"}
-              value={domesticFee}
+              value={props.domesticFee}
               style={{width : "100%"}}
               name="domesticFee"
               onChange={value => {
-                handleChange(value,'domesticFee',setDomesticFee)
+                props.handleChange(value,'domesticFee',props.setDomesticFee)
               }}
               onBlur={props.handleBlur}
               size="large"
@@ -165,11 +96,11 @@ const ProductPrice = (props) => {
         <Col md={props.grid.priceRight} className="col-height">
           <Input
             prefix={"Rp"}
-            value={feeBySea}
+            value={props.feeBySea}
             name="feeBySea"
             onBlur={props.handleBlur}
             onChange={e => {
-              handleChange(e,'feeBySea',setFeeBySea)
+              props.handleChange(e,'feeBySea',props.setFeeBySea)
             }}
             size="large"
             status={
@@ -194,11 +125,11 @@ const ProductPrice = (props) => {
         <Col md={props.grid.priceRight} className="col-height">
           <Input
             prefix="Rp"
-            value={feeByAir}
+            value={props.feeByAir}
             onBlur={props.handleBlur}
             name="feeByAir"
             onChange={e => {
-              handleChange(e,'feeByAir',setFeeByAir)
+              props.handleChange(e,'feeByAir',props.setFeeByAir)
             }}
             size="large"
             status={
@@ -233,9 +164,9 @@ const ProductPrice = (props) => {
         <Col md={props.grid.priceRight} className="col-height">
           <Input
             prefix="Rp"
-            value={administration}
+            value={props.administration}
             onChange={e => {
-              handleChange(e,'administration',setAdministration)
+              props.handleChange(e,'administration',props.setAdministration)
             }}
             size="large"
           />
@@ -261,7 +192,7 @@ const ProductPrice = (props) => {
         </Col>
         <Col md={8}>
           <Input
-            value={exchangeRate}
+            value={props.exchangeRate}
             size="large"
             status="disabled"
             disabled
@@ -277,7 +208,7 @@ const ProductPrice = (props) => {
         </Col>
         <Col md={props.grid.priceRight}>
           <Input
-            value={priceBySea}
+            value={props.priceBySea}
             size="large"
             status="disabled"
             disabled
@@ -293,7 +224,7 @@ const ProductPrice = (props) => {
         </Col>
         <Col md={props.grid.priceRight}>
           <Input
-            value={priceByAir}
+            value={props.priceByAir}
             size="large"
             disabled
             status="disabled"

@@ -5,8 +5,8 @@ export default function MeasurementContainer (props) {
   const [width, setWidth] = useState("1")
   const [length, setLength] = useState("1")
   const [height, setHeight] = useState("1")
-  const [volumetric, setVolumetric] = useState("0")
-  //const [isFragile, setIsFragile] = useState(false);
+  const [volumetric, setVolumetric] = useState("")
+  const [isFragile, setIsFragile] = useState(false);
 
   useEffect(() => {
     let volume = Number(width) * Number(length) * Number(height)
@@ -19,14 +19,14 @@ export default function MeasurementContainer (props) {
     }
   },[actualWeight,width,length,volumetric,height])
 
-  // useEffect(() => {
-  //   if(props.dataProduct){
-  //     const information = props.dataProduct.information
-  //     setHeight(information.measurement.dimension.height)
-  //   }
-  // })
+  useEffect(() => {
+      const volume = props.values.volumeWeight
+      let roundVolumetricWeight = Math.round(volume * 100) / 100
+      setVolumetric(roundVolumetricWeight)
+
+  },[props.values.volumeWeight])
   return props.children({
     actualWeight, setActualWeight, width, setWidth, length, setLength,
-    height, setHeight, volumetric, setVolumetric
+    height, setHeight, volumetric, setVolumetric, isFragile
   })
 }

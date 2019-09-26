@@ -6,15 +6,18 @@ import ImageRepo from "../../repository/Image"
 import './style.sass'
 
 const UploadImage = props => {
+  // console.log(props)
+  const [loading, setLoading] = useState(false)
+  const [imageUrl, setImageUrl] = useState('')
+  const [disable, setDisable] = useState(false)
+  const [loadingEdit, setLoadingEdit] = useState(false)
   
   const uploadButton = (
     <div>
-      <Icon type={props.loading ? 'loading' : 'plus'}></Icon>
+      <Icon type={loading ? 'loading' : 'plus'}></Icon>
     </div>
   )
 
-  // console.log("ini props",props)
-  
   const imageUpload = (
     <div className="containerUpload">
       {
@@ -22,11 +25,15 @@ const UploadImage = props => {
         <>
           <img src={props.imageUrl}  alt="avatar"/> 
           <div className="top-icon">
-          <Icon type="camera" onClick={() => props.editImage(props.indexVariant,props.index)}  className="cameraIcon"/>
-          <Icon  type="delete" onClick={() => props.remove(props.index,props.imageUrl)} className="deleteIcon"/>
+          <Icon type="camera" onClick={props.editImage}  className="cameraIcon"/>
+          <Icon  type="delete" onClick={() => {
+            props.remove(props.index,props.imageUrl)
+            setImageUrl('')
+            setDisable(false)
+          }} className="deleteIcon"/>
           </div>
           {
-            props.loadingEdit ?
+            loadingEdit ?
             <div className="container-loading">
               <Icon className="loading-edit" type={ 'loading' }></Icon>
             </div>   : null
@@ -36,8 +43,12 @@ const UploadImage = props => {
         <>
           <img src={props.imageUrl}  alt="avatar"/>
           <div className="top-icon">
-          <Icon type="camera" onClick={() => props.editImage(props.image)} className="cameraIcon"/>
-          <Icon onClick={() => props.remove(props.image)} type="delete" className="deleteIcon"/>
+          <Icon type="camera" onClick={props.editImage} className="cameraIcon"/>
+          <Icon onClick={() => {
+            props.remove()
+            setImageUrl('')
+            setDisable(false)
+          }} type="delete" className="deleteIcon"/>
           </div>
           {
             props.loadingEdit ?
@@ -61,30 +72,47 @@ const UploadImage = props => {
       let _URL = window.URL || window.webkitURL;
       var image = new Image();
       image.src = _URL.createObjectURL(file)
-      image.onload = function( ) {
+      image.onload = () => {
         let width = image.naturalWidth
         let height = image.naturalHeight
         if(width > 450  && height > 450 ){
           resolve(true)
         }else{
-          reject(false)
+          reject({
+            name : 'dimension' , description : 'min frame 450 X 450'
+          })
         }
-      };
+      }
     })
   }
 
-  const uploadRepository = function (formData) {
+  const uploadRepository = async function (formData) {
     return ImageRepo.upload({params: formData})
   }
 
   const handleChange = function (info) {
     if(info.file.status === 'uploading'){
-      props.loadingUpload(props.image)
+      setLoading(true)
+      setLoadingEdit(true)
+      return 
     }
     if(info.file.status ===  'done' ) {
-      let responseImage = info.file.response
-      props.successUpload(responseImage, props.image)
+      setDisable(true)
+      setLoading(false)
+      setLoadingEdit(false)
+      getBase64(info.file.originFileObj, image => {
+        setImageUrl(image)
+        let responseImage = info.file.response
+        props.onChange(responseImage)
+        props.successUpload(responseImage, props.image)
+      })
     }
+  }
+
+  const getBase64 = function (img, callback) {
+    const reader = new FileReader();
+    reader.addEventListener('load', () => callback(reader.result));
+    reader.readAsDataURL(img);
   }
 
   const beforeUpload = (file) => {
@@ -93,25 +121,31 @@ const UploadImage = props => {
     const isJPG = file.type === 'image/jpg';
     const isLt2M = file.size <= 3145728;
     if( !isJPG && !isJpeg && !isPng ) {
-      props.errorType('type')
+      props.onError({name : 'type' , description : 'Only JPG, JPEG and PNG' })
       return false
     }
     if(!isLt2M){
-      props.errorType('size')
+      props.onError({name : 'size' , description : 'Max Size 3 Mb' })
       return false
-    }      
+    } 
   }
   
-  const uploadImage = function ({onError, onSuccess,file}) {
+  const uploadImage = async function ({onError, onSuccess,file}) {
     let formData = new FormData();
+    setLoading(true)
     formData.append("file", file)
     return checkDimension (file)
-      .then(() => uploadRepository(formData))
-      .then(response => onSuccess(response.data.data))
+      .then(() => {
+        return ImageRepo.upload({params : formData})
+      })
+      .then(response => {
+        onSuccess(response.data.data)
+      })
       .catch(error => {
+        props.onError(error)
         onError(error)
-        props.setError(props.image)
-        props.errorType('dimension')
+        setLoading(false)
+        setLoadingEdit(false)
       })
   }
 
@@ -124,6 +158,7 @@ const UploadImage = props => {
       listType="picture-card"
       showUploadList={false}
       beforeUpload={beforeUpload}
+      disabled={disable}
     >
       <div className="inside-upload">
       {props.imageUrl ? imageUpload : uploadButton}
@@ -141,6 +176,11 @@ UploadImage.propTypes = {
   disabled: propTypes.bool,
   imageUrl: propTypes.string,
   onChange: propTypes.func
+
+}
+
+UploadImage.defaultProps = {
+  onChange : () => {}
 }
 
 export default UploadImage

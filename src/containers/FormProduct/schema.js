@@ -4,25 +4,35 @@ import mapValues from "lodash/mapValues";
 
 const regexUrl = RegExp(/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/);
 export const schema = Yup.object().shape({
-  variants: Yup.lazy(obj =>
-    Yup.object(
-      mapValues(obj, () => {
-        return Yup.object().shape({
-          name: Yup.string().required("Variant mesti di isi"),
-          variantItems: Yup.array().required()
-        });
-      })
-    )
-  ),
-  variantItems: Yup.lazy(obj =>
-    Yup.object(
-      mapValues(obj, () => {
-        return Yup.object().shape({
-          name: Yup.string().required('variant items'),
-          image: Yup.object()
-        });
-      })
-    )
+  // variants: Yup.lazy(obj =>
+  //   Yup.object(
+  //     mapValues(obj, () => {
+  //       return Yup.object().shape({
+  //         name: Yup.string().required("Variant mesti di isi"),
+  //         variantItems: Yup.array().required()
+  //       });
+  //     })
+  //   )
+  // ),
+  // variantItems: Yup.lazy(obj =>
+  //   Yup.object(
+  //     mapValues(obj, () => {
+  //       return Yup.object().shape({
+  //         name: Yup.string().required('variant items'),
+  //         image: Yup.object()
+  //       });
+  //     })
+  //   )
+  // ),
+  variants: Yup.array().of(
+    Yup.object().shape({
+     name: Yup.string().required(),
+     variantItems: Yup.array().of(
+       Yup.object().shape({
+         name: Yup.string().required()
+       })
+     )
+    })
   ),
   supplier: Yup.string().required(strings.supplier_error).nullable(),
   productNameOriginal: Yup.string().required(strings.product_error),
@@ -32,7 +42,7 @@ export const schema = Yup.object().shape({
   domesticFee: Yup.string().required(strings.domestic_error),
   feeBySea: Yup.string().required(strings.shipment_sea_error),
   feeByAir: Yup.string().required(strings.shimpet_air_error),
-  listImages:Yup.array().required(strings.upload_image_error),
+  listImages:Yup.object().required(strings.upload_image_error).nullable(),
   width: Yup.string().required(),
   length: Yup.string().required(),
   height: Yup.string().required(),

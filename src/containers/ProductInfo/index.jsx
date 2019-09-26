@@ -26,7 +26,7 @@ export default function ProductInfo(props) {
             <Input
               name="productNameOriginal"
               value={props.values.productNameOriginal}
-              onChange={event => props.handleChangeValue(event.target.value,event.target.name)}
+              onChange={event => props.onChange( event.target.name ,event.target.value)}
               onBlur={props.handleBlur}
               size="large"
             />
@@ -51,7 +51,7 @@ export default function ProductInfo(props) {
           >
             <Input
               name="productName"
-              onChange={event => props.handleChangeValue(event.target.value,event.target.name)}
+              onChange={event => props.onChange( event.target.name ,event.target.value)}
               onBlur={props.handleBlur}
               value={props.values.productName}
               size="large"
@@ -73,7 +73,7 @@ export default function ProductInfo(props) {
             autosize={{ minRows: 6, maxRows: 6}}
             maxLength={2000}
             value={props.values.description}
-            onChange={ event => props.handleChangeValue(event.target.value,event.target.name) }
+            onChange={event => props.onChange( event.target.name ,event.target.value)}
           />
         </Col>
       </Row>
@@ -96,7 +96,11 @@ export default function ProductInfo(props) {
               expandTrigger="hover"
               name="category"
               placeholder="Choose Category"
-              onChange={(value)=> props.handleChangeCategory(value)}
+              onChange={value =>{
+                // const selectedValue = value[value.length -1]
+                props.onChange( 'category' ,value)
+              }}
+              value={props.values.category}
               showSearch={props.filter}
               size="large"
             />

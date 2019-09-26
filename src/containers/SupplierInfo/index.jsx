@@ -1,9 +1,10 @@
 import React from 'react'
-import {Row, Col, Spin, Card, Tag} from 'antd'
+import {Row, Col, Spin, Card, Tag, Form} from 'antd'
 import Select from '../../components/Select'
 import strings from '../../localization'
 
 export default function SupplierInfo(props) {
+
   return(
     <React.Fragment>
       <Card className="card" title={<div className="card-title">{strings.supplier_info}</div>}>
@@ -15,21 +16,27 @@ export default function SupplierInfo(props) {
             </Row>
           </Col>
           <Col md={props.grid.right} className="col-height">
-          <Select
-            showSearch
-            onChange={(value) => props.handleChangeValue(value, 'supplier')}
-            onSearch={(value) => props.getSuppliersByKeyword(value)}
-            name="supplier"
-            placeholder={strings.placeholder_supplier}
-            size="large"
-            onBlur={props.handleBlur}
-            notFoundContent={props.loading ? <Spin size="small" /> : null}
-            filterOption={false}
-            labelInvalue
-            options={props.supplierOptions}
-            type={ (props.errors.supplier && props.touched.supplier )  ? 'error' : 'default' }
-          />
-          { (props.errors.supplier && props.touched.supplier ) ? <div className="text-error-message">{props.errors.supplier }</div> : null  }
+          <Form.Item
+            validateStatus={ (props.errors.supplier && props.touched.supplier )  ? 'error' : 'success'}
+            help={ (props.errors.supplier && props.touched.supplier ) && props.errors.supplier}
+          >
+            <Select
+              showSearch
+              onChange={(value) => {
+                console.log("==",value)
+                props.onChange('supplier', value)
+              }}
+              onSearch={(value) => props.getSuppliersByKeyword(value)}
+              name="supplier"
+              placeholder={strings.placeholder_supplier}
+              size="large"
+              value={props.values.supplierName ? props.values.supplierName : props.values.supplier }
+              notFoundContent={props.loading ? <Spin size="small" /> : null}
+              filterOption={false}
+              labelInvalue
+              options={props.supplierOptions}
+            />
+          </Form.Item>
           </Col>
         </Row>
       </Card>

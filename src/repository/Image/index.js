@@ -6,10 +6,12 @@ async function upload(props) {
   let response = ''
   try {
     response = await apiPostWithToken(PATH_UPLOAD.UPLOAD,param);
+    return response
   } catch (error) {
     response = error
+    return response
   }
-  return response
+  // return response
 }
 
 const Image = {

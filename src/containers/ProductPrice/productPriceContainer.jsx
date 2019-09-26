@@ -21,7 +21,7 @@ export default function ProductPriceContainer (props) {
     let ceilPriceByAir = formatCurrency(Math.ceil(totalPriceByAir/1000) * 1000)
     setPriceBySea(`Rp ${ceilPriceBySea}`)
     setPriceByAir(`Rp ${ceilPriceByAir}`)
-  },[basePrice,domesticFee,administration,feeBySea,feeByAir,exchangeRate])
+  },[basePrice,domesticFee,administration,feeBySea,feeByAir])
 
   useEffect(() => {
     const getRate = async() => {
@@ -32,13 +32,37 @@ export default function ProductPriceContainer (props) {
           return rate.currencyFrom === 'CNY'
         })
         setExchangeRate(`Rp ${currencyFromChina.value}`)
-        props.setFieldValue('rate',currencyFromChina)
+        console.log(currencyFromChina)
+        // props.setFieldValue('rate',currencyFromChina.value)
+        props.onChange('rate',currencyFromChina.value)
       } catch (error) {
         console.log(error)
       }
     }
     getRate()
   },[])
+
+  useEffect(() => {
+    if(props.values.price){
+      const base = props.values.basePrice
+      const domestic =  props.values.domesticFee
+      const admin = props.values.administration
+      const air = props.values.feeByAir
+      const sea = props.values.feeBySea
+      const rate = props.values.rate
+      const convert = numberWithSeparator(base)
+      const convertDomestic = numberWithSeparator(domestic)
+      const convertAdmin = numberWithSeparator(admin)
+      const convertSea = numberWithSeparator(sea)
+      const convertAir = numberWithSeparator(air)
+      setFeeByAir(convertAir)
+      setExchangeRate(`Rp ${rate}`)
+      setFeeBySea(convertSea)
+      setBasePrice(convert)
+      setDomesticFee(convertDomestic)
+      setAdministration(convertAdmin)
+    }
+  },[props.values.price, props.values.shipment])
 
   const handleChange = (event,key,setState) => {
     const value = event.target.value;
@@ -68,8 +92,14 @@ export default function ProductPriceContainer (props) {
     props.setFieldValue(key,value)
   }
 
-  return props.children({
-    basePrice, setBasePrice , domesticFee , setDomesticFee , feeBySea ,setFeeBySea ,
-    feeByAir, setFeeByAir, administration, setAdministration , priceByAir, priceBySea, handleChange
-  })
+  return (
+    <React.Fragment>
+      {
+          props.children({
+          basePrice, setBasePrice , domesticFee , setDomesticFee , feeBySea ,setFeeBySea ,
+          feeByAir, setFeeByAir, administration, setAdministration , priceByAir, priceBySea, handleChange, exchangeRate
+          })
+      }
+    </React.Fragment>
+  )
 }

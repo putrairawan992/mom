@@ -3,25 +3,29 @@ import VariantItems from "./VariantItems";
 // import Variant from '../Variant';
 import { Card, Form, Input, Row, Col } from "antd";
 import Button from '../../components/Button';
-import {get} from 'lodash';
-import strings from '../../localization'
+import strings from '../../localization';
+import VariantHeader from "../VariantHeader";
+import VariantItemContainer from "./VariantItemContainer";
+import { getIn } from "formik" ;
+import { FieldArray } from 'formik';
 
-export default React.memo(function Variants({
-  initialValues,
+export default function Variants({
   isOpen,
-  openVariants,
-  addVariant,
-  addVariantItems,
-  removeVariant,
-  removeVariantItem,
-  values,
+  open,
+  add,
+  variants,
   errors,
-  setFieldValue
+  onChange,
+  onRemove,
+  touched,
+  name,
+  variantItems
 }) {
   return (
     <React.Fragment>
       <Card className="card" title={<div className="card-title">{strings.product_variant}</div>} >
-        {!isOpen ? (
+        {
+          !isOpen ? (
           <Row>
             <Col span={7}>
               <div className="card-sub-content">
@@ -29,10 +33,11 @@ export default React.memo(function Variants({
               </div>
             </Col>
             <Col span={15}>
-              <Button type="grey" onClick={openVariants}>{strings.add_variant_type}</Button>
+              <Button type="grey" onClick={() => open()}>{strings.add_variant_type}</Button>
             </Col>
           </Row> 
-        ) : (
+        ) :
+         (
           <React.Fragment>
             <Row>
             <div className="card-tittle-content"> 
@@ -50,57 +55,69 @@ export default React.memo(function Variants({
               </li>
             </ul><br/>
             </Row>
-            {initialValues.variants &&
-              Object.keys(initialValues.variants).map(variantId => {
-                const variantItems = get(initialValues, `variants.${variantId}.variantItems`);
-                const pathVariant = `variants.${variantId}`;
-                const pathVariantName = `${pathVariant}.name`;
-                return (
-                  <React.Fragment key={variantId}>
-                    <Card
-                      title={strings.variant_type}
-                      extra={
-                        // <Form.Item
-                        //   validateStatus={
-                        //     get(errors, pathVariantName) ? "error" : "success"
-                        //   }
-                        //   help={get(errors, pathVariantName)}
-                        // >
-                          <Input
-                            value={get(values, pathVariantName)}
-                            name={pathVariantName}
-                            onChange={e => setFieldValue(pathVariantName, e.target.value)}
+              <React.Fragment>
+                {
+                  variants.map((variant, index) => {
+                    const pathVariant = `${name}.${index}`
+                    const variantName = `${pathVariant}.name`;
+                    const variantNameValue = variant.name;
+                    const error = getIn(errors, variantName);
+                    const touch = getIn(touched, variantName)
+                    return (
+                      <div key={variant.id} >
+                        <Card
+                          title={
+                            <VariantHeader
+                              onChange={(value) =>{
+                                onChange(variantName, value)
+                              }}
+                              name={variantName}
+                              value={variantNameValue}
+                              error={error}
+                              touch={touch}
+                              onRemove={ () => {
+                                if(variants.length > 1){
+                                  onRemove(index)
+                                }else{
+                                  open()
+                                }
+                              }}
+                            />
+                          }
+                        >
+                          <FieldArray 
+                            name={`${pathVariant}.variantItems`}
+                            render={helperVariantItem => (
+                            <div>
+                              <VariantItemContainer
+                                variantItems={variant.variantItems} 
+                                onRemove={(index) => helperVariantItem.remove(index)}
+                                onChange={(name, value) => {onChange(name,value)}}
+                                errors={errors}
+                                touched={touched}
+                                pathVariant={`${pathVariant}.variantItems`}
+                              >
+                                {(props) =>  <VariantItems
+                                  onChange={(name, value) => onChange(name ,value) }
+                                {...props} />}
+                              </VariantItemContainer>
+                            <Button
+                              onClick={ () => helperVariantItem.push(variantItems()) }
+                            >Add Variant Item</Button>
+                          </div>
+                            )}
                           />
-                        // </Form.Item> 
-                      }
-                    >
-                      {variantItems.map(item => {
-                        return (
-                          <VariantItems
-                            key={item}
-                            item={item}
-                            errors={errors}
-                            values={values}
-                            onChange={(path, value) => setFieldValue(path, value)}
-                            onRemove={()=>removeVariantItem(variantId, item)}
-                          />
-                        );
-                      })}
-                      <br />
-                      <br />
-                      <Button onClick={() => addVariantItems(variantId)}>
-                        Add Variant Item
-                      </Button>
-                      <Button onClick={()=>removeVariant(variantId)}>Remove Variant</Button>
-                    </Card>
-                  </React.Fragment>
-                );
-              })}
+                        </Card>
+                      </div>
+                    )
+                  })
+                }
+              </React.Fragment>
             <br/>
-            <Button type="grey" onClick={addVariant} style={{float: "right"}}>{strings.add_variant_type}</Button>
+            <Button type="grey" onClick={add} style={{float: "right"}}>{strings.add_variant_type}</Button>
           </React.Fragment>
         )}
       </Card>
     </React.Fragment>
   );
-})
+}

@@ -1,12 +1,11 @@
-import React from 'react'
-import UploadImage from '../UploadImage'
+import React from 'react';
+import UploadImage from '../UploadImage';
 // import propTypes from 'prop-types'
 import {Card, Row, Col, Tag, Form} from 'antd';
 import {FieldArray} from 'formik';
-import strings from '../../localization'
+import strings from '../../localization';
 
 const UploadImages = (props) => {
-
   return (
     <React.Fragment>
       <Card className="card" title={<div className="card-title">{strings.product_images}</div>} >
@@ -31,26 +30,23 @@ const UploadImages = (props) => {
                 name="listImages"
                 render={arrayHelpers => (
                   Object.keys(props.arrImage).map(image => {
+                    // const img = props.values.listImages[image]
                     return (
                       <UploadImage
                         successUpload={props.successUpload}
-                        loadingUpload={props.loadingUpload}
-                        setError={props.setError}
-                        errorType={props.errorType}
                         key={image}
                         image={image}
-                        remove={props.remove}
+                        remove={() => props.remove(image)}
                         imageUrl={props.imageUrl[image]}
-                        loadingEdit={props.loadingEdit[image]}
+                        // imageUrl={img ? img.mediumUrl : ""}
+                        // imageUrl={props.values.listImages[image].mediumUrl}
+                        // loadingEdit={props.loadingEdit[image]}
+                        // 
                         className="upload"
-                        editImage={props.editImage}
-                        loading={props.loading[image]}
-                        disabled={props.disable[image]}
+                        editImage={() => props.editImage(image)}
+                        onError={props.handleError}
                         changeDefault={props.changeDefault}
-                        beforeUpload={props.beforeUpload}
                         type={props.arrImage[image].isDefault ? "default" : "non-default" }
-                        // onChange={(info) => props.handleChange(info,image,arrayHelpers)}
-                        // customRequest={({onError, onSuccess,file}) => props.uploadImage({onError, onSuccess,file},image)}
                       />
                     )
                   })
