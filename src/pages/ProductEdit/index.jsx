@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import FormProduct from "../../containers/FormProduct";
-import {apiPutWithToken} from '../../services/api';
-import {PATH_PRODUCT} from '../../services/path/product';
 import {useRootContext} from "../../hoc/RootContext";
+import Product from "../../repository/Product"
 
 const ProductEdit = (props)=> {
     const { history} = useRootContext();
@@ -13,12 +12,11 @@ const ProductEdit = (props)=> {
     },[props.match.params.id])
 
     const editProduct = async function (payload) {
-        try {
-            const response = await apiPutWithToken(PATH_PRODUCT.CREATE, payload)
+        const request = await Product.edit({params : payload})
+        if(request.status === 200) {
             history.push('/product')
-            console.log({success : response})
-        } catch (error) {
-            console.log(error)
+        }else{
+            return request
         }
     }
 

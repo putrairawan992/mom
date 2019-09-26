@@ -13,11 +13,6 @@ export default function VariantsContainer({
   open,
   openVariant
 }) {
-  const [isOpen, setIsOpen] = useState(false);
-
-  // const open = function() {
-  //   setIsOpen(!isOpen);
-  // };
   
   const variantItems = function() {
     return {

@@ -86,10 +86,6 @@ const UploadImage = props => {
     })
   }
 
-  const uploadRepository = async function (formData) {
-    return ImageRepo.upload({params: formData})
-  }
-
   const handleChange = function (info) {
     if(info.file.status === 'uploading'){
       setLoading(true)
@@ -101,7 +97,7 @@ const UploadImage = props => {
       setLoading(false)
       setLoadingEdit(false)
       getBase64(info.file.originFileObj, image => {
-        setImageUrl(image)
+
         let responseImage = info.file.response
         props.onChange(responseImage)
         props.successUpload(responseImage, props.image)

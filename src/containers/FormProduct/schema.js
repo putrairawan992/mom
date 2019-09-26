@@ -1,48 +1,28 @@
 import * as Yup from 'yup';
 import strings from '../../localization';
-import mapValues from "lodash/mapValues";
 
 const regexUrl = RegExp(/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/);
 export const schema = Yup.object().shape({
-  // variants: Yup.lazy(obj =>
-  //   Yup.object(
-  //     mapValues(obj, () => {
-  //       return Yup.object().shape({
-  //         name: Yup.string().required("Variant mesti di isi"),
-  //         variantItems: Yup.array().required()
-  //       });
-  //     })
-  //   )
-  // ),
-  // variantItems: Yup.lazy(obj =>
-  //   Yup.object(
-  //     mapValues(obj, () => {
-  //       return Yup.object().shape({
-  //         name: Yup.string().required('variant items'),
-  //         image: Yup.object()
-  //       });
-  //     })
-  //   )
-  // ),
   variants: Yup.array().of(
     Yup.object().shape({
      name: Yup.string().required(),
      variantItems: Yup.array().of(
        Yup.object().shape({
-         name: Yup.string().required()
+         name: Yup.string().required(),
+         image: Yup.object()
        })
      )
     })
   ),
-  supplier: Yup.string().required(strings.supplier_error).nullable(),
+  supplier: Yup.string().required(strings.supplier_error),
   productNameOriginal: Yup.string().required(strings.product_error),
   productName:  Yup.string().required(strings.product_error),
   category: Yup.string().required(strings.category_error),
-  basePrice: Yup.string().required(strings.base_price_error).nullable(),
+  basePrice: Yup.string().required(strings.base_price_error),
   domesticFee: Yup.string().required(strings.domestic_error),
   feeBySea: Yup.string().required(strings.shipment_sea_error),
   feeByAir: Yup.string().required(strings.shimpet_air_error),
-  listImages:Yup.object().required(strings.upload_image_error).nullable(),
+  listImages:Yup.object().required(strings.upload_image_error),
   width: Yup.string().required(),
   length: Yup.string().required(),
   height: Yup.string().required(),

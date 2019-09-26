@@ -1,5 +1,7 @@
 import { PATH_PRODUCT } from "../../services/path/product";
-import { apiGetWithoutToken, apiDeleteWithToken } from "../../services/api";
+import { apiGetWithoutToken, apiDeleteWithToken, apiPostWithToken, apiPutWithToken } from "../../services/api";
+import jmespath from "jmespath";
+import request from './request/product';
 
 async function get(props) {
     const loading = props.loading ? props.loading : function () { };
@@ -53,10 +55,50 @@ async function Delete(props) {
     }
 }
 
+async function Add(props) {
+    const params = props.params
+    let response = ""
+    let payloadArray = Object.keys(params.listImages).map(key => {
+        return params.listImages[key]
+      })
+      const filterPayload = payloadArray.filter(pay => {
+        return pay.largeUrl
+    })
+    const tempValues = {...params, listImages : filterPayload}
+    const mapper = jmespath.search(tempValues, request);
+    try {
+        response = await apiPostWithToken(PATH_PRODUCT.CREATE, mapper);
+        return response;
+    }catch (error) {
+        return error
+    }
+}
+
+async function Edit(props) {
+    const params = props.params
+    let response = ""
+    let payloadArray = Object.keys(params.listImages).map(key => {
+        return params.listImages[key]
+      })
+      const filterPayload = payloadArray.filter(pay => {
+        return pay.largeUrl
+    })
+    const tempValues = {...params, listImages : filterPayload}
+    const mapper = jmespath.search(tempValues, request);
+    try {
+        response = await apiPutWithToken(PATH_PRODUCT.CREATE, mapper)
+        return response
+    } catch (error) {
+        return error
+    }
+}
+
 const Product =  {
     get: get,
     getAll: GetAll,
-    delete: Delete
+    delete: Delete,
+    add : Add,
+    edit : Edit
 }
 
 export default Product;

@@ -54,6 +54,7 @@ export default function FormProduct(props) {
     quantity: "",
     videoUrl: "",
     isFragile: false,
+    isActive : true,
     variants: [
       {
         name : "",
@@ -101,6 +102,7 @@ export default function FormProduct(props) {
   const getProductById = async function (id) {
     try {
       const response = await apiGetWithoutToken(PATH_PRODUCT.GET_BY_ID + id,)
+      console.log({response})
       setData(response.data.data)
     } catch (error) { 
       setInitialValues(initialValues)
@@ -208,67 +210,9 @@ export default function FormProduct(props) {
     })
   }
 
-  async function handleSubmit(values, resetForm) {
-    const payload = mapper(values)
-    props.actionSave(payload, resetForm )
+  async function handleSubmit(values) {
+    props.actionSave(values)
   };
-
-  function mapper (values){
-    let payloadArray = Object.keys(values.listImages).map(key => {
-      return values.listImages[key]
-    })
-    const filterPayload = payloadArray.filter(pay => {
-      return pay.largeUrl
-    })
-    let dimension = {}
-    dimension.width = values.width
-    dimension.length = values.length
-    dimension.height = values.height
-  let measurement = {}
-    measurement.weight = values.actualWeight
-    measurement.dimension = dimension
-  let category = {}
-    const idCategory = values.category[values.category.length -1]
-    category.id = idCategory
-  let information = {}
-    information.name = values.productName
-    information.nameChinese = values.productNameOriginal
-    information.description = values.description
-    information.category = category
-    information.measurement = measurement
-    information.maxOrder = values.quantity
-    information.isFragile = values.isFragile
-  let basePrice = {}
-    basePrice.cny = values.basePrice
-  let shipmentFee = {}
-    shipmentFee.air = values.feeByAir
-    shipmentFee.sea = values.feeBySea
-  let fee = {}
-    if(values.administration === ""){
-      fee.administration = 0
-    }else{
-      fee.administration = values.administration
-    }
-    fee.domestic = values.domesticFee
-    fee.shipmentFee = shipmentFee
-  let price = {}
-    price.rate = values.rate
-    price.fee = fee
-    price.basePrice = basePrice
-  let supplier = {}
-    supplier.id = values.supplier
-  let allDataProduct = {}
-    allDataProduct.information = information
-    allDataProduct.supplier = supplier
-    allDataProduct.price = price
-    allDataProduct.isReadyStock = values.readyStock
-    allDataProduct.isActive = true
-    allDataProduct.images = filterPayload
-    allDataProduct.variants = values.variants
-    allDataProduct.videoUrl = values.videoUrl;
-    allDataProduct.id = values.id
-    return allDataProduct
-  }
 
   return (
     <div className="containerProduct">
@@ -276,8 +220,8 @@ export default function FormProduct(props) {
       <Formik
         initialValues={initialValues}
         enableReinitialize
-        onSubmit={(values, {resetForm}) => {
-          handleSubmit(values, resetForm);
+        onSubmit={(values) => {
+          handleSubmit(values);
         }}
         validationSchema={schema}
       >
