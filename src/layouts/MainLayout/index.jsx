@@ -1,10 +1,9 @@
-import React, {useEffect} from "react";
+import React from "react";
 import { Layout, Menu, Icon } from "antd";
 import Header from "../../components/Header";
 import MenuProfile from "../../components/MenuProfile";
 import PATH_URL from "../../routers/path";
 import { useRootContext } from "../../hoc/RootContext";
-import GlobalStateProduct from "../../context/GlobalStateProduct";
 const {SubMenu} = Menu;
 const { Content, Sider } = Layout;
 
@@ -59,7 +58,7 @@ export default function MainLayout(props) {
                 <Menu.Item key="2" onClick={()=>history.push(PATH_URL.PRODUCT)}>List Product</Menu.Item>
                 <Menu.Item key="3" onClick={()=>history.push(PATH_URL.PRODUCT_CREATE)}>Add Product</Menu.Item>
                 <Menu.Item key="4" onClick={()=>history.push(PATH_URL.PRODUCT_EDIT)}>Categories</Menu.Item>
-                <Menu.Item key="8" onClick={()=>history.push(PATH_URL.PRODUCT_QUESTIONS)}>Product Questions</Menu.Item>
+                <Menu.Item key="8" onClick={()=>history.push(PATH_URL.QUESTION_ANSWER)}>Product Questions</Menu.Item>
               </SubMenu>
               <SubMenu
                 key="order"

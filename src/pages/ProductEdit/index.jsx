@@ -15,7 +15,6 @@ const ProductEdit = (props)=> {
     const editProduct = async function (payload, resetForm) {
         try {
             const response = await apiPutWithToken(PATH_PRODUCT.CREATE, payload)
-            resetForm({})
             history.push('/product')
             console.log({success : response})
         } catch (error) {

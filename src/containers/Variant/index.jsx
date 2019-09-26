@@ -238,10 +238,10 @@ const Variant = (props) => {
                       size="large"
                       status={checkError(props.index, i) ? "error" : "default" }        
                     />
-                    <ErrorMessage
+                    {/* <ErrorMessage
                       name={`variants.${props.index}.variantItems.${i}.name`}
                       render={message => <div className="text-error-message">{message}</div>}
-                    />
+                    /> */}
                   </Col>
                   <Col className="variant" md={4}>
                     <ButtonTextIcon label="" onClick={() => {

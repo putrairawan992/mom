@@ -5,6 +5,7 @@ import Input from '../../components/Input';
 import UploadImage from '../../components/UploadImage';
 import ButtonTextIcon from '../../components/ButtonTextIcon';
 import strings from '../../localization';
+import { getIn } from "formik" ;
 
 export default function VariantItems({
   item, 
@@ -12,7 +13,8 @@ export default function VariantItems({
   onChange, 
   onRemove,
   variantItems,
-  pathVariant
+  pathVariant,
+  touched
 }) {
   const [error, setErrors] = useState({})
   const successUpload = function (responseImage, key) {
@@ -40,7 +42,10 @@ export default function VariantItems({
         variantItems.map((variantItem, index) => {
           const name = `${pathVariant}.${index}.name`;
           const image = `${pathVariant}.${index}.image`;
+          const error = getIn(errors, name)
+          const touch = getIn(touched, name)
           const variantItemValue = variantItem.name;
+          console.log({touch})
           const variantImage = variantItem.image.mediumUrl
           return (
             <Row key={index} type="flex" align="middle">
@@ -61,21 +66,16 @@ export default function VariantItems({
               </Col>
               <Col span={16}>
                 <div>
-                  <Form.Item
-                    validateStatus={get(errors, name) ? "error" : "success"}
-                    help={get(errors, name)}
+                  <Form.Item                  
+                    validateStatus={ (error && touch) && "error" }
+                    help={ (error && touch) && error }
                   >
                     <Input
                       value={variantItemValue}
                       name={name}
                       onChange={e => onChange(name, e.target.value)}
-                    />
-                    
+                    />   
                   </Form.Item>
-                    {
-                      error ?
-                      (<div className="text-error-message">{error.description}</div>) : null
-                    }
                 </div>
               </Col>
               <Col span={4} className="variant" style={{padding : "5px"}}  >

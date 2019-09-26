@@ -5,11 +5,12 @@ import MainLayout from "../layouts/MainLayout";
 import ProductList from "../pages/ProductList";
 import ProductCreate from "../pages/ProductCreate";
 import ProductEdit from "../pages/ProductEdit";
-import OrderChina from "../pages/OrderChina";
 import CustomerList from "../pages/CustomerList";
 import Dashboard from "../pages/Dashboard";
 import Order from "../pages/Order";
 import FormProduct from "../containers/NewFormProduct";
+import QuestionAnswer from "../pages/QuestionAnswer";
+import QuestionAnswerDetail from "../pages/QuestionAnswerDetail";
 
 const routes = [
   {
@@ -35,6 +36,19 @@ const routes = [
     component: ProductEdit,
     layout: MainLayout,
     needAuthenticated: true
+  },
+  {
+    path: PATH_URL.QUESTION_ANSWER,
+    component: QuestionAnswer,
+    layout: MainLayout,
+    needAuthenticated: true
+  },
+  {
+    path: PATH_URL.QUESTION_ANSWER_DETAIL,
+    component : QuestionAnswerDetail,
+    layout: MainLayout,
+    needAuthenticated: true
+
   },
   {
     path: PATH_URL.ORDER,

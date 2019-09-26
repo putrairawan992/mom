@@ -211,7 +211,7 @@ export default function FormProduct(props) {
   }
 
   async function handleSubmit(values, resetForm) {
-    // console.log({values})
+    console.log({values})
     const payload = mapper(values)
     props.actionSave(payload, resetForm )
   };
@@ -294,6 +294,9 @@ export default function FormProduct(props) {
           setFieldValue,
         }) => (
           <Form onSubmit={handleSubmit}>
+          {
+            console.log({errors})
+          }
             <Form.Item>
               <SupplierContainer
                 values={values}

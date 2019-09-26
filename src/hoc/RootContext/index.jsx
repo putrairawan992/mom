@@ -1,4 +1,4 @@
-import React, { useState, useReducer, useContext, useRef, useEffect } from "react";
+import React, { useState, useReducer, useContext} from "react";
 import { apiPostWithoutToken } from "../../services/api";
 import { PATH_AUTHENTICATION } from "../../services/path/login";
 import { withRouter } from "react-router-dom";
