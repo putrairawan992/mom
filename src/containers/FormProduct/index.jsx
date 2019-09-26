@@ -101,11 +101,9 @@ export default function FormProduct(props) {
   const getProductById = async function (id) {
     try {
       const response = await apiGetWithoutToken(PATH_PRODUCT.GET_BY_ID + id,)
-      // console.log("ini get product", response.data.data)
       setData(response.data.data)
     } catch (error) { 
       setInitialValues(initialValues)
-      // console.log("error",error)
     }
   }
 
@@ -211,7 +209,6 @@ export default function FormProduct(props) {
   }
 
   async function handleSubmit(values, resetForm) {
-    console.log({values})
     const payload = mapper(values)
     props.actionSave(payload, resetForm )
   };
@@ -294,9 +291,6 @@ export default function FormProduct(props) {
           setFieldValue,
         }) => (
           <Form onSubmit={handleSubmit}>
-          {
-            console.log({errors})
-          }
             <Form.Item>
               <SupplierContainer
                 values={values}

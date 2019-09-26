@@ -32,7 +32,6 @@ export default function ProductPriceContainer (props) {
           return rate.currencyFrom === 'CNY'
         })
         setExchangeRate(`Rp ${currencyFromChina.value}`)
-        console.log(currencyFromChina)
         // props.setFieldValue('rate',currencyFromChina.value)
         props.onChange('rate',currencyFromChina.value)
       } catch (error) {

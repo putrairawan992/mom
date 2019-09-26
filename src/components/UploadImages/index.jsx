@@ -30,7 +30,6 @@ const UploadImages = (props) => {
                 name="listImages"
                 render={arrayHelpers => (
                   Object.keys(props.arrImage).map(image => {
-                    // const img = props.values.listImages[image]
                     return (
                       <UploadImage
                         successUpload={props.successUpload}
@@ -38,10 +37,6 @@ const UploadImages = (props) => {
                         image={image}
                         remove={() => props.remove(image)}
                         imageUrl={props.imageUrl[image]}
-                        // imageUrl={img ? img.mediumUrl : ""}
-                        // imageUrl={props.values.listImages[image].mediumUrl}
-                        // loadingEdit={props.loadingEdit[image]}
-                        // 
                         className="upload"
                         editImage={() => props.editImage(image)}
                         onError={props.handleError}

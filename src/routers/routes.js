@@ -8,7 +8,6 @@ import ProductEdit from "../pages/ProductEdit";
 import CustomerList from "../pages/CustomerList";
 import Dashboard from "../pages/Dashboard";
 import Order from "../pages/Order";
-import FormProduct from "../containers/NewFormProduct";
 import QuestionAnswer from "../pages/QuestionAnswer";
 import QuestionAnswerDetail from "../pages/QuestionAnswerDetail";
 
@@ -80,12 +79,6 @@ const routes = [
     layout: MainLayout,
     needAuthenticated: true
   },
-  {
-    path: "/development",
-    component: FormProduct,
-    layout: MainLayout,
-    needAuthenticated: false
-  }
 ];
 
 export default routes;

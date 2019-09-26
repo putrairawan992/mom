@@ -10,9 +10,9 @@ const ProductEdit = (props)=> {
     useEffect(() => {
         const idProduct = props.match.params.id
         setId(idProduct)
-    },[])
+    },[props.match.params.id])
 
-    const editProduct = async function (payload, resetForm) {
+    const editProduct = async function (payload) {
         try {
             const response = await apiPutWithToken(PATH_PRODUCT.CREATE, payload)
             history.push('/product')

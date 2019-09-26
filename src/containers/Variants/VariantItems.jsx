@@ -1,14 +1,11 @@
 import React, { useState } from "react";
 import { Form, Row, Col } from "antd";
-import {get} from 'lodash';
 import Input from '../../components/Input';
 import UploadImage from '../../components/UploadImage';
 import ButtonTextIcon from '../../components/ButtonTextIcon';
-import strings from '../../localization';
 import { getIn } from "formik" ;
 
 export default function VariantItems({
-  item, 
   errors,  
   onChange, 
   onRemove,
@@ -38,14 +35,12 @@ export default function VariantItems({
   return (
     <React.Fragment>
       {
-        
         variantItems.map((variantItem, index) => {
           const name = `${pathVariant}.${index}.name`;
           const image = `${pathVariant}.${index}.image`;
           const error = getIn(errors, name)
           const touch = getIn(touched, name)
           const variantItemValue = variantItem.name;
-          console.log({touch})
           const variantImage = variantItem.image.mediumUrl
           return (
             <Row key={index} type="flex" align="middle">
