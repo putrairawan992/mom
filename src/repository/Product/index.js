@@ -60,11 +60,8 @@ async function Add(props) {
     let response = ""
     let payloadArray = Object.keys(params.listImages).map(key => {
         return params.listImages[key]
-      })
-      const filterPayload = payloadArray.filter(pay => {
-        return pay.largeUrl
     })
-    const tempValues = {...params, listImages : filterPayload}
+    const tempValues = {...params, listImages : payloadArray}
     const mapper = jmespath.search(tempValues, request);
     try {
         response = await apiPostWithToken(PATH_PRODUCT.CREATE, mapper);
@@ -79,11 +76,8 @@ async function Edit(props) {
     let response = ""
     let payloadArray = Object.keys(params.listImages).map(key => {
         return params.listImages[key]
-      })
-      const filterPayload = payloadArray.filter(pay => {
-        return pay.largeUrl
     })
-    const tempValues = {...params, listImages : filterPayload}
+    const tempValues = {...params, listImages : payloadArray}
     const mapper = jmespath.search(tempValues, request);
     try {
         response = await apiPutWithToken(PATH_PRODUCT.CREATE, mapper)

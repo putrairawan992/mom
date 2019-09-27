@@ -52,13 +52,10 @@ export default function ImagesContainer (props) {
         obj.mediumUrl = ''
         obj.smallUrl = ''
         obj.isDefault = false
-        obj.count = 0
         const key = 'image' + i
         tempObj[key] = obj
       }
       setArrImage(tempObj)
-      // props.onChange('listImages', tempObj)
-      // console.log("=====>",props.values)
     }
     initImage()
   },[])

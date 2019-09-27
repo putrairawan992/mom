@@ -37,7 +37,12 @@ const product = `
   },
   isReadyStock : readyStock,
   isActive : isActive,
-  images : listImages,
+  images : listImages[?largeUrl != ''].{
+    largeUrl : largeUrl,
+    mediumUrl : mediumUrl,
+    smallUrl : smallUrl,
+    isDefault : isDefault
+  }
   variants : variants,
   videoUrl : videoUrl,
   id : id
