@@ -1,63 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Cascader from '../../components/Cascader';
-import {Card, Row, Col, Tag} from 'antd';
+import {Card, Row, Col, Tag, Form} from 'antd';
 import Input from '../../components/Input';
 import TextArea from '../../components/TextArea';
 import strings from '../../localization';
-import Category from '../../repository/Category';
 import _ from 'lodash';
 
 export default function ProductInfo(props) {
-  const [allCategory,setAllCategory] = useState([])
-
-  useEffect(() => {
-    getAllCategory();
-  },[])
-
-  function convertCategoryToSchemaInput(response) {
-    let allCategory = response;
-    allCategory.forEach((respSub) => {
-      if(respSub.categorySubResponses){
-        respSub.children = respSub.categorySubResponses
-        respSub.categorySubResponses.forEach((resp) => {
-          resp.children = resp.categorySubChildResponses
-        })
-      }
-    })
-    return allCategory;
-  }
-  
-  const filter = (inputValue, path) => {
-    return path.some(option => option.name.toLowerCase().indexOf(inputValue.toLowerCase()) > -1);
-  }
-
-  async function getAllCategory() {
-    const allCategoryResp = await Category.getAll();
-
-    if(allCategoryResp.status === 200) {
-      const allCategory = convertCategoryToSchemaInput(allCategoryResp.data.data);
-      setAllCategory(allCategory);
-    } else {
-      setAllCategory([]);
-    }
-  }
-
-
-  function handleChangeCategory(value) {
-    console.log(value);
-    let category = [];
-    const changeValue = value.map((val) => {
-      return [...category, val]
-    })
-    console.log(category);
-
-
-    // props.setFieldValue('category', value);
-  }
-
-  function handleChange(key, value) {
-    props.setFieldValue(key, value)
-  }
 
   return(
     <Card className="card" title={<div className="card-title">{strings.product_information}</div>}>
@@ -70,22 +19,18 @@ export default function ProductInfo(props) {
           <div className="card-sub-content">{strings.product_cny_quote}</div>
         </Col>
         <Col md={props.grid.right} className="col-height">
-          <Input
-            name="productNameOriginal"
-            value={props.values.productNameOriginal}
-            onChange={event => handleChange('productNameOriginal', event.target.value)}
-            onBlur={props.handleBlur}
-            size="large"
-            status={
-              props.errors.productNameOriginal && props.touched.productNameOriginal ?
-              "error" : "default"
-            }
-          />
-          {
-            props.errors.productNameOriginal && props.touched.productNameOriginal ? 
-            (<div className="text-error-message">{props.errors.productNameOriginal }</div>) :
-            null
-          }
+          <Form.Item
+            validateStatus={ props.errors.productNameOriginal && props.touched.productNameOriginal ? "error" : "success"}
+            help={ props.errors.productNameOriginal && props.touched.productNameOriginal ?  props.errors.productNameOriginal : null }
+          >
+            <Input
+              name="productNameOriginal"
+              value={props.values.productNameOriginal}
+              onChange={event => props.onChange( event.target.name ,event.target.value)}
+              onBlur={props.handleBlur}
+              size="large"
+            />
+          </Form.Item>
         </Col>
       </Row>
       <br/>
@@ -100,22 +45,18 @@ export default function ProductInfo(props) {
           </div>
         </Col>
         <Col md={props.grid.right} className="col-height">
-          <Input
-            name="productName"
-            onChange={event => handleChange('productName', event.target.value)}
-            onBlur={props.handleBlur}
-            value={props.values.productName}
-            size="large"
-            status={
-              props.errors.productName && props.touched.productName ? 
-              "error" : "default"
-            }
-          />
-           {
-            props.errors.productName && props.touched.productName ? 
-            (<div className="text-error-message">{props.errors.productName }</div>) :
-            null
-          }
+          <Form.Item
+            validateStatus={ props.errors.productName && props.touched.productName ? "error" : "success" }
+            help={ props.errors.productName && props.touched.productName ? props.errors.productName : null }
+          >
+            <Input
+              name="productName"
+              onChange={event => props.onChange( event.target.name ,event.target.value)}
+              onBlur={props.handleBlur}
+              value={props.values.productName}
+              size="large"
+            />
+          </Form.Item>
         </Col>
       </Row>
       <br/>
@@ -132,7 +73,7 @@ export default function ProductInfo(props) {
             autosize={{ minRows: 6, maxRows: 6}}
             maxLength={2000}
             value={props.values.description}
-            onChange={ event => handleChange('description', event.target.value) }
+            onChange={event => props.onChange( event.target.name ,event.target.value)}
           />
         </Col>
       </Row>
@@ -145,29 +86,27 @@ export default function ProductInfo(props) {
           </Row>
         </Col>
         <Col md={props.grid.right} className="col-height">
-          <Cascader
-            options={allCategory}
-            fieldNames={{label: 'name', value :'id'}}
-            expandTrigger="hover"
-            name="category"
-            placeholder="Choose Category"
-            onChange={(value,selected)=>handleChangeCategory(value)}
-            showSearch={{filter}}
-            size="large"
-            type={
-              props.errors.category && props.touched.category?
-              "error" : "default"
-            }
-          />
-          {
-            props.errors.category && props.touched.category? 
-            (<div className="text-error-message">{props.errors.category }</div>) :
-            null
-          }
+          <Form.Item
+            validateStatus={ props.errors.category && props.touched.category? "error" : "success" }
+            help={ props.errors.category && props.touched.category ? props.errors.category : null  }
+          >
+            <Cascader
+              options={props.allCategory}
+              fieldNames={{label: 'name', value :'id'}}
+              expandTrigger="hover"
+              name="category"
+              placeholder="Choose Category"
+              onChange={value =>{
+                // const selectedValue = value[value.length -1]
+                props.onChange( 'category' ,value)
+              }}
+              value={props.values.category}
+              showSearch={props.filter}
+              size="large"
+            />
+          </Form.Item>
         </Col>
       </Row>
     </Card>
-   
   )
-
 }

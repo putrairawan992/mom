@@ -78,7 +78,7 @@ const routes = [
     component: Dashboard,
     layout: MainLayout,
     needAuthenticated: true
-  }
+  },
 ];
 
 export default routes;

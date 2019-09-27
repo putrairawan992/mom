@@ -10,6 +10,7 @@ import "./style.sass";
 import ModalConfirm from "../../containers/ModalConfirm";
 import ButtonIcon from "../../components/ButtonIcon";
 import Product from "../../repository/Product";
+import {useRootContext} from "../../hoc/RootContext";
 
 const { Option } = Select;
 const { Search } = Input;
@@ -18,6 +19,7 @@ const filterProductOption = filterOption.product;
 
 export default function ProductList() {
   const context = useContext(ProductContext);
+  const { history} = useRootContext();
   const [loading, setLoading] = useState(false);
   const [loadingDelete, setLoadingDelete] = useState(false);
   const [productList, setProductList] = useState([]);
@@ -122,13 +124,17 @@ export default function ProductList() {
       render: (text, product) => (
         <span className="mp-table-product-action">
           <div className="mp-icon-container">
-            <ButtonIcon icon="edit" onClick={() => alert('refactor')}/>
+            <ButtonIcon icon="edit" onClick={() => toEdit(product.id)}/>
             <ButtonIcon icon="delete" onClick={() => actionDelete(product)}/>
           </div>
         </span>
       )
     }
   ];
+
+  const toEdit = function (id) {
+    history.push(`/product/edit/${id}`)
+  }
 
   function actionDelete(product) {
     setSelectedProduct(product);

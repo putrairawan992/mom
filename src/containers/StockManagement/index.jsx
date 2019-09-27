@@ -40,7 +40,7 @@ const StockManagement = (props) => {
             value={props.values.quantity}
           />
           {
-            ( typeof props.errors.quantity === 'string' && props.touched.quantity) ? 
+            (typeof props.errors.quantity === 'string' && props.touched.quantity) ? 
              <div className="text-error-message">{props.errors.quantity}</div> : null
           }
         </Col>
@@ -53,7 +53,7 @@ const StockManagement = (props) => {
         </Col>
         <Col>
           <Switch
-            defaultChecked={readyStock}
+            defaultChecked={props.values.readyStock}
             onChange={handleChange}
           />
         </Col>

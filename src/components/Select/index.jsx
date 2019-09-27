@@ -15,9 +15,9 @@ export default function Select(props) {
   })
   return (
     <SelectAnt className={cssClasses} {...props}>
-      {props.options.map((option, index) => {
+      {props.options.map((option) => {
         return (
-          <Option className={cssClasses} key={index} value={option.id}>
+          <Option className={cssClasses} key={option.id}  value={option.id} title={option.name}  >
             {option.name}
           </Option>
         );
