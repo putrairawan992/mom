@@ -1,32 +1,63 @@
-import {useState, useEffect} from 'react';
+import React ,{useState, useEffect} from 'react';
+import Measurement from "../../containers/Measurement";
 
-export default function MeasurementContainer (props) {
-  const [actualWeight, setActualWeight] = useState("")
-  const [width, setWidth] = useState("1")
-  const [length, setLength] = useState("1")
-  const [height, setHeight] = useState("1")
-  const [volumetric, setVolumetric] = useState("")
-  const [isFragile, setIsFragile] = useState(false);
+export default function MeasurementContainer ({
+  values,
+  handleBlur,
+  touched,
+  errors,
+  onChange
+}){
+  const [allMeasurement, setAllMeasurement] = useState({
+    actualWeight : '',
+    width : '1',
+    length: '1',
+    height : '1',
+    volumetric: '',
+    isFragile : false
+  })
 
   useEffect(() => {
+    const {width, length, height} = allMeasurement
     let volume = Number(width) * Number(length) * Number(height)
     let volumetricWeight = volume/6000
     let roundVolumetricWeight = Math.round(volumetricWeight * 100) / 100
     if(volume === 1){
-      setVolumetric("0")
+      setAllMeasurement({
+        ...allMeasurement , volumetric : '0'
+      })
     }else{
-      setVolumetric(`${roundVolumetricWeight}`)
+      setAllMeasurement({
+        ...allMeasurement , volumetric : `${roundVolumetricWeight}`
+      })
     }
-  },[actualWeight,width,length,volumetric,height])
+  },[allMeasurement.actualWeight,allMeasurement.width, allMeasurement.length, allMeasurement.volumetric,allMeasurement.height])
 
   useEffect(() => {
-      const volume = props.values.volumeWeight
+      const volume = values.volumeWeight
       let roundVolumetricWeight = Math.round(volume * 100) / 100
-      setVolumetric(roundVolumetricWeight)
+      setAllMeasurement({
+        ...allMeasurement , volumetric : `${roundVolumetricWeight}`
+      })
 
-  },[props.values.volumeWeight])
-  return props.children({
-    actualWeight, setActualWeight, width, setWidth, length, setLength,
-    height, setHeight, volumetric, setVolumetric, isFragile
-  })
+  },[values.volumeWeight])
+
+  const handleChange = function (key, value) {
+    onChange(key,value)
+    setAllMeasurement({
+      ...allMeasurement , [key] : value
+    })
+  }
+
+  return (
+    <Measurement 
+      values={values}
+      handleBlur={handleBlur}
+      touched={touched}
+      errors={errors}
+      onChange={onChange}
+      allMeasurement={allMeasurement}
+      handleChange={handleChange}
+    />
+  )
 }

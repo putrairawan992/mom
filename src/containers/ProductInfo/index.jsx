@@ -4,7 +4,6 @@ import {Card, Row, Col, Tag, Form} from 'antd';
 import Input from '../../components/Input';
 import TextArea from '../../components/TextArea';
 import strings from '../../localization';
-import _ from 'lodash';
 
 export default function ProductInfo(props) {
 
@@ -27,7 +26,6 @@ export default function ProductInfo(props) {
               name="productNameOriginal"
               value={props.values.productNameOriginal}
               onChange={event => props.onChange( event.target.name ,event.target.value)}
-              onBlur={props.handleBlur}
               size="large"
             />
           </Form.Item>
@@ -52,7 +50,6 @@ export default function ProductInfo(props) {
             <Input
               name="productName"
               onChange={event => props.onChange( event.target.name ,event.target.value)}
-              onBlur={props.handleBlur}
               value={props.values.productName}
               size="large"
             />
@@ -97,7 +94,6 @@ export default function ProductInfo(props) {
               name="category"
               placeholder="Choose Category"
               onChange={value =>{
-                // const selectedValue = value[value.length -1]
                 props.onChange( 'category' ,value)
               }}
               value={props.values.category}

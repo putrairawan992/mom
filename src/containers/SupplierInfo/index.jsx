@@ -23,7 +23,6 @@ export default function SupplierInfo(props) {
             <Select
               showSearch
               onChange={(value) => {
-                console.log("==",value)
                 props.onChange('supplier', value)
               }}
               onSearch={(value) => props.getSuppliersByKeyword(value)}

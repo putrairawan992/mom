@@ -1,7 +1,14 @@
-import { useState, useEffect } from 'react';
+import React,{ useState, useEffect } from 'react';
 import Category from '../../repository/Category';
+import ProductInfo from "./index";
 
-export default function ProductInfoContainer (props){
+export default function ProductInfoContainer ({
+  onChange,
+  errors,
+  touched,
+  values,
+  grid,
+}){
   const [allCategory,setAllCategory] = useState([])
  
   useEffect(() => {
@@ -36,7 +43,15 @@ export default function ProductInfoContainer (props){
     }
   }
 
-  return props.children({
-    filter, allCategory
-  })
+  return (
+    <ProductInfo 
+      filter={filter}
+      allCategory={allCategory}
+      onChange={onChange}
+      errors={errors}
+      touched={touched}
+      values={values}
+      grid={grid}
+    />
+  )
 }

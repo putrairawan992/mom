@@ -35,8 +35,9 @@ const Measurement = (props) => {
               placeholder={strings.placeholder_weight}
               name="actualWeight"
               onChange={e => {
-                props.setActualWeight(e.target.value)
-                props.setFieldValue("actualWeight",e.target.value)
+                // props.setActualWeight(e.target.value)
+                // props.setFieldValue("actualWeight",e.target.value)
+                props.handleChange('actualWeight', e.target.value)
               }}
               type="number"
               onBlur={props.handleBlur}
@@ -63,8 +64,9 @@ const Measurement = (props) => {
                   defaultValue=""
                   name="width"
                   onChange={e => {
-                    props.setWidth(e.target.value)
-                    props.setFieldValue('width', e.target.value)
+                    // props.setWidth(e.target.value)
+                    // props.setFieldValue('width', e.target.value)
+                    props.handleChange('width', e.target.value)
                   }}
                   type="number"
                   onBlur={props.handleBlur}
@@ -82,8 +84,9 @@ const Measurement = (props) => {
                 placeholder={strings.placeholder_length}
                 name="length"
                 onChange={e => {
-                  props.setLength(e.target.value)
-                  props.setFieldValue('length', e.target.value)
+                  // props.setLength(e.target.value)
+                  // props.setFieldValue('length', e.target.value)
+                  props.handleChange('length', e.target.value)
                 }}
                 type="number"
                 onBlur={props.handleBlur}
@@ -101,8 +104,9 @@ const Measurement = (props) => {
                 placeholder={strings.placeholder_height}
                 name="height"
                 onChange={e => {
-                  props.setHeight(e.target.value)
-                  props.setFieldValue('height', e.target.value)
+                  // props.setHeight(e.target.value)
+                  // props.setFieldValue('height', e.target.value)
+                  props.handleChange('height', e.target.value)
                 }}
                 type="number"
                 onBlur={props.handleBlur}
@@ -131,7 +135,7 @@ const Measurement = (props) => {
         </Col>
         <Col md={12}>
           <Input
-            value={props.volumetric}
+            value={props.allMeasurement.volumetric}
             suffix={<div style={{fontSize: "14px"}}>{strings.kg}</div>}
             size="large"
             disabled
@@ -142,7 +146,7 @@ const Measurement = (props) => {
       <br/>
       <Row>
         <Col md={15} offset={7}>
-          <Checkbox name="isFragile" checked={props.values.isFragile}  onClick={(e)=>props.setFieldValue('isFragile', e.target.checked)}>
+          <Checkbox name="isFragile" checked={props.values.isFragile}  onClick={(e)=>props.handleChange('isFragile', e.target.checked)}>
             <span className="text-safety-orange">
               {strings.product_fragile} <Icon fill="red" type="info-circle"/>
             </span>

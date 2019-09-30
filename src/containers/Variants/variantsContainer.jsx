@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import uuid4 from "uuid";
+import Variants from "../../containers/Variants";
 
 export default function VariantsContainer({
-  children,
   push,
   variants,
   onChange,
@@ -35,19 +35,17 @@ export default function VariantsContainer({
   };
 
   return (
-    <React.Fragment>
-      {children({
-        add,
-        variants,
-        open,
-        onChange,
-        errors,
-        touched,
-        name,
-        onRemove,
-        variantItems,
-        isOpen : openVariant
-      })}
-    </React.Fragment>
+    <Variants 
+      add={add}
+      variants={variants}
+      open={open}
+      onChange={onChange}
+      errors={errors}
+      touched={touched}
+      name={name}
+      onRemove={onRemove}
+      variantItems={variantItems}
+      isOpen={openVariant}
+    />
   );
 }

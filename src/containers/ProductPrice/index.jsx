@@ -5,7 +5,6 @@ import strings from '../../localization';
 import { Form } from 'antd';
 
 const ProductPrice = (props) => {
-
   return(
     <Card className="card" title={<div className="card-title">{strings.product_price}</div>}>
       <Row type="flex" align="middle">
@@ -24,9 +23,10 @@ const ProductPrice = (props) => {
           }>
             <Input
               prefix={"¥"}
-              value={props.basePrice}
+              value={props.allPrice.basePrice}
               style={{width : "100%"}}
-              onChange={value => props.handleChange(value,'basePrice',props.setBasePrice)}
+              // onChange={value => props.handleChange(value,'basePrice',props.setBasePrice)}
+              onChange={event => props.newHandleChange('basePrice', event.target.value)}
               size="large"
               name="basePrice"
             />
@@ -55,12 +55,13 @@ const ProductPrice = (props) => {
           }>
             <Input
               prefix={"¥"}
-              value={props.domesticFee}
+              value={props.allPrice.domesticFee}
               style={{width : "100%"}}
               name="domesticFee"
-              onChange={value => {
-                props.handleChange(value,'domesticFee',props.setDomesticFee)
-              }}
+              // onChange={event => {
+                // props.handleChange(value,'domesticFee',props.setDomesticFee)
+              // }}
+              onChange={event => props.newHandleChange('domesticFee', event.target.value)}
               onBlur={props.handleBlur}
               size="large"
             />
@@ -96,12 +97,13 @@ const ProductPrice = (props) => {
         <Col md={props.grid.priceRight} className="col-height">
           <Input
             prefix={"Rp"}
-            value={props.feeBySea}
+            value={props.allPrice.feeBySea}
             name="feeBySea"
             onBlur={props.handleBlur}
-            onChange={e => {
-              props.handleChange(e,'feeBySea',props.setFeeBySea)
-            }}
+            // onChange={e => {
+            //   props.handleChange(e,'feeBySea',props.setFeeBySea)
+            // }}
+            onChange={event => props.newHandleChange('feeBySea', event.target.value)}
             size="large"
             status={
               props.errors.feeBySea && props.touched.feeBySea ?
@@ -125,12 +127,13 @@ const ProductPrice = (props) => {
         <Col md={props.grid.priceRight} className="col-height">
           <Input
             prefix="Rp"
-            value={props.feeByAir}
+            value={props.allPrice.feeByAir}
             onBlur={props.handleBlur}
             name="feeByAir"
-            onChange={e => {
-              props.handleChange(e,'feeByAir',props.setFeeByAir)
-            }}
+            // onChange={e => {
+            //   props.handleChange(e,'feeByAir',props.setFeeByAir)
+            // }}
+            onChange={event => props.newHandleChange('feeByAir', event.target.value)}
             size="large"
             status={
               props.errors.feeByAir && props.touched.feeByAir ? 
@@ -164,10 +167,11 @@ const ProductPrice = (props) => {
         <Col md={props.grid.priceRight} className="col-height">
           <Input
             prefix="Rp"
-            value={props.administration}
-            onChange={e => {
-              props.handleChange(e,'administration',props.setAdministration)
-            }}
+            value={props.allPrice.administration}
+            // onChange={e => {
+            //   props.handleChange(e,'administration',props.setAdministration)
+            // }}
+            onChange={event => props.newHandleChange('administration', event.target.value)}
             size="large"
           />
         </Col>
@@ -192,7 +196,7 @@ const ProductPrice = (props) => {
         </Col>
         <Col md={8}>
           <Input
-            value={props.exchangeRate}
+            value={props.allPrice.exchangeRate}
             size="large"
             status="disabled"
             disabled
@@ -208,7 +212,7 @@ const ProductPrice = (props) => {
         </Col>
         <Col md={props.grid.priceRight}>
           <Input
-            value={props.priceBySea}
+            value={props.allPrice.priceBySea}
             size="large"
             status="disabled"
             disabled
@@ -224,7 +228,7 @@ const ProductPrice = (props) => {
         </Col>
         <Col md={props.grid.priceRight}>
           <Input
-            value={props.priceByAir}
+            value={props.allPrice.priceByAir}
             size="large"
             disabled
             status="disabled"
