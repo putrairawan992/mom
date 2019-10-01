@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import { Upload as UploadAnt, Icon } from 'antd'
 import Button from '../Button'
 import propTypes from 'prop-types'
@@ -6,12 +6,19 @@ import ImageRepo from "../../repository/Image"
 import './style.sass'
 
 const UploadImage = props => {
-  // console.log(props)
   const [loading, setLoading] = useState(false)
-  const [imageUrl, setImageUrl] = useState('')
+  const [imageUrl, setImageUrl] = useState("")
   const [disable, setDisable] = useState(false)
   const [loadingEdit, setLoadingEdit] = useState(false)
   
+  useEffect(() => {
+    setDisable(props.disable)
+  },[props.disable])
+
+  useEffect (() => {
+    setImageUrl(props.imageUrl)
+  },[props.imageUrl])
+
   const uploadButton = (
     <div>
       <Icon type={loading ? 'loading' : 'plus'}></Icon>
@@ -41,7 +48,7 @@ const UploadImage = props => {
         </>
         :
         <>
-          <img src={props.imageUrl}  alt="avatar"/>
+          <img src={imageUrl}  alt="avatar"/>
           <div className="top-icon">
           <Icon type="camera" onClick={props.editImage} className="cameraIcon"/>
           <Icon onClick={() => {
@@ -51,7 +58,7 @@ const UploadImage = props => {
           }} type="delete" className="deleteIcon"/>
           </div>
           {
-            props.loadingEdit ?
+            loadingEdit ?
             <div className="container-loading">
               <Icon className="loading-edit" type={ 'loading' }></Icon>
             </div>   : null
@@ -97,8 +104,8 @@ const UploadImage = props => {
       setLoading(false)
       setLoadingEdit(false)
       getBase64(info.file.originFileObj, image => {
-
         let responseImage = info.file.response
+        setImageUrl(image)
         props.onChange(responseImage)
         props.successUpload(responseImage, props.image)
       })
@@ -157,7 +164,7 @@ const UploadImage = props => {
       disabled={disable}
     >
       <div className="inside-upload">
-      {props.imageUrl ? imageUpload : uploadButton}
+      {imageUrl ? imageUpload : uploadButton}
       </div>
     </UploadAnt>
   )
@@ -169,14 +176,17 @@ UploadImage.propTypes = {
   changeDefault: propTypes.func,
   remove: propTypes.func,
   type: propTypes.oneOf(['default', 'non-default','no-style']),
-  disabled: propTypes.bool,
+  disable: propTypes.bool,
   imageUrl: propTypes.string,
-  onChange: propTypes.func
-
-}
+  onChange: propTypes.func,
+  onError : propTypes.func,
+  successUpload: propTypes.func
+} 
 
 UploadImage.defaultProps = {
-  onChange : () => {}
+  onChange : () => {},
+  onError : () => {},
+  successUpload : () => {}
 }
 
 export default UploadImage

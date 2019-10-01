@@ -1,28 +1,21 @@
 import React, { useState, useContext, useEffect } from "react";
-import UploadImages from "../../components/UploadImages";
 import ImagesContainer from "../../components/UploadImages/ImagesContainer"
-import Variants from "../../containers/Variants";
 import VariantsContainer from "../../containers/Variants/variantsContainer"
 import { Formik, FieldArray } from "formik";
 import { Form } from "antd";
 import Button from "../../components/Button";
-import ProductPrice from "../../containers/ProductPrice";
 import ProductPriceContainer from "../../containers/ProductPrice/productPriceContainer";
-import ProductInfo from "../../containers/ProductInfo";
 import ProductInfoContainer from "../../containers/ProductInfo/ProductInfoContainer";
-import SupplierInfo from "../../containers/SupplierInfo";
 import SupplierContainer from "../../containers/SupplierInfo/supplierContainer";
-import Measurement from "../../containers/Measurement";
 import MeasurementContainer from "../../containers/Measurement/measurementContainer";
 import StockManagement from "../../containers/StockManagement";
 import ProductContext from "../../context/GlobalStateProduct/product-context";
 import { schema } from "./schema";
 import "./style.sass";
-import {apiGetWithoutToken} from '../../services/api';
-import {PATH_PRODUCT} from '../../services/path/product';
 import VideoProduct from "../VideoProduct";
 import uuid4 from "uuid";
 import Category from '../../repository/Category';
+import Product from "../../repository/Product"
 
 export default function FormProduct(props) {
   const context = useContext(ProductContext);
@@ -77,36 +70,36 @@ export default function FormProduct(props) {
 
   useEffect(() => {
     if(props.id){
-      getProductById(props.id)
+      const getProductById = async function () {
+        const response = await Product.get({productId: props.id})
+        if(response.status === 200){
+          const data = response.data.data
+          getDataProduct(data)
+        }else{
+          return response
+        }
+      }
+      getProductById()
     }
+   
   },[props.id])
 
-  useEffect(() => {
-    let arr = []
-    let obj = {}
-    for(let i =0 ; i< 5 ; i++){
-      obj.largeUrl = ''
-      obj.mediumUrl = ''
-      obj.smallUrl = ''
-      arr.push(obj)
-    }
-    setInitialValues({
-      ...initialValues, listImages : arr
-    })
-  },[])
+  // useEffect(() => {
+  //   let arr = []
+  //   let obj = {}
+  //   for(let i =0 ; i< 5 ; i++){
+  //     obj.largeUrl = ''
+  //     obj.mediumUrl = ''
+  //     obj.smallUrl = ''
+  //     arr.push(obj)
+  //   }
+  //   setInitialValues({
+  //     ...initialValues, listImages : arr
+  //   })
+  // },[])
 
   const open = function () {
     setOpenVariant(!openVariant)
-  }
-
-  const getProductById = async function (id) {
-    try {
-      const response = await apiGetWithoutToken(PATH_PRODUCT.GET_BY_ID + id,)
-      console.log({response})
-      setData(response.data.data)
-    } catch (error) { 
-      setInitialValues(initialValues)
-    }
   }
 
   const allCategory = async function () {
@@ -145,7 +138,7 @@ export default function FormProduct(props) {
     return convert
   }
 
-  const setData = async function (data) {
+  const getDataProduct = async function (data) {
     const { information } = data
     if(data.variants){
       open()
@@ -203,14 +196,8 @@ export default function FormProduct(props) {
     })
   }
 
-  function handleChangeCategory (value) {
-    const selectedValue = value[value.length -1]
-    setInitialValues({
-      ...initialValues, category : selectedValue
-    })
-  }
-
   async function handleSubmit(values) {
+    // console.log({values})
     props.actionSave(values)
   };
 
@@ -238,34 +225,22 @@ export default function FormProduct(props) {
             <Form.Item>
               <SupplierContainer
                 values={values}
-              >
-                {(props) => (
-                  <SupplierInfo
-                    errors={errors}
-                    touched={touched}
-                    onChange={(name ,value) => setFieldValue(name, value)}
-                    grid={grid}
-                    handleChangeValue={handleChangeValue}
-                    {...props}
-                  />
-                )}
-              </SupplierContainer>
+                errors={errors}
+                touched={touched}
+                onChange={(name ,value) => setFieldValue(name, value)}
+                grid={grid}
+                handleChangeValue={handleChangeValue}
+              />
             </Form.Item>
-              <ProductInfoContainer >
-                {(props) =>(
-                  <ProductInfo
-                    handleBlur={handleBlur}
-                    handleChangeValue={handleChangeValue}
-                    onChange={(name ,value) => setFieldValue(name, value)}
-                    errors={errors}
-                    touched={touched}
-                    values={values}
-                    grid={grid}
-                    handleChangeCategory={handleChangeCategory}
-                    {...props}
-                  />
-                )}
-              </ProductInfoContainer>
+              <ProductInfoContainer
+                handleBlur={handleBlur}
+                handleChangeValue={handleChangeValue}
+                onChange={(name ,value) => setFieldValue(name, value)}
+                errors={errors}
+                touched={touched}
+                values={values}
+                grid={grid}
+              />
               <br/>
               <Form.Item>
                 <FieldArray 
@@ -282,28 +257,19 @@ export default function FormProduct(props) {
                       handleChange={handleChange}
                       open={open}
                       openVariant={openVariant}
-                    >
-                      {props => <Variants {...props} />}
-                    </VariantsContainer>
+                    />
                   )}
                 />
               </Form.Item>
               <Form.Item>
                 <ImagesContainer 
                   maxImage={5} 
-                  handleChangeValue={handleChangeValue}
                   onChange={(name ,value) => setFieldValue(name, value)}
                   values={values}
                   all={all}
-                >
-                  {(props) => (
-                    <UploadImages
-                      errors={errors}
-                      touched={touched}
-                      {...props}
-                    />
-                  )}
-                </ImagesContainer>
+                  errors={errors}
+                  touched={touched}
+                />
               </Form.Item>
               <Form.Item>
                 <VideoProduct
@@ -318,37 +284,23 @@ export default function FormProduct(props) {
               </Form.Item>
             <Form.Item>
               <ProductPriceContainer 
-                setFieldValue={setFieldValue}
                 values={values}
                 onChange={(name,value) => setFieldValue(name,value)}
-              >
-                {(props) => (
-                  <ProductPrice
-                    errors={errors}
-                    handleChangeValue={handleChangeValue}
-                    setFieldValue={setFieldValue}
-                    touched={touched}
-                    handleBlur={handleBlur}
-                    grid={grid}
-                    {...props}
-                  />
-                )}
-              </ProductPriceContainer>
+                errors={errors}
+                touched={touched}
+                handleBlur={handleBlur}
+                grid={grid}
+              />
             </Form.Item>
             <Form.Item>
-              <MeasurementContainer values={values} setFieldValue={setFieldValue}  >
-                {(props) => (
-                  <Measurement
-                    errors={errors}
-                    setFieldValue={setFieldValue}
-                    touched={touched}
-                    handleBlur={handleBlur}
-                    dataProduct={props.dataProduct}
-                    values={values}
-                    {...props}
-                  />
-                )}
-              </MeasurementContainer>
+              <MeasurementContainer 
+                values={values} 
+                setFieldValue={setFieldValue}  
+                errors={errors}
+                touched={touched}
+                handleBlur={handleBlur}
+                onChange={(name,value) => setFieldValue(name,value)}
+              />
             </Form.Item>
               <StockManagement
                 setFieldValue={setFieldValue}

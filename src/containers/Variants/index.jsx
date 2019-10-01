@@ -1,10 +1,9 @@
 import React from "react";
 import VariantItems from "./VariantItems";
-// import Variant from '../Variant';
-import { Card, Form, Input, Row, Col } from "antd";
+import { Card, Row, Col } from "antd";
 import Button from '../../components/Button';
 import strings from '../../localization';
-import VariantHeader from "../VariantHeader";
+import VariantHeader from "./VariantHeader";
 import VariantItemContainer from "./VariantItemContainer";
 import { getIn } from "formik" ;
 import { FieldArray } from 'formik';

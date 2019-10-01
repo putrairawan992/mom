@@ -1,7 +1,7 @@
 import React from 'react';
 import UploadImage from '../UploadImage';
-// import propTypes from 'prop-types'
-import {Card, Row, Col, Tag, Form} from 'antd';
+import propTypes from 'prop-types'
+import {Card, Row, Col, Tag} from 'antd';
 import {FieldArray} from 'formik';
 import strings from '../../localization';
 
@@ -37,6 +37,7 @@ const UploadImages = (props) => {
                         image={image}
                         remove={() => props.remove(image)}
                         imageUrl={props.imageUrl[image]}
+                        disable={props.disable[image]}
                         className="upload"
                         editImage={() => props.editImage(image)}
                         onError={props.handleError}
@@ -49,20 +50,8 @@ const UploadImages = (props) => {
               />
             </Row>
             {
-              props.statusFile ? 
-              (<div className="text-error-message">{strings.type_image_error}</div>): null
-            }
-            {
-              props.statusSize ? 
-              <div className="text-error-message">{strings.size_image_error}</div> : null
-            }
-            {
-              props.errors.listImages && props.touched.listImages ?
-              <div className="text-error-message">{props.errors.listImages}</div> : null
-            }
-            {
-              props.dimension ?
-              (<div className="text-error-message">{strings.frame_image_error}</div>) : null
+              props.errorMessage ? 
+              (<div className="text-error-message">{props.errorMessage.description}</div>): null
             }
           </Col>
         </Row>
@@ -71,9 +60,8 @@ const UploadImages = (props) => {
   )
 }
 
-// UploadImages.propTypes = {
-//   maxImage: propTypes.number,
-//   getPayloadImage: propTypes.func
-// }
+UploadImages.propTypes = {
+  maxImage: propTypes.number,
+}
 
 export default UploadImages
